@@ -242,6 +242,16 @@ nav a:hover, nav a.active {
   border-color: #444;
 }
 
+.tag-paid {
+  color: #fff;
+  border-color: #666;
+  font-weight: 600;
+}
+
+.tag-free {
+  color: var(--text-muted);
+}
+
 .card-desc {
   color: var(--text-muted);
   font-size: 13px;
@@ -286,6 +296,27 @@ nav a:hover, nav a.active {
 .btn-action.copied {
   color: #fff;
   border-color: #888;
+}
+
+.btn-pay {
+  border-color: #555;
+  color: #eee;
+  font-weight: 500;
+}
+
+.btn-pay:hover {
+  border-color: #bbb;
+  color: #fff;
+}
+
+.btn-buy {
+  border-color: #555;
+  color: #eee;
+}
+
+.btn-buy:hover {
+  border-color: #bbb;
+  color: #fff;
 }
 
 /* Modal / Form */

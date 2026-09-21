@@ -1,13 +1,18 @@
 use maud::{html, Markup};
 use crate::models::McpTool;
 
-pub fn home_view(tools: &[McpTool], categories: &[&str], chains: &[&str]) -> Markup {
+pub fn home_view(
+    tools: &[McpTool],
+    categories: &[&str],
+    chains: &[&str],
+    pricing_models: &[&str],
+) -> Markup {
     html! {
         div class="container" {
             section class="hero" {
-                h1 { "Decentralized Web3 MCP Directory" }
+                h1 { "Decentralized Web3 MCP Directory & Marketplace" }
                 p {
-                    "Curated and community-submitted Model Context Protocol (MCP) servers for Web3 agents. Zero accounts, zero KYC, zero bureaucracy. Ready to copy for Claude, Cursor, and Antigravity."
+                    "Pusat listing & jual-beli Model Context Protocol (MCP) servers untuk Web3 agents. 100% anonim, non-custodial, tanpa rekening bank, tanpa Stripe KYC, dan tanpa birokrasi Web2. Pembayaran langsung peer-to-peer antar wallet kripto."
                 }
             }
 
@@ -17,7 +22,7 @@ pub fn home_view(tools: &[McpTool], categories: &[&str], chains: &[&str]) -> Mar
                         type="text" 
                         id="searchInput" 
                         class="search-input" 
-                        placeholder="Search Web3 MCP servers by keyword, protocol, chain, or capability..." 
+                        placeholder="Cari Web3 MCP tools, chain, fitur, atau model monetisasi..." 
                         oninput="filterTools()";
                 }
                 div class="filter-row" {
@@ -31,6 +36,12 @@ pub fn home_view(tools: &[McpTool], categories: &[&str], chains: &[&str]) -> Mar
                         option value="All" { "All Chains" }
                         @for chain in chains {
                             option value=(chain) { (chain) }
+                        }
+                    }
+                    select id="pricingFilter" class="filter-select" onchange="filterTools()" {
+                        option value="All" { "All Monetization" }
+                        @for pr in pricing_models {
+                            option value=(pr) { (pr) }
                         }
                     }
                     span id="toolCount" class="counter" {
@@ -58,6 +69,8 @@ pub fn tool_card(tool: &McpTool) -> Markup {
         format!("{} {}", tool.command, args_joined)
     };
 
+    let is_paid = tool.pricing_model != "Free & Open Source";
+
     html! {
         div 
             class="card"
@@ -65,12 +78,19 @@ pub fn tool_card(tool: &McpTool) -> Markup {
             data-desc=(tool.description)
             data-cat=(tool.category)
             data-chains=(chains_joined)
+            data-pricing=(tool.pricing_model)
         {
             div {
                 div class="card-header" {
                     div {
                         h2 class="card-title" { (tool.name) }
                         div class="card-meta" {
+                            @if is_paid {
+                                span class="tag tag-paid" { (tool.price) }
+                                span class="tag" { (tool.pricing_model) }
+                            } @else {
+                                span class="tag tag-free" { (tool.price) }
+                            }
                             @if tool.verified {
                                 span class="tag tag-verified" { "Verified" }
                             } @else {
@@ -94,7 +114,7 @@ pub fn tool_card(tool: &McpTool) -> Markup {
                         "TRANSPORT: " (tool.transport.to_uppercase())
                     }
                     span style="font-size: 11px; font-family: var(--mono-font); color: var(--text-dim);" {
-                        "BY: " (tool.author_alias)
+                        "CREATOR: " (tool.author_alias)
                     }
                 }
                 div class="code-box" {
@@ -116,11 +136,35 @@ pub fn tool_card(tool: &McpTool) -> Markup {
                     "MCP Config"
                 }
 
+                @if let Some(payout) = &tool.payout_address {
+                    button 
+                        class="btn-action btn-pay" 
+                        onclick=(format!("openPaymentModal('{}', '{}', '{}', '{}')", 
+                            tool.name.replace('\'', "\\'"),
+                            tool.pricing_model.replace('\'', "\\'"),
+                            tool.price.replace('\'', "\\'"),
+                            payout.replace('\'', "\\'")
+                        )) 
+                    {
+                        @if is_paid {
+                            "Direct Pay ⚡"
+                        } @else {
+                            "Tip Creator ⚡"
+                        }
+                    }
+                }
+
+                @if let Some(comm) = &tool.commercial_url {
+                    a href=(comm) target="_blank" rel="noopener noreferrer" class="btn-action btn-buy" {
+                        "Marketplace / Buy ↗"
+                    }
+                }
+
                 button 
                     class="btn-action" 
                     onclick=(format!("copyText(this, '{}')", full_cmd.replace('\'', "\\'"))) 
                 {
-                    "Copy Command"
+                    "Copy Cmd"
                 }
 
                 a href=(tool.repo_url) target="_blank" rel="noopener noreferrer" class="btn-action" {

@@ -11,7 +11,7 @@ pub async fn get_tools(
     State(db): State<Database>,
     Query(params): Query<FilterQuery>,
 ) -> impl IntoResponse {
-    match db.list_tools(params.q, params.category, params.chain) {
+    match db.list_tools(params.q, params.category, params.chain, params.pricing) {
         Ok(tools) => (StatusCode::OK, Json(tools)).into_response(),
         Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response(),
     }
@@ -45,7 +45,7 @@ pub async fn submit_tool(
 pub async fn export_tools(
     State(db): State<Database>,
 ) -> impl IntoResponse {
-    match db.list_tools(None, None, None) {
+    match db.list_tools(None, None, None, None) {
         Ok(tools) => {
             let json_str = serde_json::to_string_pretty(&tools).unwrap_or_default();
             (

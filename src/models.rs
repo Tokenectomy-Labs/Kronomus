@@ -16,6 +16,10 @@ pub struct McpTool {
     pub repo_url: String,
     pub docs_url: Option<String>,
     pub author_alias: String,
+    pub pricing_model: String,
+    pub price: String,
+    pub payout_address: Option<String>,
+    pub commercial_url: Option<String>,
     pub verified: bool,
     pub created_at: String,
 }
@@ -33,6 +37,10 @@ pub struct SubmitToolRequest {
     pub repo_url: String,
     pub docs_url: Option<String>,
     pub author_alias: Option<String>,
+    pub pricing_model: Option<String>,
+    pub price: Option<String>,
+    pub payout_address: Option<String>,
+    pub commercial_url: Option<String>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -40,4 +48,5 @@ pub struct FilterQuery {
     pub q: Option<String>,
     pub category: Option<String>,
     pub chain: Option<String>,
+    pub pricing: Option<String>,
 }

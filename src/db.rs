@@ -38,11 +38,21 @@ impl Database {
                 repo_url TEXT NOT NULL,
                 docs_url TEXT,
                 author_alias TEXT NOT NULL,
+                pricing_model TEXT NOT NULL DEFAULT 'Free & Open Source',
+                price TEXT NOT NULL DEFAULT 'Free',
+                payout_address TEXT,
+                commercial_url TEXT,
                 verified INTEGER NOT NULL DEFAULT 0,
                 created_at TEXT NOT NULL
             )",
             [],
         )?;
+
+        // Ensure columns exist for backwards-compatibility migration
+        let _ = conn.execute("ALTER TABLE tools ADD COLUMN pricing_model TEXT NOT NULL DEFAULT 'Free & Open Source'", []);
+        let _ = conn.execute("ALTER TABLE tools ADD COLUMN price TEXT NOT NULL DEFAULT 'Free'", []);
+        let _ = conn.execute("ALTER TABLE tools ADD COLUMN payout_address TEXT", []);
+        let _ = conn.execute("ALTER TABLE tools ADD COLUMN commercial_url TEXT", []);
 
         let db = Database {
             conn: Arc::new(Mutex::new(conn)),
@@ -74,6 +84,10 @@ impl Database {
                 "https://github.com/modelcontextprotocol/servers/tree/main/src/etherscan",
                 Some("https://etherscan.io/apis"),
                 "0xCypherpunk",
+                "Free & Open Source",
+                "Free (Tips Welcome)",
+                Some("0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"),
+                None,
                 1
             ),
             (
@@ -89,10 +103,14 @@ impl Database {
                 "https://github.com/foundry-rs/foundry",
                 Some("https://book.getfoundry.sh/anvil/"),
                 "paradigm_anon",
+                "Free & Open Source",
+                "Free",
+                Some("0x000000000000000000000000000000000000dEaD"),
+                None,
                 1
             ),
             (
-                "Slither Static Auditor MCP",
+                "Slither Static Auditor Pro MCP",
                 "slither-auditor-mcp",
                 "Crytic's Solidity static analysis framework exposing AST inspection, vulnerability detection (reentrancy, uninitialized state, unchecked calls).",
                 "Smart Contract Security",
@@ -104,6 +122,10 @@ impl Database {
                 "https://github.com/crytic/slither",
                 Some("https://github.com/crytic/slither/wiki"),
                 "trail_of_anon",
+                "Crypto License",
+                "0.08 ETH (One-Time)",
+                Some("0x71C25e3692604Fa7F876aD67364b63e8F45aF98C"),
+                Some("https://t.me/anon_auditor_bot"),
                 1
             ),
             (
@@ -119,6 +141,10 @@ impl Database {
                 "https://github.com/Cyfrin/aderyn",
                 Some("https://cyfrin.io/aderyn"),
                 "cyfrin_ghost",
+                "Free & Open Source",
+                "Free",
+                Some("0x3a4bC8174fD378D8a56E9D7A5a8C7d27e28A6133"),
+                None,
                 1
             ),
             (
@@ -134,6 +160,10 @@ impl Database {
                 "https://github.com/helius-labs/helius-mcp",
                 Some("https://docs.helius.dev/"),
                 "sol_anon",
+                "Pay-per-Call (x402)",
+                "0.001 SOL / 1k requests",
+                Some("Helius7gA3KkHNxv2qQfXbVn8KjLp9X7Vn8KjLp9X7V"),
+                Some("https://helius.dev/pricing"),
                 1
             ),
             (
@@ -149,6 +179,29 @@ impl Database {
                 "https://github.com/DefiLlama/defillama-mcp",
                 Some("https://defillama.com/docs/api"),
                 "0xDeFiDegens",
+                "Tipping / Donation",
+                "Any crypto donation",
+                Some("0x084694b4e3FB9E59590937F505174F3298546454"),
+                None,
+                1
+            ),
+            (
+                "Flashloan Arbitrage Hunter MCP",
+                "flashloan-arbitrage-mcp",
+                "Automated multi-DEX price discrepancy scanner with Aave V3 / Balancer flashloan execution simulation without upfront capital.",
+                "DeFi & DEX",
+                "Ethereum, Arbitrum, Base",
+                "stdio",
+                "arb-hunter-mcp",
+                "--network arbitrum --min-profit 0.02eth",
+                "PRIVATE_KEY,RPC_URL",
+                "https://github.com/anon-web3/flashloan-arb-mcp",
+                Some("https://github.com/anon-web3/flashloan-arb-mcp#readme"),
+                "0xDarkPoolAnon",
+                "Crypto License",
+                "0.25 ETH (Lifetime Key)",
+                Some("0x9E75d9e5a8C7d27e28A61333a4bC8174fD378D8a"),
+                Some("https://t.me/darkpool_anon"),
                 1
             ),
             (
@@ -164,6 +217,10 @@ impl Database {
                 "https://github.com/smartcontractkit/chainlink",
                 Some("https://docs.chain.link/data-feeds"),
                 "link_marine_anon",
+                "Free & Open Source",
+                "Free",
+                Some("0x514910771AF9Ca656af840dff83E8264EcF986CA"),
+                None,
                 1
             ),
             (
@@ -179,6 +236,10 @@ impl Database {
                 "https://github.com/PinataCloud/pinata-mcp",
                 Some("https://docs.pinata.cloud/"),
                 "ipfs_seed",
+                "Pay-per-Call (x402)",
+                "$5 USDC / 10 GB",
+                Some("0x1111111254fb6c44bac0bed2854e76f90643097d"),
+                Some("https://pinata.cloud"),
                 1
             ),
             (
@@ -194,6 +255,10 @@ impl Database {
                 "https://github.com/safe-global/safe-core-sdk",
                 Some("https://docs.safe.global/"),
                 "safe_keeper",
+                "Tipping / Donation",
+                "Tips Welcome",
+                Some("0x8B3192f5eE8D277e269153549646b5aF63d6b1d4"),
+                None,
                 1
             ),
             (
@@ -209,10 +274,14 @@ impl Database {
                 "https://github.com/graphprotocol/graph-node",
                 Some("https://thegraph.com/docs/"),
                 "subgraph_indexer",
+                "Free & Open Source",
+                "Free",
+                Some("0xc944E90C64B2c07662A292be6244BDf05Cda44a7"),
+                None,
                 1
             ),
             (
-                "Circom & SnarkJS ZK MCP",
+                "Circom & SnarkJS ZK Prover MCP",
                 "circom-snarkjs-mcp",
                 "Inspect Zero-Knowledge arithmetic circuits (.circom), verify witness generation, check constraint counts (R1CS), and validate Groth16 proofs.",
                 "Zero-Knowledge & Privacy",
@@ -224,6 +293,10 @@ impl Database {
                 "https://github.com/iden3/snarkjs",
                 Some("https://docs.circom.io/"),
                 "zk_ghost_99",
+                "Pay-per-Call (x402)",
+                "0.005 ETH / 50 proofs",
+                Some("0x4838B106FCe9647Bdf1E7877BF73cE8B0BAD5f97"),
+                Some("https://docs.circom.io/"),
                 1
             ),
             (
@@ -239,6 +312,10 @@ impl Database {
                 "https://github.com/Irys-xyz/mcp-server",
                 Some("https://docs.irys.xyz/"),
                 "permaweb_anon",
+                "Tipping / Donation",
+                "Permaweb Tips",
+                Some("0x00000000219ab540356cbb839cbe05303d7705fa"),
+                None,
                 1
             )
         ];
@@ -268,8 +345,9 @@ impl Database {
                 "INSERT INTO tools (
                     id, name, slug, description, category, chains, transport,
                     command, args, env_vars, config_snippet, repo_url, docs_url,
-                    author_alias, verified, created_at
-                ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16)",
+                    author_alias, pricing_model, price, payout_address, commercial_url,
+                    verified, created_at
+                ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18, ?19, ?20)",
                 params![
                     id,
                     s.0,
@@ -286,6 +364,10 @@ impl Database {
                     s.10,
                     s.11,
                     s.12,
+                    s.13,
+                    s.14,
+                    s.15,
+                    s.16,
                     now
                 ],
             )?;
@@ -294,9 +376,9 @@ impl Database {
         Ok(())
     }
 
-    pub fn list_tools(&self, q: Option<String>, category: Option<String>, chain: Option<String>) -> Result<Vec<McpTool>> {
+    pub fn list_tools(&self, q: Option<String>, category: Option<String>, chain: Option<String>, pricing: Option<String>) -> Result<Vec<McpTool>> {
         let conn = self.conn.lock().unwrap();
-        let mut sql = String::from("SELECT id, name, slug, description, category, chains, transport, command, args, env_vars, config_snippet, repo_url, docs_url, author_alias, verified, created_at FROM tools WHERE 1=1");
+        let mut sql = String::from("SELECT id, name, slug, description, category, chains, transport, command, args, env_vars, config_snippet, repo_url, docs_url, author_alias, pricing_model, price, payout_address, commercial_url, verified, created_at FROM tools WHERE 1=1");
         
         let mut params_vec: Vec<Box<dyn rusqlite::ToSql>> = Vec::new();
 
@@ -314,11 +396,19 @@ impl Database {
             }
         }
 
+        if let Some(pr) = pricing {
+            if !pr.is_empty() && pr != "All" {
+                sql.push_str(" AND pricing_model = ?");
+                params_vec.push(Box::new(pr));
+            }
+        }
+
         if let Some(query) = q {
             let trimmed = query.trim().to_lowercase();
             if !trimmed.is_empty() {
-                sql.push_str(" AND (LOWER(name) LIKE ? OR LOWER(description) LIKE ? OR LOWER(chains) LIKE ? OR LOWER(category) LIKE ?)");
+                sql.push_str(" AND (LOWER(name) LIKE ? OR LOWER(description) LIKE ? OR LOWER(chains) LIKE ? OR LOWER(category) LIKE ? OR LOWER(pricing_model) LIKE ?)");
                 let pattern = format!("%{}%", trimmed);
+                params_vec.push(Box::new(pattern.clone()));
                 params_vec.push(Box::new(pattern.clone()));
                 params_vec.push(Box::new(pattern.clone()));
                 params_vec.push(Box::new(pattern.clone()));
@@ -335,7 +425,7 @@ impl Database {
             let chains_str: String = row.get(5)?;
             let args_str: String = row.get(8)?;
             let env_str: String = row.get(9)?;
-            let verified_int: i32 = row.get(14)?;
+            let verified_int: i32 = row.get(18)?;
 
             Ok(McpTool {
                 id: row.get(0)?,
@@ -352,8 +442,12 @@ impl Database {
                 repo_url: row.get(11)?,
                 docs_url: row.get(12)?,
                 author_alias: row.get(13)?,
+                pricing_model: row.get(14)?,
+                price: row.get(15)?,
+                payout_address: row.get(16)?,
+                commercial_url: row.get(17)?,
                 verified: verified_int == 1,
-                created_at: row.get(15)?,
+                created_at: row.get(19)?,
             })
         })?;
 
@@ -367,13 +461,13 @@ impl Database {
 
     pub fn get_by_slug(&self, slug: &str) -> Result<Option<McpTool>> {
         let conn = self.conn.lock().unwrap();
-        let mut stmt = conn.prepare("SELECT id, name, slug, description, category, chains, transport, command, args, env_vars, config_snippet, repo_url, docs_url, author_alias, verified, created_at FROM tools WHERE slug = ?1")?;
+        let mut stmt = conn.prepare("SELECT id, name, slug, description, category, chains, transport, command, args, env_vars, config_snippet, repo_url, docs_url, author_alias, pricing_model, price, payout_address, commercial_url, verified, created_at FROM tools WHERE slug = ?1")?;
         
         let mut rows = stmt.query_map([slug], |row| {
             let chains_str: String = row.get(5)?;
             let args_str: String = row.get(8)?;
             let env_str: String = row.get(9)?;
-            let verified_int: i32 = row.get(14)?;
+            let verified_int: i32 = row.get(18)?;
 
             Ok(McpTool {
                 id: row.get(0)?,
@@ -390,8 +484,12 @@ impl Database {
                 repo_url: row.get(11)?,
                 docs_url: row.get(12)?,
                 author_alias: row.get(13)?,
+                pricing_model: row.get(14)?,
+                price: row.get(15)?,
+                payout_address: row.get(16)?,
+                commercial_url: row.get(17)?,
                 verified: verified_int == 1,
-                created_at: row.get(15)?,
+                created_at: row.get(19)?,
             })
         })?;
 
@@ -421,6 +519,12 @@ impl Database {
         let author_alias = req.author_alias
             .filter(|a| !a.trim().is_empty())
             .unwrap_or_else(|| "0xAnon".to_string());
+        let pricing_model = req.pricing_model
+            .filter(|p| !p.trim().is_empty())
+            .unwrap_or_else(|| "Free & Open Source".to_string());
+        let price = req.price
+            .filter(|p| !p.trim().is_empty())
+            .unwrap_or_else(|| "Free".to_string());
 
         let args_vec: Vec<String> = args_str.split_whitespace().map(|s| s.to_string()).collect();
         let env_vec: Vec<String> = env_str.split(',').map(|s| s.trim().to_string()).filter(|s| !s.is_empty()).collect();
@@ -443,8 +547,9 @@ impl Database {
             "INSERT INTO tools (
                 id, name, slug, description, category, chains, transport,
                 command, args, env_vars, config_snippet, repo_url, docs_url,
-                author_alias, verified, created_at
-            ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16)",
+                author_alias, pricing_model, price, payout_address, commercial_url,
+                verified, created_at
+            ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18, ?19, ?20)",
             params![
                 id,
                 req.name,
@@ -460,6 +565,10 @@ impl Database {
                 req.repo_url,
                 req.docs_url,
                 author_alias,
+                pricing_model,
+                price,
+                req.payout_address,
+                req.commercial_url,
                 0, // community anonymous submitted
                 now
             ],
@@ -480,6 +589,10 @@ impl Database {
             repo_url: req.repo_url,
             docs_url: req.docs_url,
             author_alias,
+            pricing_model,
+            price,
+            payout_address: req.payout_address,
+            commercial_url: req.commercial_url,
             verified: false,
             created_at: now,
         })

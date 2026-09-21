@@ -9,22 +9,23 @@ pub fn base_layout(title: &str, content: Markup) -> Markup {
                 meta charset="utf-8";
                 meta name="viewport" content="width=device-width, initial-scale=1.0";
                 title { (title) }
-                meta name="description" content="Anonymous Web3 Model Context Protocol (MCP) Directory. Zero KYC, zero OAuth, pure permissionless listing.";
+                meta name="description" content="Anonymous Web3 Model Context Protocol (MCP) Directory & Marketplace. Zero KYC, zero OAuth, pure non-custodial listing & monetization.";
                 style { (CSS) }
             }
             body {
                 header {
                     div class="container header-inner" {
                         div class="brand" {
-                            a href="/" class="brand-title" { "WEB3-MCP // ANONYMOUS" }
-                            span class="badge-anon" { "ZERO-AUTH" }
+                            a href="/" class="brand-title" { "WEB3-MCP // MARKETPLACE" }
+                            span class="badge-anon" { "ZERO-KYC" }
+                            span class="badge-anon" { "NON-CUSTODIAL" }
                             span class="badge-anon" { "100% RUST" }
                         }
                         nav {
-                            a href="/" { "Directory" }
+                            a href="/" { "Directory & Market" }
                             a href="/api/tools" target="_blank" { "JSON API" }
                             a href="/api/export" download="web3-mcp-directory.json" { "Export" }
-                            button class="btn-submit-nav" onclick="openSubmitModal()" { "+ Submit Tool" }
+                            button class="btn-submit-nav" onclick="openSubmitModal()" { "+ Jual / List Tool" }
                         }
                     }
                 }
@@ -36,36 +37,36 @@ pub fn base_layout(title: &str, content: Markup) -> Markup {
                 footer {
                     div class="container footer-inner" {
                         div {
-                            "Built with Rust (Axum + Maud + SQLite). Zero tracking, zero cookies, zero Web2 gatekeeping."
+                            "Built with Rust (Axum + Maud + SQLite). Tanpa rekening bank, tanpa Stripe KYC, tanpa fee perantara. Pembayaran 100% P2P on-chain."
                         }
                         div {
-                            "Status: Permissionless Registry // M2M Native"
+                            "Protocol: Cypherpunk Commerce // M2M Native"
                         }
                     }
                 }
 
-                // Global Submission Modal
+                // Global Submission / Listing Modal (Jual & Listing Tanpa Birokrasi)
                 div id="submitModal" class="modal-overlay" style="display: none;" {
                     div class="modal-content" {
                         div class="modal-header" {
-                            span class="modal-title" { "Submit Web3 MCP Server (Anonymous)" }
+                            span class="modal-title" { "Jual / Daftarkan Web3 MCP Tool (Full Anonim)" }
                             button class="btn-close" onclick="closeSubmitModal()" { "×" }
                         }
                         p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;" {
-                            "No email, no Google/GitHub OAuth, no KYC. Your tool will be indexed immediately for AI agents."
+                            "Nol birokrasi: Tanpa verifikasi KTP/KYC, tanpa rekening bank Web2, tanpa akun Stripe. Pembeli/pengguna langsung mentransfer kripto ke wallet pribadi kamu."
                         }
                         form id="submitForm" onsubmit="handleAnonymousSubmit(event)" {
                             div class="form-group" {
-                                label class="form-label" { "Tool Name *" }
-                                input type="text" name="name" required class="form-input" placeholder="e.g. Uniswap V4 Pool Inspector MCP";
+                                label class="form-label" { "Nama Tool / MCP Server *" }
+                                input type="text" name="name" required class="form-input" placeholder="e.g. Flashloan Arbitrage Hunter MCP";
                             }
                             div class="form-group" {
-                                label class="form-label" { "Description *" }
-                                textarea name="description" required rows="2" class="form-textarea" placeholder="Describe what capabilities this MCP server exposes to AI agents..." {}
+                                label class="form-label" { "Deskripsi & Value Proposition *" }
+                                textarea name="description" required rows="2" class="form-textarea" placeholder="Jelaskan fungsi tool, endpoint yang diexpose, atau keuntungan finansial bagi agent/user..." {}
                             }
                             div style="display: flex; gap: 10px;" {
                                 div class="form-group" style="flex: 1;" {
-                                    label class="form-label" { "Category *" }
+                                    label class="form-label" { "Kategori *" }
                                     select name="category" required class="form-select" {
                                         option value="Smart Contract Security" { "Smart Contract Security" }
                                         option value="EVM RPC & Explorer" { "EVM RPC & Explorer" }
@@ -80,12 +81,43 @@ pub fn base_layout(title: &str, content: Markup) -> Markup {
                                 }
                                 div class="form-group" style="flex: 1;" {
                                     label class="form-label" { "Chains / Networks *" }
-                                    input type="text" name="chains" required class="form-input" placeholder="e.g. Ethereum, Base, Solana";
+                                    input type="text" name="chains" required class="form-input" placeholder="e.g. Ethereum, Base, Solana, Arbitrum";
                                 }
                             }
+
+                            // Monetization section
+                            div style="border: 1px solid #333; padding: 12px; margin-bottom: 14px; background: #0a0a0a;" {
+                                span style="font-size: 11px; font-family: var(--mono-font); color: #aaa; text-transform: uppercase; display: block; margin-bottom: 8px;" {
+                                    "// Model Monetisasi & Payout (Langsung ke Wallet Kamu)"
+                                }
+                                div style="display: flex; gap: 10px;" {
+                                    div class="form-group" style="flex: 1; margin-bottom: 8px;" {
+                                        label class="form-label" { "Model Penjualan *" }
+                                        select name="pricing_model" required class="form-select" {
+                                            option value="Free & Open Source" { "Free & Open Source" }
+                                            option value="Crypto License" { "Crypto License (Jual Akses/Kunci)" }
+                                            option value="Pay-per-Call (x402)" { "Pay-per-Call (HTTP 402/x402)" }
+                                            option value="Tipping / Donation" { "Donasi / Tipping Kripto" }
+                                        }
+                                    }
+                                    div class="form-group" style="flex: 1; margin-bottom: 8px;" {
+                                        label class="form-label" { "Harga / Biaya *" }
+                                        input type="text" name="price" required class="form-input" placeholder="e.g. 0.08 ETH, $5 USDC / mo, Free";
+                                    }
+                                }
+                                div class="form-group" style="margin-bottom: 8px;" {
+                                    label class="form-label" { "Wallet Payout Address (EVM / Solana / BTC / Monero)" }
+                                    input type="text" name="payout_address" class="form-input" placeholder="0x... atau alamat wallet kamu untuk menerima pembayaran langsung";
+                                }
+                                div class="form-group" style="margin-bottom: 0;" {
+                                    label class="form-label" { "Link Penjualan / Kontak Pembelian (Opsional)" }
+                                    input type="url" name="commercial_url" class="form-input" placeholder="https://t.me/anon_dev atau link dApp paywall";
+                                }
+                            }
+
                             div style="display: flex; gap: 10px;" {
                                 div class="form-group" style="flex: 1;" {
-                                    label class="form-label" { "Executable / Binary *" }
+                                    label class="form-label" { "Executable / Command *" }
                                     input type="text" name="command" required class="form-input" placeholder="e.g. npx, docker, cargo, python";
                                 }
                                 div class="form-group" style="flex: 2;" {
@@ -95,7 +127,7 @@ pub fn base_layout(title: &str, content: Markup) -> Markup {
                             }
                             div class="form-group" {
                                 label class="form-label" { "Required Env Vars (comma separated)" }
-                                input type="text" name="env_vars" class="form-input" placeholder="e.g. ALCHEMY_KEY, PRIVATE_KEY";
+                                input type="text" name="env_vars" class="form-input" placeholder="e.g. RPC_URL, PRIVATE_KEY";
                             }
                             div style="display: flex; gap: 10px;" {
                                 div class="form-group" style="flex: 1;" {
@@ -108,11 +140,11 @@ pub fn base_layout(title: &str, content: Markup) -> Markup {
                                 }
                             }
                             div class="form-group" {
-                                label class="form-label" { "Author Alias (Optional - Default: 0xAnon)" }
-                                input type="text" name="author_alias" class="form-input" placeholder="0xAnon / your.eth / pseudonym";
+                                label class="form-label" { "Author / Creator Alias (Default: 0xAnon)" }
+                                input type="text" name="author_alias" class="form-input" placeholder="0xAnon / vitalik.eth / pseudonym";
                             }
                             button type="submit" id="btnSubmitForm" class="btn-primary" {
-                                "Submit Tool Anonymously"
+                                "Listing & Siap Dijual Tanpa Birokrasi"
                             }
                             div id="submitResult" style="margin-top: 10px; font-family: var(--mono-font); font-size: 12px; display: none;" {}
                         }
@@ -139,15 +171,43 @@ pub fn base_layout(title: &str, content: Markup) -> Markup {
                     }
                 }
 
+                // Direct Non-Custodial Crypto Payment / Tip Modal
+                div id="paymentModal" class="modal-overlay" style="display: none;" {
+                    div class="modal-content" {
+                        div class="modal-header" {
+                            span id="paymentModalTitle" class="modal-title" { "Direct Non-Custodial Payment" }
+                            button class="btn-close" onclick="closePaymentModal()" { "×" }
+                        }
+                        div style="margin-bottom: 16px;" {
+                            p id="paymentModalDesc" style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px;" {}
+                            div style="background: #080808; border: 1px solid var(--border); padding: 12px; margin-bottom: 12px;" {
+                                div style="font-size: 11px; color: var(--text-dim); margin-bottom: 4px; font-family: var(--mono-font);" {
+                                    "CREATOR RECEIVING WALLET ADDRESS:"
+                                }
+                                div id="paymentModalAddress" class="code-box" style="word-break: break-all; font-size: 13px; color: #fff; padding: 8px;" {}
+                            }
+                            p style="font-size: 11px; color: var(--text-dim);" {
+                                "⚡ Dana langsung masuk ke wallet pembuat tool tanpa perantara bank, tanpa potongan fee platform, dan tanpa Stripe KYC."
+                            }
+                        }
+                        div style="display: flex; justify-content: flex-end; gap: 8px;" {
+                            button class="btn-action" id="btnCopyAddress" onclick="copyPaymentAddress()" { "Copy Wallet Address" }
+                            button class="btn-action" onclick="closePaymentModal()" { "Close" }
+                        }
+                    }
+                }
+
                 script {
                     (maud::PreEscaped(r#"
                     let activeToolData = null;
                     let currentTab = 'claude';
+                    let currentPayoutAddress = '';
 
                     function filterTools() {
                         const q = document.getElementById('searchInput').value.toLowerCase().trim();
                         const cat = document.getElementById('categoryFilter').value;
                         const chain = document.getElementById('chainFilter').value;
+                        const pricing = document.getElementById('pricingFilter').value;
                         const cards = document.querySelectorAll('.card');
                         let visibleCount = 0;
 
@@ -156,12 +216,14 @@ pub fn base_layout(title: &str, content: Markup) -> Markup {
                             const desc = card.getAttribute('data-desc').toLowerCase();
                             const cardCat = card.getAttribute('data-cat');
                             const cardChains = card.getAttribute('data-chains').toLowerCase();
+                            const cardPricing = card.getAttribute('data-pricing');
 
-                            const matchesQ = !q || name.includes(q) || desc.includes(q) || cardChains.includes(q);
+                            const matchesQ = !q || name.includes(q) || desc.includes(q) || cardChains.includes(q) || cardPricing.toLowerCase().includes(q);
                             const matchesCat = !cat || cat === 'All' || cardCat === cat;
                             const matchesChain = !chain || chain === 'All' || cardChains.includes(chain.toLowerCase());
+                            const matchesPricing = !pricing || pricing === 'All' || cardPricing === pricing;
 
-                            if (matchesQ && matchesCat && matchesChain) {
+                            if (matchesQ && matchesCat && matchesChain && matchesPricing) {
                                 card.style.display = 'flex';
                                 visibleCount++;
                             } else {
@@ -241,6 +303,23 @@ pub fn base_layout(title: &str, content: Markup) -> Markup {
                         document.getElementById('configModal').style.display = 'none';
                     }
 
+                    function openPaymentModal(toolName, model, price, payoutAddress) {
+                        currentPayoutAddress = payoutAddress;
+                        document.getElementById('paymentModalTitle').innerText = `${toolName} // Direct Payout`;
+                        document.getElementById('paymentModalDesc').innerHTML = `Model: <strong>${model}</strong> | Harga: <strong>${price}</strong>`;
+                        document.getElementById('paymentModalAddress').innerText = payoutAddress;
+                        document.getElementById('paymentModal').style.display = 'flex';
+                    }
+
+                    function copyPaymentAddress() {
+                        const btn = document.getElementById('btnCopyAddress');
+                        copyText(btn, currentPayoutAddress);
+                    }
+
+                    function closePaymentModal() {
+                        document.getElementById('paymentModal').style.display = 'none';
+                    }
+
                     function openSubmitModal() {
                         document.getElementById('submitModal').style.display = 'flex';
                     }
@@ -254,7 +333,7 @@ pub fn base_layout(title: &str, content: Markup) -> Markup {
                         const btn = document.getElementById('btnSubmitForm');
                         const resDiv = document.getElementById('submitResult');
                         btn.disabled = true;
-                        btn.innerText = 'Submitting anonymously...';
+                        btn.innerText = 'Menyimpan & mendaftarkan ke direktori...';
                         resDiv.style.display = 'none';
 
                         const form = e.target;
@@ -268,7 +347,11 @@ pub fn base_layout(title: &str, content: Markup) -> Markup {
                             env_vars: form.env_vars.value || null,
                             repo_url: form.repo_url.value,
                             docs_url: form.docs_url.value || null,
-                            author_alias: form.author_alias.value || null
+                            author_alias: form.author_alias.value || null,
+                            pricing_model: form.pricing_model.value,
+                            price: form.price.value,
+                            payout_address: form.payout_address.value || null,
+                            commercial_url: form.commercial_url.value || null
                         };
 
                         try {
@@ -281,7 +364,7 @@ pub fn base_layout(title: &str, content: Markup) -> Markup {
                             if (resp.ok) {
                                 resDiv.style.display = 'block';
                                 resDiv.style.color = '#fff';
-                                resDiv.innerText = '✓ Submitted successfully! Reloading registry...';
+                                resDiv.innerText = '✓ Berhasil terdaftar secara instan! Memuat ulang direktori...';
                                 setTimeout(() => { window.location.reload(); }, 1200);
                             } else {
                                 const err = await resp.text();
@@ -289,14 +372,14 @@ pub fn base_layout(title: &str, content: Markup) -> Markup {
                                 resDiv.style.color = '#ff6b6b';
                                 resDiv.innerText = `Error: ${err}`;
                                 btn.disabled = false;
-                                btn.innerText = 'Submit Tool Anonymously';
+                                btn.innerText = 'Listing & Siap Dijual Tanpa Birokrasi';
                             }
                         } catch (err) {
                             resDiv.style.display = 'block';
                             resDiv.style.color = '#ff6b6b';
                             resDiv.innerText = `Network error: ${err.message}`;
                             btn.disabled = false;
-                            btn.innerText = 'Submit Tool Anonymously';
+                            btn.innerText = 'Listing & Siap Dijual Tanpa Birokrasi';
                         }
                     }
 
@@ -305,6 +388,7 @@ pub fn base_layout(title: &str, content: Markup) -> Markup {
                         if (e.key === 'Escape') {
                             closeSubmitModal();
                             closeConfigModal();
+                            closePaymentModal();
                         }
                     });
                     "#))
