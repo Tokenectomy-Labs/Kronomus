@@ -30,14 +30,15 @@
   <img src="assets/figure1_swebench_ablation.svg" alt="Figure 1: Empirical ablation of the Tokenectomy Sub-Cortex on SWE-bench Verified (N = 500)" width="800" />
 </p>
 
-### Head-to-Head Progression Analysis
+### Empirical Ablation Analysis
 
-| Evaluation Metric | Runner 1 (Raw Kaggle Predictions) | Runner 2 (Tokenectomy Sub-Cortex) | Engineering Significance |
+| Evaluation Metric | `w/o Sub-Cortex` (Raw Generative) | `With Sub-Cortex` (Ours • POSIX Anchored) | Scientific & Systems Significance |
 | :--- | :---: | :---: | :--- |
-| **Officially Resolved Tasks** | **0 / 500** | **10 / 500 (10 Resolved)** | **From 0 to 10 verified production fixes across Django, Sklearn, Pytest, SymPy, Xarray** |
-| **Patch Apply Success Rate** | **~0.0% (Widespread Rejects)** | **100.0% (79 / 79 Clean Apply)** | **Zero malformed hunks, exact line count alignment** |
-| **Patch Syntax & Apply Errors** | **Failed at Hunk #1** | **0 Errors (100% Error-Free)** | **Complete elimination of unanchored paths & syntax corruptions** |
-| **Safe Refusal Invariant** | 0 (blindly emitted broken diffs) | **421 Clean Gated Refusals** | **Zero Dirty Diff guarantee: protects production codebases** |
+| **Strict Benchmark Pass@1** | **0.0% (0 / 500)** | **2.0% (10 / 500)** | **Full dataset Pass@1 across all 500 benchmark instances** |
+| **Gated Candidate Precision** | **0.0% (0 / 500)** | **12.66% (10 / 79)** | **Accuracy on confident, synthesized candidate patches** |
+| **GNU Unified Diff Compliance** | **0.0% (Rejected hunks)** | **100.0% (79 / 79 Clean Apply)** | **Zero malformed hunks, exact line count alignment** |
+| **Execution & Syntax Errors** | **Failed at Hunk #1** | **0 Errors (100% Error-Free)** | **Complete elimination of unanchored paths & syntax corruptions** |
+| **Safe Refusal Invariant** | 0 (blindly emitted broken diffs) | **421 Clean Gated Refusals (84.2%)** | **Zero Dirty Diff guarantee: protects production codebases** |
 
 ---
 
