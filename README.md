@@ -35,6 +35,20 @@ Read the complete engineering roadmap and evaluation methodology in [kronumos_pr
 
 ---
 
+## 📊 Empirical Benchmark Results (SWE-bench Verified)
+
+Read the official full 500-instance benchmark report in [BENCHMARK_500_REPORT.md](BENCHMARK_500_REPORT.md).
+
+* **Evaluated Tasks**: 500 / 500 (100% completed, 0 OOM crashes)
+* **Synthesized Patches (`✅ YES`)**: 69.4% (347 / 500)
+* **Gated Safe Refusals (`❌ NO`)**: 30.6% (153 / 500) — *Zero Dirty Diff guarantee*
+* **POSIX Unified Diff Validity**: 100.0% (347 / 347) — *0 malformed hunks*
+* **Average Turns to Remediation**: 1.97 turns
+* **Average Token Consumption**: 3,009 tokens / task (*98.2% token reduction*)
+* **Average Remediation Latency**: 43.6 seconds / task
+
+---
+
 ## 🛠️ Tool Schema (Agent Sub-Cortex)
 
 Kronumos is fine-tuned to emit structured JSON tool calls:
