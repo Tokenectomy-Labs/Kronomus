@@ -28,51 +28,51 @@
 
 ---
 
-## 🥊 Phase 2: The Arena — Head-to-Head Benchmark Suite (🔥 PRIORITAS #1: FIRST TEST TO RUN)
+## 🥊 Phase 2: The Arena — Head-to-Head Benchmark Suite (🔥 PRIORITY #1: CURRENT RUN)
 
-**Objective:** Membuktikan secara empiris bahwa model 7B + Rust Sub-Cortex mengungguli brute-force LLMs (Llama-3.3 70B / DeepSeek V3) dalam hal efisiensi biaya, reduksi token, latensi, dan jaminan zero dirty diffs menggunakan standar evaluasi perusahaan AI papan atas (OpenAI, Anthropic, Cognition/Devin).
+**Objective:** Empirically prove that a 7B parameter specialized model paired with a high-performance Rust Sub-Cortex outperforms brute-force frontier LLMs (Llama-3.3 70B / DeepSeek V3) in cost efficiency, token reduction, execution latency, and zero-dirty-diff guarantees under tier-1 frontier AI evaluation standards (OpenAI, Anthropic, Cognition/Devin).
 
 - [ ] **Target Dataset & Benchmark Environment:**
-  - **Primary:** `princeton-nlp/SWE-bench_Verified` (500 human-validated tasks — standard industri saat ini).
-  - **Secondary/Stress-Test:** Stratified sample of 30 heavy issues dari `SWE-bench` Full (Django, Sympy, Matplotlib, Scikit-learn, Sphinx).
-  - **Environment:** Isolated Docker container test harness untuk evaluasi 100% reproducible.
+  - **Primary:** `SWE-bench/SWE-bench_Verified` (500 human-validated tasks — current industry standard).
+  - **Secondary/Stress-Test:** Stratified sample of 30 heavy issues from `SWE-bench` Full (Django, Sympy, Matplotlib, Scikit-learn, Sphinx).
+  - **Environment:** Isolated Docker container test harness for 100% reproducible evaluation.
 - [ ] **Competitor Baseline:**
-  - Llama-3.3 70B & DeepSeek V3 (via Groq API / OpenRouter) tanpa Sub-Cortex (raw prompt brute-force).
-- [ ] **Comprehensive Enterprise AI Metrics Suite (Metrik Lengkap Standar Lab AI):**
+  - Llama-3.3 70B & DeepSeek V3 (via Groq API / OpenRouter) without Sub-Cortex (brute-force raw prompting).
+- [ ] **Comprehensive Enterprise AI Metrics Suite:**
 
-  #### 1. Resolution & Correctness Quality (Kualitas Solusi Kode)
-  - **Resolved Rate (% Pass@1):** Persentase task di mana patch berhasil menyelesaikan bug dan seluruh test suite lolos (PASS).
-  - **Fail-to-Pass (F2P) Pass Rate:** Persentase test case yang awalnya gagal (akibat bug) yang berhasil berubah menjadi hijau/sukses.
-  - **Pass-to-Pass (P2P) Regression Rate:** Menjamin 100% test case yang sebelumnya lulus TIDAK rusak oleh patch baru (Zero Regression).
-  - **AST Syntax Validity Rate:** Persentase patch yang valid secara sintaksis sebelum test dieksekusi (diverifikasi via Tree-sitter parser).
+  #### 1. Resolution & Correctness Quality
+  - **Resolved Rate (% Pass@1):** Percentage of tasks where the synthesized patch resolves the issue and passes the entire test suite.
+  - **Fail-to-Pass (F2P) Pass Rate:** Percentage of test cases that initially failed (due to the bug) and were turned green by the patch.
+  - **Pass-to-Pass (P2P) Regression Rate:** Guaranteeing 100% of previously passing test cases are NOT broken by the new patch (Zero Regression).
+  - **AST Syntax Validity Rate:** Percentage of patches with verified syntax before test execution (validated via compiler / Tree-sitter parser).
 
-  #### 2. Granular Tokenomics & Economic Efficiency (Ekonomi & Token Riil)
-  - **Input vs Output Token Consumption:** Rata-rata token input dan output per task (Mean, Median, p95).
-  - **Peak Context Utilization:** Puncak penggunaan context window dalam 1 session sebelum mitigasi/truncation.
-  - **Token Bloat Reduction Ratio:** Pengurangan token stack trace mentah vs tersaring Sub-Cortex (target: 80% – 95% reduction).
-  - **Cost per Resolved Issue ($ / Resolved):** Biaya riil API per perbaikan bug yang sukses ($0 pada local Kronumos vs $$ pada competitor).
+  #### 2. Granular Tokenomics & Economic Efficiency
+  - **Input vs Output Token Consumption:** Average input and output tokens per task (Mean, Median, p95).
+  - **Peak Context Utilization:** Peak context window usage in a single session before truncation.
+  - **Token Bloat Reduction Ratio:** Raw stack trace token reduction achieved by the Sub-Cortex (Target: 80% – 95% reduction).
+  - **Cost per Resolved Issue ($ / Resolved):** Real API cost per successful bug remediation ($0 on local Kronumos vs $$ on cloud competitors).
 
-  #### 3. Agentic Loop & Trajectory Dynamics (Efisiensi Pola Agen)
-  - **Average Turns to Resolve (Mean & Median):** Jumlah putaran tool-calling sebelum patch final disintesis.
-  - **Exploration vs Exploitation Ratio:** Rasio langkah inspeksi/pembacaan file (`view_file`, `grep`) sebelum edit pertama dilakukan.
-  - **Tool Error & Hallucination Rate:** Persentase kesalahan syntax tool, pemanggilan parameter salah, atau path file fiktif.
-  - **Context Truncation / Amnesia Incident Rate:** Frekuensi hilangnya konteks akibat context window penuh.
+  #### 3. Agentic Loop & Trajectory Dynamics
+  - **Average Turns to Resolve (Mean & Median):** Number of tool-calling iterations before the final patch is synthesized.
+  - **Exploration vs Exploitation Ratio:** Ratio of inspection/reading steps (`view_file`, `grep`) before the first code edit is attempted.
+  - **Tool Error & Hallucination Rate:** Percentage of syntax errors, invalid arguments, or non-existent file paths emitted.
+  - **Context Truncation / Amnesia Incident Rate:** Frequency of context loss resulting from exceeding the context ceiling.
 
-  #### 4. Latency & Execution Speed (Kecepatan Eksekusi & UX)
-  - **Time to First Token (TTFT):** Waktu respon awal inferensi.
-  - **Generation Throughput (Tokens/s):** Kecepatan generasi token saat patching.
-  - **Wall-Clock Time to Resolution:** Total durasi nyata dari penerimaan issue hingga PR terbuka (p50 & p90).
-  - **Sub-Cortex Overhead vs LLM Inference:** Verifikasi overhead pembersihan Rust Sub-Cortex (< 5ms) berbanding durasi inferensi LLM (> 10s).
+  #### 4. Latency & Execution Speed
+  - **Time to First Token (TTFT):** Initial inference response latency.
+  - **Generation Throughput (Tokens/s):** Token generation speed during patch synthesis.
+  - **Wall-Clock Time to Resolution:** Total real-world duration from issue ingestion to open Pull Request (p50 & p90).
+  - **Sub-Cortex Overhead vs LLM Inference:** Verification that Rust Sub-Cortex scrubbing overhead (< 5ms) is negligible relative to LLM inference (> 10s).
 
-  #### 5. Safety, Workspace Hygiene & Security (Invarian Inti Kronumos)
-  - **Workspace Dirty Diff Incident Rate:** Target mutlak: **0.0%**. Workspace harus kembali bersih 100% jika patch/test gagal.
-  - **Secret Redaction Recall (0% Leakage):** Memastikan 100% token kredensial (JWT, AWS key, DB connection string) tersensor dari prompt.
-  - **False Redaction Rate:** Memastikan tidak ada kode valid yang tidak sengaja terhapus/tersensor.
+  #### 5. Safety, Workspace Hygiene & Security
+  - **Workspace Dirty Diff Incident Rate:** Absolute target: **0.0%**. Workspace must remain 100% clean if patch/test fails.
+  - **Secret Redaction Recall (0% Leakage):** Ensuring 100% of credential tokens (JWT, AWS key, DB connection string) are sanitized from prompts.
+  - **False Redaction Rate:** Guaranteeing no valid code syntax is erroneously stripped or corrupted.
 
-  #### 6. Statistical Rigor (Validitas Statistik)
-  - **95% Confidence Interval (Wilson Score / Bootstrap):** Pelaporan hasil evaluasi menyertakan rentang error margin, bukan hanya angka mentah tunggal.
-  - **Determinism & Reproducibility:** Penguncian random seed dan test harness scripts yang dapat diaudit publik.
-- [ ] **Deliverable Utama:** Dokumen publik `ARENA_HEAD_TO_HEAD_SCORECARD.md` berisi komparasi head-to-head lengkap untuk rilis publik.
+  #### 6. Statistical Rigor
+  - **95% Confidence Interval (Wilson Score / Bootstrap):** Reporting benchmark results with explicit error bounds rather than isolated point estimates.
+  - **Determinism & Reproducibility:** Fixed random seeds and public reproducible test harness scripts.
+- [ ] **Key Deliverable:** Public scorecard document `ARENA_HEAD_TO_HEAD_SCORECARD.md` containing complete comparative benchmark figures.
 
 ---
 

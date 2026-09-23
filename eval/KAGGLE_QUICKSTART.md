@@ -1,44 +1,46 @@
-# 🚀 Panduan Menjalankan Kronumos Benchmark di Kaggle (Gratis & Cepat)
+# 🚀 Kronumos Kaggle Benchmark Quickstart (Zero-Cost & Cloud-Accelerated)
 
-Panduan langkah demi langkah untuk menjalankan pengujian Kronumos di **Kaggle GPU** tanpa membebani laptop Anda:
-
----
-
-## 1. Buat Kaggle Notebook Baru
-1. Buka [kaggle.com/code](https://www.kaggle.com/code) dan klik **"New Notebook"**.
-2. Di panel kanan (Notebook Settings):
-   * **Accelerator:** Pilih **GPU T4 x2** atau **GPU P100** (100% gratis dari kuota 30 jam/minggu Kaggle).
-   * **Internet:** Pastikan opsi **Internet ON** dicentang (untuk mendownload model dan dataset).
+Step-by-step guide to run the official Kronumos SWE-bench benchmark on **Kaggle Cloud GPUs** without local hardware strain:
 
 ---
 
-## 2. Install Dependensi
-Di cell pertama notebook Kaggle, jalankan:
+## 1. Create a New Kaggle Notebook
+1. Navigate to [kaggle.com/code](https://www.kaggle.com/code) and click **"New Notebook"**.
+2. In the right-side configuration panel (**Notebook Settings**):
+   * **Accelerator:** Select **GPU T4 x2** or **GPU P100** (Free from Kaggle's 30h/week quota).
+   * **Internet:** Ensure **Internet ON** is enabled (required to fetch model weights and dataset splits).
+
+---
+
+## 2. Install Required Dependencies
+In the first notebook cell, execute:
 ```bash
 !pip install -q transformers datasets accelerate bitsandbytes
 ```
 
 ---
 
-## 3. Jalankan Runner Kronumos
-Di cell kedua, unduh dan jalankan script runner:
+## 3. Clone and Run Kronumos Benchmark
+In the second cell, fetch the runner from the official repository and launch:
 ```bash
-!wget -q https://raw.githubusercontent.com/Tokenectomy-Labs/Kronomus/main/scripts/kaggle_kronumos_runner.py
-!python kaggle_kronumos_runner.py --num_samples 15 --output_dir output
+!rm -rf Kronomus
+!git clone https://github.com/Tokenectomy-Labs/Kronomus.git
+!cp Kronomus/scripts/kaggle_kronumos_runner.py ./kaggle_kronumos_runner.py
+!python kaggle_kronumos_runner.py --num_samples 500 --output_dir output
 ```
 
-*Script ini akan:*
-1. Memuat model `NadevA23/Kronumos` ke GPU Kaggle.
-2. Mengambil 15 sample issue resmi dari `princeton-nlp/SWE-bench_Verified`.
-3. Menjalankan Kronumos agentic loop: diagnosa ➔ redaksi token ➔ synthesize patch.
-4. Menghasilkan file `predictions.jsonl` dan `eval_metrics.json`.
+*The benchmark runner will:*
+1. Load `NadevA23/Kronumos` (4-bit NF4 quantized) into Kaggle GPU VRAM (~5.5 GB).
+2. Iterate through the official `SWE-bench/SWE-bench_Verified` dataset split.
+3. Execute the full surgical agent loop: diagnosis ➔ token pruning via Tokenectomy Sub-Cortex ➔ atomic POSIX unified diff generation.
+4. Output verified prediction artifacts: `output/predictions.jsonl` and `output/eval_metrics.json`.
 
 ---
 
-## 4. Evaluasi Resmi di Docker GitHub Actions (0% Beban Laptop)
-1. Setelah selesai, download file `predictions.jsonl` dari tab **Output** di Kaggle.
-2. Masukkan / commit file `predictions.jsonl` ke repository GitHub `Tokenectomy-Labs/Kronomus`.
-3. **GitHub Actions otomatis menyala!**
-   * GitHub Actions akan menjalankan container Docker resmi Princeton SWE-bench di cloud.
-   * Menjalankan test suite asli repository.
-   * Menampilkan hasil scorecard terverifikasi secara publik.
+## 4. Automated Verification via GitHub Actions Docker Harness
+1. Once completed, download `predictions.jsonl` from Kaggle's **Output** tab.
+2. Commit `predictions.jsonl` to the `Tokenectomy-Labs/Kronomus` repository.
+3. **GitHub Actions Docker Testbed triggers automatically:**
+   * Runs the official Princeton NLP SWE-bench evaluation harness inside isolated Docker containers.
+   * Executes upstream repository test suites (`pytest`, `runtests.py`).
+   * Generates a fully verifiable, reproducible resolution scorecard.
