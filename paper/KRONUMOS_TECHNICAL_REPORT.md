@@ -1,7 +1,7 @@
 # Kronumos: Autonomous Code Remediation via Zero-Leak Context Surgery and POSIX-Anchored Diff Synthesis on SWE-bench Verified
 
-**Author**: Daffa ([@daffa2555](https://github.com/daffa2555))  
-**Affiliation**: Tokenectomy Labs  
+**Author**: M N Daffa ([@daffa2555](https://github.com/daffa2555))  
+**Affiliation**: Tokenectomy Labs, Universitas Muhammadiyah Mataram  
 **Date**: September 2026  
 **Repository**: [`https://github.com/Tokenectomy-Labs/Kronomus`](https://github.com/Tokenectomy-Labs/Kronomus)  
 **Artifact Archive**: `Kronumos-7B.kronumos_run.json` (Run ID: `35874657386`)
