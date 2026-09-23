@@ -3,6 +3,13 @@ import shutil
 import subprocess
 import sys
 
+# 0. Pastikan dependency 4-bit quantization (bitsandbytes & accelerate) terinstall
+try:
+    import bitsandbytes
+except ImportError:
+    print("📦 Installing bitsandbytes & accelerate for 4-bit GPU inference...")
+    subprocess.run([sys.executable, "-m", "pip", "install", "-q", "-U", "bitsandbytes>=0.46.1", "accelerate"], check=True)
+
 # 1. Masuk ke folder Kronomus (clone jika di sesi Kaggle baru)
 repo_dir = "/kaggle/working/Kronomus" if os.path.exists("/kaggle/working") else os.path.abspath(".")
 
