@@ -1,0 +1,1048 @@
+{
+  "timestamp": "2026-09-23T03:51:13.753557",
+  "model": "NadevA23/Kronumos",
+  "dataset": "princeton-nlp/SWE-bench_Verified",
+  "total_instances": 130,
+  "results": [
+    {
+      "instance_id": "astropy__astropy-12907",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2414,
+      "latency_sec": 31.1,
+      "errors": 0
+    },
+    {
+      "instance_id": "astropy__astropy-13033",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3155,
+      "latency_sec": 40.67,
+      "errors": 0
+    },
+    {
+      "instance_id": "astropy__astropy-13236",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1437,
+      "latency_sec": 37.3,
+      "errors": 0
+    },
+    {
+      "instance_id": "astropy__astropy-13398",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 4142,
+      "latency_sec": 49.59,
+      "errors": 0
+    },
+    {
+      "instance_id": "astropy__astropy-13453",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 6237,
+      "latency_sec": 77.19,
+      "errors": 0
+    },
+    {
+      "instance_id": "astropy__astropy-13579",
+      "has_patch": true,
+      "turns": 3,
+      "total_tokens": 7066,
+      "latency_sec": 79.17,
+      "errors": 0
+    },
+    {
+      "instance_id": "astropy__astropy-13977",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1735,
+      "latency_sec": 25.59,
+      "errors": 0
+    },
+    {
+      "instance_id": "astropy__astropy-14096",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2337,
+      "latency_sec": 44.49,
+      "errors": 0
+    },
+    {
+      "instance_id": "astropy__astropy-14182",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2933,
+      "latency_sec": 45.91,
+      "errors": 0
+    },
+    {
+      "instance_id": "astropy__astropy-14309",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 4625,
+      "latency_sec": 69.38,
+      "errors": 0
+    },
+    {
+      "instance_id": "astropy__astropy-14365",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2593,
+      "latency_sec": 34.0,
+      "errors": 0
+    },
+    {
+      "instance_id": "astropy__astropy-14369",
+      "has_patch": false,
+      "turns": 2,
+      "total_tokens": 3354,
+      "latency_sec": 54.16,
+      "errors": 1
+    },
+    {
+      "instance_id": "astropy__astropy-14508",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3451,
+      "latency_sec": 48.9,
+      "errors": 0
+    },
+    {
+      "instance_id": "astropy__astropy-14539",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2619,
+      "latency_sec": 39.78,
+      "errors": 0
+    },
+    {
+      "instance_id": "astropy__astropy-14598",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3340,
+      "latency_sec": 42.91,
+      "errors": 0
+    },
+    {
+      "instance_id": "astropy__astropy-14995",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3216,
+      "latency_sec": 46.18,
+      "errors": 0
+    },
+    {
+      "instance_id": "astropy__astropy-7166",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1530,
+      "latency_sec": 97.61,
+      "errors": 0
+    },
+    {
+      "instance_id": "astropy__astropy-7336",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2531,
+      "latency_sec": 38.0,
+      "errors": 0
+    },
+    {
+      "instance_id": "astropy__astropy-7606",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2655,
+      "latency_sec": 53.12,
+      "errors": 0
+    },
+    {
+      "instance_id": "astropy__astropy-7671",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2760,
+      "latency_sec": 37.42,
+      "errors": 0
+    },
+    {
+      "instance_id": "astropy__astropy-8707",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2070,
+      "latency_sec": 34.05,
+      "errors": 0
+    },
+    {
+      "instance_id": "astropy__astropy-8872",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2474,
+      "latency_sec": 41.98,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-10097",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 2074,
+      "latency_sec": 107.23,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-10554",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3418,
+      "latency_sec": 49.87,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-10880",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 1895,
+      "latency_sec": 36.18,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-10914",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2191,
+      "latency_sec": 35.15,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-10973",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 1866,
+      "latency_sec": 32.5,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-10999",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1708,
+      "latency_sec": 100.83,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11066",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1922,
+      "latency_sec": 104.6,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11087",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 4123,
+      "latency_sec": 149.75,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11095",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2014,
+      "latency_sec": 42.96,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11099",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 937,
+      "latency_sec": 12.31,
+      "errors": 1
+    },
+    {
+      "instance_id": "django__django-11119",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 943,
+      "latency_sec": 21.43,
+      "errors": 1
+    },
+    {
+      "instance_id": "django__django-11133",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1677,
+      "latency_sec": 100.38,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11138",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3631,
+      "latency_sec": 56.43,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11141",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1677,
+      "latency_sec": 100.57,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11149",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2349,
+      "latency_sec": 51.6,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11163",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 1930,
+      "latency_sec": 30.76,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11179",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 1874,
+      "latency_sec": 32.14,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11206",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2203,
+      "latency_sec": 48.32,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11211",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2142,
+      "latency_sec": 31.99,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11239",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1764,
+      "latency_sec": 101.76,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11265",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 4034,
+      "latency_sec": 65.45,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11276",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2262,
+      "latency_sec": 33.16,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11292",
+      "has_patch": false,
+      "turns": 2,
+      "total_tokens": 2516,
+      "latency_sec": 113.49,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11299",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3192,
+      "latency_sec": 45.02,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11333",
+      "has_patch": true,
+      "turns": 3,
+      "total_tokens": 3639,
+      "latency_sec": 54.43,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11400",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2607,
+      "latency_sec": 61.5,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11433",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2085,
+      "latency_sec": 39.18,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11451",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2873,
+      "latency_sec": 54.15,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11477",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 848,
+      "latency_sec": 14.98,
+      "errors": 1
+    },
+    {
+      "instance_id": "django__django-11490",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 1971,
+      "latency_sec": 33.07,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11532",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 2196,
+      "latency_sec": 109.56,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11551",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 4520,
+      "latency_sec": 70.43,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11555",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2137,
+      "latency_sec": 41.51,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11603",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 1911,
+      "latency_sec": 34.51,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11728",
+      "has_patch": false,
+      "turns": 2,
+      "total_tokens": 1997,
+      "latency_sec": 38.17,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11734",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2185,
+      "latency_sec": 36.18,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11740",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2782,
+      "latency_sec": 50.63,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11749",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2375,
+      "latency_sec": 44.67,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11790",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2015,
+      "latency_sec": 34.33,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11815",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1238,
+      "latency_sec": 26.87,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11820",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2022,
+      "latency_sec": 37.43,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11848",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2219,
+      "latency_sec": 47.64,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11880",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2353,
+      "latency_sec": 40.42,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11885",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1779,
+      "latency_sec": 101.93,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11951",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2058,
+      "latency_sec": 36.56,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11964",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3080,
+      "latency_sec": 59.6,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-11999",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1634,
+      "latency_sec": 99.48,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-12039",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1786,
+      "latency_sec": 101.9,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-12050",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 1892,
+      "latency_sec": 34.16,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-12125",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2468,
+      "latency_sec": 35.88,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-12143",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2564,
+      "latency_sec": 45.14,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-12155",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2192,
+      "latency_sec": 45.44,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-12193",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 978,
+      "latency_sec": 17.95,
+      "errors": 1
+    },
+    {
+      "instance_id": "django__django-12209",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2429,
+      "latency_sec": 47.91,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-12262",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1718,
+      "latency_sec": 100.84,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-12273",
+      "has_patch": false,
+      "turns": 2,
+      "total_tokens": 2282,
+      "latency_sec": 45.55,
+      "errors": 1
+    },
+    {
+      "instance_id": "django__django-12276",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1655,
+      "latency_sec": 99.89,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-12304",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2221,
+      "latency_sec": 44.52,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-12308",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1589,
+      "latency_sec": 98.57,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-12325",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2135,
+      "latency_sec": 38.72,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-12406",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2267,
+      "latency_sec": 36.0,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-12419",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1651,
+      "latency_sec": 99.71,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-12663",
+      "has_patch": false,
+      "turns": 2,
+      "total_tokens": 3273,
+      "latency_sec": 46.15,
+      "errors": 1
+    },
+    {
+      "instance_id": "django__django-12708",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2339,
+      "latency_sec": 41.37,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-12713",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 1901,
+      "latency_sec": 39.26,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-12741",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 1839,
+      "latency_sec": 28.81,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-12754",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2398,
+      "latency_sec": 55.48,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-12774",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1775,
+      "latency_sec": 101.85,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-12858",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2340,
+      "latency_sec": 44.19,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-12965",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3408,
+      "latency_sec": 59.03,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-13012",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2433,
+      "latency_sec": 40.0,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-13023",
+      "has_patch": false,
+      "turns": 4,
+      "total_tokens": 4324,
+      "latency_sec": 71.96,
+      "errors": 1
+    },
+    {
+      "instance_id": "django__django-13028",
+      "has_patch": false,
+      "turns": 2,
+      "total_tokens": 3761,
+      "latency_sec": 89.18,
+      "errors": 1
+    },
+    {
+      "instance_id": "django__django-13033",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3825,
+      "latency_sec": 55.01,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-13089",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2532,
+      "latency_sec": 35.76,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-13109",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2630,
+      "latency_sec": 45.76,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-13112",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2738,
+      "latency_sec": 42.31,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-13121",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2388,
+      "latency_sec": 42.05,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-13128",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 1876,
+      "latency_sec": 32.57,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-13158",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2355,
+      "latency_sec": 40.42,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-13195",
+      "has_patch": true,
+      "turns": 3,
+      "total_tokens": 4615,
+      "latency_sec": 80.05,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-13212",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 1914,
+      "latency_sec": 33.31,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-13279",
+      "has_patch": false,
+      "turns": 2,
+      "total_tokens": 2705,
+      "latency_sec": 119.01,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-13297",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2675,
+      "latency_sec": 57.37,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-13315",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1550,
+      "latency_sec": 98.16,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-13343",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1738,
+      "latency_sec": 101.23,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-13344",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2299,
+      "latency_sec": 33.85,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-13346",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1014,
+      "latency_sec": 23.81,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-13363",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1877,
+      "latency_sec": 103.63,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-13401",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2383,
+      "latency_sec": 43.24,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-13406",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3450,
+      "latency_sec": 53.25,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-13410",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2608,
+      "latency_sec": 52.05,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-13417",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2294,
+      "latency_sec": 42.26,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-13449",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 5448,
+      "latency_sec": 68.73,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-13512",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 1949,
+      "latency_sec": 32.46,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-13513",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2580,
+      "latency_sec": 49.27,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-13516",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1260,
+      "latency_sec": 51.76,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-13551",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2011,
+      "latency_sec": 40.27,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-13568",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1662,
+      "latency_sec": 99.76,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-13569",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2983,
+      "latency_sec": 55.61,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-13590",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1684,
+      "latency_sec": 100.25,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-13658",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2394,
+      "latency_sec": 40.24,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-13670",
+      "has_patch": false,
+      "turns": 2,
+      "total_tokens": 2215,
+      "latency_sec": 40.34,
+      "errors": 1
+    },
+    {
+      "instance_id": "django__django-13741",
+      "has_patch": false,
+      "turns": 2,
+      "total_tokens": 2168,
+      "latency_sec": 37.25,
+      "errors": 1
+    },
+    {
+      "instance_id": "django__django-13786",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1649,
+      "latency_sec": 99.71,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-13794",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 855,
+      "latency_sec": 14.36,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-13807",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1876,
+      "latency_sec": 103.78,
+      "errors": 0
+    },
+    {
+      "instance_id": "django__django-13809",
+      "has_patch": true,
+      "turns": 3,
+      "total_tokens": 3435,
+      "latency_sec": 77.07,
+      "errors": 0
+    }
+  ]
+}
