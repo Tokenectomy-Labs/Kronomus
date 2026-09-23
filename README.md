@@ -1,10 +1,16 @@
-# ⚡ Kronumos: Autonomous Bug Remediation & Self-Healing Agent
+<p align="center">
+  <img src="assets/kronumos_logo.jpeg" alt="Kronumos - Autonomous Software Repair Agent" width="380" />
+</p>
 
-> *"You write the features. Kronumos heals the bugs."*
+<p align="center">
+  <strong><em>"You write the features. Kronumos heals the bugs."</em></strong>
+</p>
 
-[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Hugging Face Model](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-NadevA23%2FKronumos-yellow)](https://huggingface.co/NadevA23/Kronumos)
-[![GGUF Quantized](https://img.shields.io/badge/GGUF-Quantized-green)](https://huggingface.co/NadevA23/Kronumos-GGUF)
+<p align="center">
+  <a href="https://opensource.org/licenses/Apache-2.0"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="License: Apache 2.0" /></a>
+  <a href="https://huggingface.co/NadevA23/Kronumos"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-NadevA23%2FKronumos-yellow" alt="Hugging Face Model" /></a>
+  <a href="https://huggingface.co/NadevA23/Kronumos-GGUF"><img src="https://img.shields.io/badge/GGUF-Quantized-green" alt="GGUF Quantized" /></a>
+</p>
 
 ---
 
