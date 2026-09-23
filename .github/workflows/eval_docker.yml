@@ -11,11 +11,11 @@ on:
       dataset_name:
         description: 'SWE-bench dataset split to evaluate'
         required: true
-        default: 'princeton-nlp/SWE-bench_Verified'
+        default: 'SWE-bench/SWE-bench_Verified'
         type: choice
         options:
-          - 'princeton-nlp/SWE-bench_Verified'
-          - 'princeton-nlp/SWE-bench_Lite'
+          - 'SWE-bench/SWE-bench_Verified'
+          - 'SWE-bench/SWE-bench_Lite'
       predictions_file:
         description: 'Path to predictions.jsonl'
         required: true
@@ -37,6 +37,11 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
+
+      - name: 🧹 Free Runner Disk Space for Docker Images
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc || true
+          df -h
 
       - name: 🐳 Verify Docker Daemon
         run: |
@@ -64,7 +69,7 @@ jobs:
 
       - name: 🚀 Run Official Docker SWE-bench Evaluation
         run: |
-          DATASET="${{ github.event.inputs.dataset_name || 'princeton-nlp/SWE-bench_Verified' }}"
+          DATASET="${{ github.event.inputs.dataset_name || 'SWE-bench/SWE-bench_Verified' }}"
           PRED_FILE="${{ steps.locate_pred.outputs.pred_path }}"
           echo "Running SWE-bench official evaluation harness on $DATASET..."
           
