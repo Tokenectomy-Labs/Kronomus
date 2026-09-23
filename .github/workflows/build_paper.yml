@@ -1,0 +1,28 @@
+name: Build Academic Paper PDF
+
+on:
+  push:
+    paths:
+      - 'paper/**'
+  workflow_dispatch:
+
+jobs:
+  build_latex:
+    name: Compile LaTeX to PDF
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Compile LaTeX Document
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: main.tex
+          working_directory: paper
+          args: -pdf -file-line-error -interaction=nonstopmode
+
+      - name: Upload Paper PDF Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Kronumos_Technical_Report_PDF
+          path: paper/main.pdf
