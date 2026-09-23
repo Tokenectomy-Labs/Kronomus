@@ -440,6 +440,25 @@ def main():
     runner = KronumosBenchmarkRunner(model_id=args.model_id)
     
     predictions = []
+    completed_ids = set()
+    pred_file = os.path.join(args.output_dir, "predictions.jsonl")
+    summary_file = os.path.join(args.output_dir, "eval_metrics.json")
+    
+    # Auto-resume: load already completed instances from predictions.jsonl
+    if os.path.exists(pred_file):
+        with open(pred_file, "r") as pf:
+            for line in pf:
+                if line.strip():
+                    try:
+                        entry = json.loads(line)
+                        if "instance_id" in entry:
+                            completed_ids.add(entry["instance_id"])
+                            predictions.append(entry)
+                    except json.JSONDecodeError:
+                        pass
+        if completed_ids:
+            print(f"🔄 Checkpoint detected! Resuming evaluation: {len(completed_ids)}/{len(instances)} tasks already completed.", flush=True)
+            
     metrics_summary = {
         "timestamp": datetime.now().isoformat(),
         "model": args.model_id,
@@ -447,11 +466,21 @@ def main():
         "total_instances": len(instances),
         "results": []
     }
-    
-    pred_file = os.path.join(args.output_dir, "predictions.jsonl")
-    with open(pred_file, "w") as pf:
+    if os.path.exists(summary_file):
+        try:
+            with open(summary_file, "r") as sf:
+                existing_summary = json.load(sf)
+                if isinstance(existing_summary, dict) and "results" in existing_summary:
+                    metrics_summary["results"] = existing_summary["results"]
+        except Exception:
+            pass
+
+    with open(pred_file, "a") as pf:
         for idx, inst in enumerate(instances):
             inst_id = inst.get("instance_id")
+            if inst_id in completed_ids:
+                continue
+                
             print(f"\n[{idx+1}/{len(instances)}] 🔧 Running: {inst_id} ({inst.get('repo')})...", flush=True)
             
             res = runner.solve_instance(inst)
@@ -470,6 +499,7 @@ def main():
             pf.flush()
             
             predictions.append(pred_entry)
+            completed_ids.add(inst_id)
             metrics_summary["results"].append({
                 "instance_id": inst_id,
                 "has_patch": bool(res["model_patch"]),
@@ -484,13 +514,13 @@ def main():
             with open(traj_path, "w") as tf:
                 json.dump(res, tf, indent=2)
                 
+            # Periodically update eval_metrics.json on each step so metrics are never lost
+            with open(summary_file, "w") as sf:
+                json.dump(metrics_summary, sf, indent=2)
+                
             progress_pct = round(((idx + 1) / len(instances)) * 100, 1)
             print(f"    ↳ [{progress_pct}%] Patch: {'✅ YES' if res['model_patch'] else '❌ NO'} | Turns: {res['turns']} | Tokens: {res['total_tokens']} | Time: {res['latency_sec']}s", flush=True)
 
-    summary_file = os.path.join(args.output_dir, "eval_metrics.json")
-    with open(summary_file, "w") as sf:
-        json.dump(metrics_summary, sf, indent=2)
-        
     print("\n" + "=" * 60)
     print("🎉 BENCHMARK RUN COMPLETED!")
     print(f"📁 Predictions saved to: {pred_file}")
