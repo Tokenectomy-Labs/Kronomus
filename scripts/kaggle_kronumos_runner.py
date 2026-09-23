@@ -248,8 +248,12 @@ class KronumosBenchmarkRunner:
                 add_generation_prompt=True,
                 return_tensors="pt"
             )
-            input_ids = encoded.to(self.model.device)
-            attention_mask = torch.ones_like(input_ids).to(self.model.device)
+            if hasattr(encoded, "input_ids"):
+                input_ids = encoded.input_ids.to(self.model.device)
+                attention_mask = encoded.attention_mask.to(self.model.device) if hasattr(encoded, "attention_mask") else torch.ones_like(input_ids)
+            else:
+                input_ids = encoded.to(self.model.device)
+                attention_mask = torch.ones_like(input_ids)
             
             prompt_len = input_ids.shape[1]
             total_prompt_tokens += prompt_len
