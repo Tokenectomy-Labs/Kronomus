@@ -377,9 +377,13 @@ def main():
     with open(pred_file, "w") as pf:
         for idx, inst in enumerate(instances):
             inst_id = inst.get("instance_id")
-            print(f"\n[{idx+1}/{len(instances)}] 🔧 Running: {inst_id} ({inst.get('repo')})...")
+            print(f"\n[{idx+1}/{len(instances)}] 🔧 Running: {inst_id} ({inst.get('repo')})...", flush=True)
             
             res = runner.solve_instance(inst)
+            
+            # Memory cleanup for large batch runs
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
             
             # Format according to official SWE-bench prediction schema
             pred_entry = {
@@ -405,7 +409,8 @@ def main():
             with open(traj_path, "w") as tf:
                 json.dump(res, tf, indent=2)
                 
-            print(f"    ↳ Patch generated: {'✅ YES' if res['model_patch'] else '❌ NO'} | Turns: {res['turns']} | Tokens: {res['total_tokens']} | Time: {res['latency_sec']}s")
+            progress_pct = round(((idx + 1) / len(instances)) * 100, 1)
+            print(f"    ↳ [{progress_pct}%] Patch: {'✅ YES' if res['model_patch'] else '❌ NO'} | Turns: {res['turns']} | Tokens: {res['total_tokens']} | Time: {res['latency_sec']}s", flush=True)
 
     summary_file = os.path.join(args.output_dir, "eval_metrics.json")
     with open(summary_file, "w") as sf:
