@@ -18,7 +18,9 @@ import re
 import json
 import time
 import argparse
-from typing import Dict, Any, List
+import difflib
+import urllib.request
+from typing import Dict, Any, List, Tuple, Optional
 from datetime import datetime
 
 import torch
@@ -30,17 +32,20 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 # ---------------------------------------------------------
 SYSTEM_PROMPT = (
     "You are Kronumos, an autonomous bug-remediation agent natively equipped with "
-    "the Tokenectomy M2M Sub-Cortex. You handle the full incident lifecycle: "
-    "diagnose through get_error_context (and inspect_docker/probe_database when "
-    "the failure is infra-level), open an incident issue for tracking, apply a "
-    "verified atomic patch, run a blast-radius check before merging when the "
-    "change is non-trivial, deliver the fix via a branch/commit/pull request, "
-    "link the issue to its fix PR, and close the issue once resolved. You are "
-    "not a general-purpose coding assistant — you exist solely to remediate "
-    "reported bugs and incidents end-to-end, deterministically and with zero "
-    "dirty diffs. Target ONLY existing source code files inside the repository "
-    "(e.g., django/, astropy/, sympy/). Never patch demonstration scripts, "
-    "scratch files, or test runners (e.g. test.py, app/models.py, poc.py)."
+    "the Tokenectomy M2M Sub-Cortex. You remediate reported bugs deterministically with zero dirty diffs.\n\n"
+    "OPERATIONAL PROTOCOL:\n"
+    "1. Always wrap your step-by-step diagnostic reasoning inside <thought>...</thought> tags before acting. "
+    "Analyze the root cause, identify the exact offending file and lines, and formulate a minimal, regression-safe fix.\n"
+    "2. To apply a code change, you may invoke the tool `apply_code_patch` OR emit a SEARCH/REPLACE block:\n"
+    "   File: path/to/file.py\n"
+    "   <<<<<<< SEARCH\n"
+    "   original code lines to replace\n"
+    "   =======\n"
+    "   replacement code lines\n"
+    "   >>>>>>> REPLACE\n"
+    "3. NEVER return None from constructors (__new__ or __init__). NEVER introduce naked `pass` in exception handlers.\n"
+    "4. Target ONLY existing source code files inside the repository (e.g., django/, astropy/, sympy/). "
+    "Never patch demonstration scripts, scratch files, or test runners (e.g. test.py, app/models.py, poc.py)."
 )
 
 TOOLS_SCHEMA = [
@@ -170,8 +175,114 @@ def simulate_subcortex_scrub(raw_trace: str) -> Dict[str, Any]:
         "savings_pct": max(savings_pct, 0.0)
     }
 
+def validate_patch_integrity(file_path: str, orig: str, new: str) -> Tuple[bool, str]:
+    """
+    Sentinel Anti-Degenerate Patch Filter:
+    Prevents degenerate, test-pleasing slop:
+    1. Returning None inside __new__ or __init__ (prevents SymPy-style constructor corruption).
+    2. Inserting naked `pass` in exception handlers without logic.
+    3. Wholesale code deletion (> 25 lines removed with <= 1 lines added).
+    """
+    # 1. Constructor None return check
+    if ("__new__" in orig or "__init__" in orig) and re.search(r'\breturn\s+None\b', new):
+        return False, "Degenerate patch: Returning None inside constructor violates object semantics."
+
+    # 2. Check for naked except: pass
+    if re.search(r'except.*:\s*pass', new):
+        return False, "Degenerate patch: Naked `except: pass` silently suppresses exceptions."
+
+    # 3. Check for wholesale code deletion
+    del_lines = len([l for l in orig.splitlines() if l.strip()])
+    add_lines = len([l for l in new.splitlines() if l.strip()])
+    if del_lines > 25 and add_lines <= 1:
+        return False, f"Degenerate patch: Excessive deletion ({del_lines} lines removed with <= 1 lines added)."
+
+    return True, "Valid"
+
+def extract_suspect_context_from_issue(repo: str, base_commit: str, problem_statement: str) -> Optional[Dict[str, Any]]:
+    """
+    Sub-Cortex Fault Localization:
+    Extracts traceback frames from the problem statement, locates the target repository file,
+    and fetches a 30-line context window from GitHub base_commit.
+    """
+    # Scan for standard Python traceback patterns: File "path/to/file.py", line 123
+    tb_matches = list(re.finditer(r'File\s+["\']?([^"\',\n]+)["\']?,\s+line\s+(\d+)', problem_statement))
+    if not tb_matches:
+        tb_matches = list(re.finditer(r'([a-zA-Z0-9_\-\./]+\.py)[,:\s]+line\s+(\d+)', problem_statement))
+
+    candidate_target = None
+    candidate_line = -1
+
+    for m in reversed(tb_matches):
+        f_path = m.group(1).strip()
+        l_num = int(m.group(2).strip())
+        if any(noise in f_path for noise in ["site-packages", "/lib/python", "internal/", "tests/"]):
+            continue
+        clean_path = f_path.lstrip("/").replace("//", "/")
+        parts = clean_path.split("/")
+        repo_short = repo.split("/")[-1] if "/" in repo else repo
+        if repo_short in parts:
+            idx = parts.index(repo_short)
+            clean_path = "/".join(parts[idx:])
+        candidate_target = clean_path
+        candidate_line = l_num
+        break
+
+    if not candidate_target or candidate_line <= 0:
+        return None
+
+    try:
+        url = f"https://raw.githubusercontent.com/{repo}/{base_commit}/{candidate_target}"
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (Kronumos-Kaggle-Runner)"})
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            content = resp.read().decode("utf-8", errors="replace")
+            lines = content.splitlines()
+            start_idx = max(0, candidate_line - 15)
+            end_idx = min(len(lines), candidate_line + 15)
+            
+            numbered_snippet = []
+            for i in range(start_idx, end_idx):
+                prefix = ">> " if (i + 1) == candidate_line else "   "
+                numbered_snippet.append(f"{prefix}{i + 1:4d} | {lines[i]}")
+                
+            return {
+                "file_path": candidate_target,
+                "suspect_line": candidate_line,
+                "snippet": "\n".join(numbered_snippet)
+            }
+    except Exception:
+        return None
+
+def parse_search_replace_blocks(text: str) -> List[Dict[str, str]]:
+    """
+    Parses `<<<<<<< SEARCH ... ======= ... >>>>>>> REPLACE` blocks
+    with optional preceding `File: path/to/file.py`.
+    """
+    blocks = []
+    pattern = re.compile(
+        r'(?:(?:File|Target|Path):\s*([a-zA-Z0-9_\-\./]+\.[a-zA-Z0-9]+)\s*\n)?'
+        r'<{5,9}\s*SEARCH\s*\n(.*?)\n={5,9}\s*\n(.*?)\n>{5,9}\s*REPLACE',
+        re.DOTALL
+    )
+    for match in pattern.finditer(text):
+        f_path = match.group(1) or ""
+        orig = match.group(2)
+        new = match.group(3)
+        blocks.append({
+            "file_path": f_path.strip(),
+            "original_code": orig,
+            "new_code": new
+        })
+    return blocks
+
 def convert_patch_call_to_diff(file_path: str, orig: str, new: str, repo: str = "", base_commit: str = "") -> str:
     """Format patch call into a valid POSIX-compliant unified git diff string with real line context."""
+    # Sentinel integrity gate
+    is_valid, reason = validate_patch_integrity(file_path, orig, new)
+    if not is_valid:
+        print(f"    🛡️ Sentinel Refusal: {reason}", flush=True)
+        return ""
+
     clean_path = file_path.lstrip("/").replace("//", "/")
     
     # 1. Attempt to fetch real file from GitHub to compute exact unified diff with line numbers
@@ -279,13 +390,24 @@ class KronumosBenchmarkRunner:
     def solve_instance(self, instance: Dict[str, Any], max_turns: int = 4) -> Dict[str, Any]:
         instance_id = instance.get("instance_id", "unknown")
         repo = instance.get("repo", "unknown")
+        base_commit = instance.get("base_commit", "")
         problem_statement = instance.get("problem_statement", "")
+        
+        # Sub-Cortex Fault Localization: Extract suspect file & lines from traceback
+        suspect_info = extract_suspect_context_from_issue(repo, base_commit, problem_statement)
         
         user_prompt = (
             f"Repository: {repo}\n"
             f"Issue ID: {instance_id}\n\n"
             f"Problem Description:\n{problem_statement}"
         )
+        if suspect_info:
+            user_prompt += (
+                f"\n\n[Sub-Cortex Fault Localization]\n"
+                f"Suspect Target File: {suspect_info['file_path']} (Near line {suspect_info['suspect_line']})\n"
+                f"Surrounding Context from base commit ({base_commit[:8]}):\n"
+                f"```python\n{suspect_info['snippet']}\n```\n"
+            )
         
         messages = [
             {"role": "system", "content": SYSTEM_PROMPT},
@@ -371,9 +493,33 @@ class KronumosBenchmarkRunner:
                     tool_call_errors += 1
                     
             if not found_calls:
-                # If model produced patch in unified diff block
-                if "diff --git" in response_text or "@@ -" in response_text:
+                # 1. Fallback: Parse SEARCH/REPLACE blocks emitted by model
+                sr_blocks = parse_search_replace_blocks(response_text)
+                if sr_blocks:
+                    for block in sr_blocks:
+                        target_file = block["file_path"] or (suspect_info["file_path"] if suspect_info else "")
+                        if target_file:
+                            candidate_diff = convert_patch_call_to_diff(
+                                target_file, block["original_code"], block["new_code"],
+                                repo=repo, base_commit=base_commit
+                            )
+                            if candidate_diff:
+                                synthesized_patch = candidate_diff
+                                print(f"    ✨ Recovered patch from SEARCH/REPLACE block for {target_file}", flush=True)
+                                break
+                
+                # 2. Fallback: Model produced patch in unified diff block
+                if not synthesized_patch and ("diff --git" in response_text or "@@ -" in response_text):
                     synthesized_patch = response_text
+                    
+                # 3. If still empty and turns remain, re-prompt for correct syntax
+                if not synthesized_patch and turn < (max_turns - 1):
+                    messages.append({"role": "assistant", "content": response_text})
+                    messages.append({
+                        "role": "user",
+                        "content": "No valid patch detected. Please formulate your fix using `apply_code_patch` or output a SEARCH/REPLACE block."
+                    })
+                    continue
                 break
                 
             # Process tool calls
@@ -441,6 +587,8 @@ def main():
     parser.add_argument("--dataset", type=str, default="princeton-nlp/SWE-bench_Verified")
     parser.add_argument("--split", type=str, default="test")
     parser.add_argument("--num_samples", type=int, default=15)
+    parser.add_argument("--max_turns", type=int, default=6, help="Maximum reasoning turns per instance (default: 6)")
+    parser.add_argument("--retry_empty", action="store_true", help="Retry instances with empty patches while preserving successful patches")
     parser.add_argument("--output_dir", type=str, default="output")
     args = parser.parse_args()
     
@@ -450,29 +598,35 @@ def main():
     print(f"📥 Loading dataset: {args.dataset} (split={args.split})...")
     ds = load_dataset(args.dataset, split=args.split)
     instances = [ds[i] for i in range(min(args.num_samples, len(ds)))]
-    print(f"🎯 Evaluating on {len(instances)} instances.")
+    print(f"🎯 Evaluating on {len(instances)} instances (Max turns: {args.max_turns}).")
     
     runner = KronumosBenchmarkRunner(model_id=args.model_id)
     
-    predictions = []
+    predictions_map = {}
     completed_ids = set()
     pred_file = os.path.join(args.output_dir, "predictions.jsonl")
     summary_file = os.path.join(args.output_dir, "eval_metrics.json")
     
-    # Auto-resume: load already completed instances from predictions.jsonl
+    # Auto-resume & Retry Empty handling
     if os.path.exists(pred_file):
         with open(pred_file, "r") as pf:
             for line in pf:
                 if line.strip():
                     try:
                         entry = json.loads(line)
-                        if "instance_id" in entry:
-                            completed_ids.add(entry["instance_id"])
-                            predictions.append(entry)
+                        iid = entry.get("instance_id")
+                        if iid:
+                            predictions_map[iid] = entry
+                            if args.retry_empty:
+                                if entry.get("model_patch"):
+                                    completed_ids.add(iid)
+                            else:
+                                completed_ids.add(iid)
                     except json.JSONDecodeError:
                         pass
         if completed_ids:
-            print(f"🔄 Checkpoint detected! Resuming evaluation: {len(completed_ids)}/{len(instances)} tasks already completed.", flush=True)
+            mode_desc = "valid patches preserved (skipping)" if args.retry_empty else "tasks already completed"
+            print(f"🔄 Checkpoint detected! {len(completed_ids)} {mode_desc}.", flush=True)
             
     metrics_summary = {
         "timestamp": datetime.now().isoformat(),
@@ -490,51 +644,60 @@ def main():
         except Exception:
             pass
 
-    with open(pred_file, "a") as pf:
-        for idx, inst in enumerate(instances):
-            inst_id = inst.get("instance_id")
-            if inst_id in completed_ids:
-                continue
-                
-            print(f"\n[{idx+1}/{len(instances)}] 🔧 Running: {inst_id} ({inst.get('repo')})...", flush=True)
+    for idx, inst in enumerate(instances):
+        inst_id = inst.get("instance_id")
+        if inst_id in completed_ids:
+            continue
             
-            res = runner.solve_instance(inst)
+        print(f"\n[{idx+1}/{len(instances)}] 🔧 Running: {inst_id} ({inst.get('repo')})...", flush=True)
+        
+        res = runner.solve_instance(inst, max_turns=args.max_turns)
+        
+        # Memory cleanup for large batch runs
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+        
+        # Format according to official SWE-bench prediction schema
+        pred_entry = {
+            "instance_id": inst_id,
+            "model_patch": res["model_patch"],
+            "model_name_or_path": "Kronumos-7B"
+        }
+        predictions_map[inst_id] = pred_entry
+        completed_ids.add(inst_id)
+        
+        # Save prediction immediately
+        if args.retry_empty or not os.path.exists(pred_file):
+            tmp_pred = pred_file + ".tmp"
+            with open(tmp_pred, "w") as tf:
+                for p in predictions_map.values():
+                    tf.write(json.dumps(p) + "\n")
+            os.replace(tmp_pred, pred_file)
+        else:
+            with open(pred_file, "a") as pf:
+                pf.write(json.dumps(pred_entry) + "\n")
+                pf.flush()
             
-            # Memory cleanup for large batch runs
-            if torch.cuda.is_available():
-                torch.cuda.empty_cache()
+        metrics_summary["results"].append({
+            "instance_id": inst_id,
+            "has_patch": bool(res["model_patch"]),
+            "turns": res["turns"],
+            "total_tokens": res["total_tokens"],
+            "latency_sec": res["latency_sec"],
+            "errors": res["tool_call_errors"]
+        })
+        
+        # Save full trajectory for audit
+        traj_path = os.path.join(args.output_dir, "trajectories", f"{inst_id}.json")
+        with open(traj_path, "w") as tf:
+            json.dump(res, tf, indent=2)
             
-            # Format according to official SWE-bench prediction schema
-            pred_entry = {
-                "instance_id": inst_id,
-                "model_patch": res["model_patch"],
-                "model_name_or_path": "Kronumos-7B"
-            }
-            pf.write(json.dumps(pred_entry) + "\n")
-            pf.flush()
+        # Periodically update eval_metrics.json on each step so metrics are never lost
+        with open(summary_file, "w") as sf:
+            json.dump(metrics_summary, sf, indent=2)
             
-            predictions.append(pred_entry)
-            completed_ids.add(inst_id)
-            metrics_summary["results"].append({
-                "instance_id": inst_id,
-                "has_patch": bool(res["model_patch"]),
-                "turns": res["turns"],
-                "total_tokens": res["total_tokens"],
-                "latency_sec": res["latency_sec"],
-                "errors": res["tool_call_errors"]
-            })
-            
-            # Save full trajectory for audit
-            traj_path = os.path.join(args.output_dir, "trajectories", f"{inst_id}.json")
-            with open(traj_path, "w") as tf:
-                json.dump(res, tf, indent=2)
-                
-            # Periodically update eval_metrics.json on each step so metrics are never lost
-            with open(summary_file, "w") as sf:
-                json.dump(metrics_summary, sf, indent=2)
-                
-            progress_pct = round(((idx + 1) / len(instances)) * 100, 1)
-            print(f"    ↳ [{progress_pct}%] Patch: {'✅ YES' if res['model_patch'] else '❌ NO'} | Turns: {res['turns']} | Tokens: {res['total_tokens']} | Time: {res['latency_sec']}s", flush=True)
+        progress_pct = round(((idx + 1) / len(instances)) * 100, 1)
+        print(f"    ↳ [{progress_pct}%] Patch: {'✅ YES' if res['model_patch'] else '❌ NO'} | Turns: {res['turns']} | Tokens: {res['total_tokens']} | Time: {res['latency_sec']}s", flush=True)
 
     print("\n" + "=" * 60)
     print("🎉 BENCHMARK RUN COMPLETED!")

@@ -61,9 +61,9 @@
 \begin{abstract}
 Automated Program Repair (APR) in authentic software repositories presents a formidable challenge: agents must localize bugs across tens of thousands of lines of code, synthesize character-exact syntactic modifications, and preserve regression invariance without corrupting preexisting functionality. While state-of-the-art closed frontier models achieve high benchmark scores through brute-force multi-turn execution loops (consuming 100k--400k tokens and \$2--\$5 per task), their deployment in enterprise production is severely constrained by non-deterministic ReDoS vulnerabilities, credential leaks, context bloat, and malformed unified diff headers. 
 
-In this paper, we present \textbf{Kronumos}, an autonomous software engineering remediation framework coupling a fine-tuned 7B open-weight code model (\texttt{Qwen2.5-Coder-7B-Instruct}) with the \textbf{Tokenectomy M2M Sub-Cortex}---a zero-allocation Rust runtime engine engineered for sub-millisecond AST traceback pruning, $\mathcal{O}(N)$ ReDoS-immune secret redaction, and deterministic POSIX unified diff re-anchoring. We investigate the empirical lower bound of autonomous repair under the most stringent operational regime possible: \textbf{\$0.00 marginal API cost on Kaggle Cloud GPUs, an average of 3,009.3 tokens per instance (a 98.2\% token reduction), and a strict blind single-turn protocol wherein the model is strictly forbidden from executing \texttt{pytest}, Python, or any runtime feedback harness during inference.}
+In this paper, we present \textbf{Kronumos}, an autonomous software engineering remediation framework coupling a fine-tuned 7B open-weight code model (\texttt{Qwen2.5-Coder-7B-Instruct}) with the \textbf{Tokenectomy M2M Sub-Cortex}---a zero-allocation Rust runtime engine engineered for sub-millisecond AST traceback pruning, $\mathcal{O}(N)$ ReDoS-immune secret redaction, and deterministic POSIX unified diff re-anchoring. We investigate the empirical lower bound of autonomous repair under the most stringent operational regime possible: \textbf{\$0.00 marginal API cost on Kaggle Cloud GPUs, an average of 3,009.3 tokens per instance (a 92.2\% token reduction vs.\ raw model context), and a strict blind single-turn protocol wherein the model is strictly forbidden from executing \texttt{pytest}, Python, or any runtime feedback harness during inference.}
 
-Evaluated against the complete 500-instance \textbf{Princeton SWE-bench Verified} dataset, Kronumos officially resolved \textbf{10 real-world production issues} across five core open-source ecosystems (Django, Scikit-Learn, Pytest, PyData Xarray, and SymPy) within the official Princeton Docker testbed. We report a \textbf{12.66\% candidate precision (10/79)} and a \textbf{2.0\% full-benchmark Pass@1 (10/500)} with \textbf{100.0\% GNU patch compliance (0 syntax or hunk errors)} and an \textbf{84.2\% safe abstention rate (the Zero Dirty Diff guarantee)}. We formalize the mathematical problem of bounded repository repair, detail the architectural mechanisms of the Rust Sub-Cortex, provide an empirical ablation demonstrating how deterministic re-anchoring rescues raw model outputs from 100\% hunk rejection, present character-exact case studies of resolved bugs, and establish the architectural bridge to multi-turn verification in Kronumos v2.
+Evaluated against the complete 500-instance \textbf{Princeton SWE-bench Verified} dataset, Kronumos officially resolved \textbf{10 real-world production issues} across five core open-source ecosystems (Django, Scikit-Learn, Pytest, PyData Xarray, and SymPy) within the official Princeton Docker testbed. We report a \textbf{12.66\% candidate precision (10/79)} and a \textbf{2.0\% full-benchmark Pass@1 (10/500)} with \textbf{100.0\% GNU patch compliance (0 syntax or hunk errors)}. Of the 500 instances, the confidence gate withheld patches for 421 (84.2\%), ensuring zero workspace pollution at the cost of lower recall. We formalize the mathematical problem of bounded repository repair, detail the architectural mechanisms of the Rust Sub-Cortex, provide an empirical ablation demonstrating how deterministic re-anchoring rescues raw model outputs from 100\% hunk rejection, present character-exact case studies of resolved bugs, and establish the architectural bridge to multi-turn verification in Kronumos v2.
 \end{abstract}
 
 \section{Introduction}
@@ -81,7 +81,7 @@ To resolve this dilemma, we present \textbf{Kronumos}, an autonomous remediation
 
 \noindent \textbf{Contributions}:
 \begin{itemize}
-    \item \textbf{The Tokenectomy Sub-Cortex}: A machine-to-machine (M2M) inline proxy in Rust that enforces $\mathcal{O}(N)$ linear-time secret scrubbing, Tree-sitter AST traceback frame pruning (achieving a 98.2\% token reduction), and deterministic POSIX diff re-anchoring.
+    \item \textbf{The Tokenectomy Sub-Cortex}: A machine-to-machine (M2M) inline proxy in Rust that enforces $\mathcal{O}(N)$ linear-time secret scrubbing, Tree-sitter AST traceback frame pruning (achieving a 92.2\% token reduction vs.\ raw model context), and deterministic POSIX diff re-anchoring.
     \item \textbf{Formal Problem Formulation}: A mathematical specification of bounded repository repair under the \textit{Zero Dirty Diff} invariant, formalizing selective abstention as a first-class safety mechanism.
     \item \textbf{Empirical Grounding on SWE-bench Verified}: Official evaluation across all 500 tasks, achieving 10 verified resolutions ($2.0\%$ full-benchmark Pass@1, $12.66\%$ candidate precision) at strictly \$0.00 marginal inference cost, under a strict blind single-turn protocol (zero execution feedback).
     \item \textbf{Ablation \& Case Studies}: Rigorous empirical proof showing that the POSIX Sub-Cortex transforms raw generative diffs (which suffer 100\% hunk rejection) into 100\% clean GNU \texttt{patch -p1} compliance, alongside detailed architectural postmortems of resolved issues.
@@ -113,14 +113,14 @@ As illustrated in Figure~\ref{fig:arch_flow}, Kronumos bifurcates automated prog
 |               TOKENECTOMY M2M SUB-CORTEX (RUST)           |
 |                                                           |
 |  [Step 1] Tree-sitter AST Frame Boundary Filter           |
-|           Excises framework & library frames (98.2% drop) |
+|           Excises framework & library frames (92.2% drop) |
 |  [Step 2] O(N) PikeVM / DFA Secret Sanitizer              |
 |           Redacts Bearer tokens, DB URIs, private keys    |
 +-----------------------------+-----------------------------+
                               |
                               v
 +-----------------------------------------------------------+
-|               LEAN SCRUBBED PROMPT (1,840 Tokens)         |
+|               LEAN SCRUBBED PROMPT (~3,009 Tokens avg)    |
 +-----------------------------+-----------------------------+
                               |
                               v
@@ -411,8 +411,8 @@ Initial Model Candidates & 347 (Unanchored) & 79 (Validated) \\
 \textbf{Candidate Precision} & \textbf{0.0\% (0/347)} & \textbf{12.66\% (10/79)} \\
 GNU \texttt{patch} Compliance & 0.0\% (All failed) & \textbf{100.0\% (79/79)} \\
 Docker Syntax/Hunk Errors & 347 Failures & \textbf{0 Failures} \\
-Safe Abstentions (Zero Dirty) & 0 & \textbf{421 (84.2\%)} \\
-Average Tokens / Task & 38,412 & \textbf{3,009.3 (-98.2\%)} \\
+Gated Refusals (No Valid Patch) & 0 & 421 (84.2\%) \\
+Average Tokens / Task & 38,412 & \textbf{3,009.3 (-92.2\%)} \\
 Average Latency / Task & 312.4s & \textbf{43.60s} \\
 Marginal API Inference Cost & \$0.00 & \textbf{\$0.00} \\
 \bottomrule
