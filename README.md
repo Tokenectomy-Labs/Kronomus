@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/kronumos_logo.jpeg" alt="Kronumos - Autonomous Software Repair Agent" width="380" />
+  <img src="assets/kronumos_logo.png" alt="Kronumos - Autonomous Software Repair Agent" width="380" />
 </p>
 
 <p align="center">
