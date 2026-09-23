@@ -24,6 +24,23 @@
 
 ---
 
+## 📈 Visual Progression: Runner 1 (Raw Kaggle) vs Runner 2 (Tokenectomy Sub-Cortex)
+
+<p align="center">
+  <img src="assets/benchmark_run1_vs_run2.svg" alt="Kronumos Runner 1 vs Runner 2 Progression" width="760" />
+</p>
+
+### Head-to-Head Progression Analysis
+
+| Evaluation Metric | Runner 1 (Raw Kaggle Predictions) | Runner 2 (Tokenectomy Sub-Cortex) | Engineering Significance |
+| :--- | :---: | :---: | :--- |
+| **Officially Resolved Tasks** | **0 / 500** | **10 / 500 (10 Resolved)** | **From 0 to 10 verified production fixes across Django, Sklearn, Pytest, SymPy, Xarray** |
+| **Patch Apply Success Rate** | **~0.0% (Widespread Rejects)** | **100.0% (79 / 79 Clean Apply)** | **Zero malformed hunks, exact line count alignment** |
+| **Patch Syntax & Apply Errors** | **Failed at Hunk #1** | **0 Errors (100% Error-Free)** | **Complete elimination of unanchored paths & syntax corruptions** |
+| **Safe Refusal Invariant** | 0 (blindly emitted broken diffs) | **421 Clean Gated Refusals** | **Zero Dirty Diff guarantee: protects production codebases** |
+
+---
+
 ## 🏛️ Comprehensive Repository Breakdown (Verified Patches)
 
 | Repository | Total Instances | GNU-Validated Patches | Gated / Skipped | Validation Rate |

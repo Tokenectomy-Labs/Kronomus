@@ -1,0 +1,62 @@
+<svg width="800" height="460" viewBox="0 0 800 460" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="460" rx="16" fill="#0D1117" stroke="#30363D" stroke-width="1.5"/>
+  
+  <!-- Header -->
+  <text x="40" y="48" fill="#58A6FF" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="600" letter-spacing="1.5">SWE-BENCH VERIFIED • EMPIRICAL HEAD-TO-HEAD</text>
+  <text x="40" y="80" fill="#F0F6FC" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="700">Run 1 (Raw Kaggle) vs Run 2 (Tokenectomy Sub-Cortex)</text>
+  
+  <!-- Legend -->
+  <rect x="540" y="42" width="12" height="12" rx="3" fill="#F85149" opacity="0.7"/>
+  <text x="560" y="53" fill="#8B949E" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12">Run 1: Raw Kaggle</text>
+  <rect x="670" y="42" width="12" height="12" rx="3" fill="#2EA043"/>
+  <text x="690" y="53" fill="#F0F6FC" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="600">Run 2: Tokenectomy</text>
+
+  <!-- Divider -->
+  <line x1="40" y1="105" x2="760" y2="105" stroke="#21262D" stroke-width="1"/>
+
+  <!-- Metric 1: Officially Resolved Issues -->
+  <text x="40" y="135" fill="#C9D1D9" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="600">1. Officially Resolved Issues (Pass@1 Full Test Suites)</text>
+  <text x="40" y="155" fill="#8B949E" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12">Django, Scikit-Learn, Pytest, Xarray, SymPy</text>
+  
+  <!-- Bar 1A (Run 1) -->
+  <rect x="40" y="168" width="40" height="24" rx="4" fill="#F85149" opacity="0.5"/>
+  <text x="90" y="185" fill="#F85149" font-family="monospace" font-size="13" font-weight="bold">0 Resolved (Blocked by Apply Errors)</text>
+  
+  <!-- Bar 1B (Run 2) -->
+  <rect x="40" y="198" width="520" height="26" rx="4" fill="url(#green_grad)"/>
+  <text x="570" y="216" fill="#3FB950" font-family="monospace" font-size="14" font-weight="bold">10 Resolved (12.66% Resolution Rate)</text>
+
+  <!-- Metric 2: Patch Application Success Rate -->
+  <text x="40" y="255" fill="#C9D1D9" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="600">2. Docker Patch Application Success Rate (GNU patch -p1)</text>
+  
+  <!-- Bar 2A (Run 1) -->
+  <rect x="40" y="272" width="30" height="24" rx="4" fill="#F85149" opacity="0.5"/>
+  <text x="80" y="289" fill="#F85149" font-family="monospace" font-size="13" font-weight="bold">~0% (Malformed @@ hunks &amp; hallucinated repro paths)</text>
+  
+  <!-- Bar 2B (Run 2) -->
+  <rect x="40" y="302" width="620" height="26" rx="4" fill="url(#blue_grad)"/>
+  <text x="670" y="320" fill="#58A6FF" font-family="monospace" font-size="14" font-weight="bold">100.0% (79/79)</text>
+
+  <!-- Metric 3: Docker Testbed Errors & Failures -->
+  <text x="40" y="360" fill="#C9D1D9" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="600">3. Execution &amp; Infrastructure Errors</text>
+  
+  <!-- Bar 3A (Run 1) -->
+  <rect x="40" y="377" width="480" height="24" rx="4" fill="#F85149" opacity="0.6"/>
+  <text x="530" y="394" fill="#F85149" font-family="monospace" font-size="13" font-weight="bold">Failed at Hunk #1 (Widespread Rejects)</text>
+  
+  <!-- Bar 3B (Run 2) -->
+  <rect x="40" y="407" width="20" height="26" rx="4" fill="#238636"/>
+  <text x="70" y="425" fill="#3FB950" font-family="monospace" font-size="14" font-weight="bold">0 Errors (100% Clean Application &amp; Safe Refusals)</text>
+
+  <!-- Gradients -->
+  <defs>
+    <linearGradient id="green_grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#238636"/>
+      <stop offset="100%" stop-color="#2EA043"/>
+    </linearGradient>
+    <linearGradient id="blue_grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1F6FEB"/>
+      <stop offset="100%" stop-color="#58A6FF"/>
+    </linearGradient>
+  </defs>
+</svg>

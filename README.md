@@ -39,6 +39,10 @@ Read the complete engineering roadmap and evaluation methodology in [kronumos_pr
 
 Read the official full 500-instance benchmark report in [BENCHMARK_500_REPORT.md](BENCHMARK_500_REPORT.md).
 
+<p align="center">
+  <img src="assets/benchmark_run1_vs_run2.svg" alt="Kronumos Runner 1 vs Runner 2 Progression" width="760" />
+</p>
+
 * **Evaluated Tasks**: 500 / 500 (100% completed, 0 OOM crashes)
 * **Officially Resolved Tasks (`Pass@1`)**: **10 Resolved** (12.66% resolution rate on candidate patches)
 * **Verified Ecosystems**: Solved production issues in **Django (5), Scikit-Learn (2), Pytest (1), PyData Xarray (1), and SymPy (1)**
