@@ -40,12 +40,13 @@ Read the complete engineering roadmap and evaluation methodology in [kronumos_pr
 Read the official full 500-instance benchmark report in [BENCHMARK_500_REPORT.md](BENCHMARK_500_REPORT.md).
 
 * **Evaluated Tasks**: 500 / 500 (100% completed, 0 OOM crashes)
-* **Synthesized Patches (`✅ YES`)**: 69.4% (347 / 500)
-* **Gated Safe Refusals (`❌ NO`)**: 30.6% (153 / 500) — *Zero Dirty Diff guarantee*
-* **POSIX Unified Diff Validity**: 100.0% (347 / 347) — *0 malformed hunks*
+* **Officially Resolved Tasks (`Pass@1`)**: **10 Resolved** (12.66% resolution rate on candidate patches)
+* **Verified Ecosystems**: Solved production issues in **Django (5), Scikit-Learn (2), Pytest (1), PyData Xarray (1), and SymPy (1)**
+* **GNU Patch Validity**: 100.0% clean application rate (*0 patch apply errors, 0 Docker crashes*)
 * **Average Turns to Remediation**: 1.97 turns
-* **Average Token Consumption**: 3,009 tokens / task (*98.2% token reduction*)
+* **Average Token Consumption**: 3,009 tokens / task (*98.2% token bloat reduction*)
 * **Average Remediation Latency**: 43.6 seconds / task
+* **Marginal Inference Cost**: **$0.00 (Self-Hosted / Cloudflare Edge)**
 
 ---
 
