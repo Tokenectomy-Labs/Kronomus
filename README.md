@@ -73,6 +73,6 @@ model = AutoModelForCausalLM.from_pretrained(
 ---
 
 ## 🏢 Organization & Author
-- **Developed by:** Daffa ([@daffa2555](https://github.com/daffa2555)) — Universitas Muhammadiyah Mataram
+- **Developed by:** Daffa ([@daffa2555](https://github.com/daffa2555))
 - **Organization:** Tokenectomy Labs
 - **License:** Apache 2.0
