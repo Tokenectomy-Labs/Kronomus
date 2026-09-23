@@ -29,6 +29,15 @@ Kronumos is scoped narrower and deeper. It handles a single, closed-loop enginee
 
 ---
 
+## 📄 Academic Paper & Technical Report
+
+Read the formal preprint paper in [paper/KRONUMOS_TECHNICAL_REPORT.md](paper/KRONUMOS_TECHNICAL_REPORT.md) or view the publication-ready LaTeX source in [paper/main.tex](paper/main.tex):
+
+> **"Kronumos: Autonomous Code Remediation via Zero-Leak Context Surgery and POSIX-Anchored Diff Synthesis on SWE-bench Verified"**  
+> *Author: Daffa (@daffa2555), Tokenectomy Labs*
+
+---
+
 ## 🗺️ Product & Engineering Roadmap
 
 Read the complete engineering roadmap and evaluation methodology in [kronumos_product.roadmap.md](kronumos_product.roadmap.md).
