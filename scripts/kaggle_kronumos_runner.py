@@ -13,6 +13,7 @@ How to run on Kaggle:
 """
 
 import os
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 import re
 import json
 import time
@@ -325,17 +326,31 @@ class KronumosBenchmarkRunner:
             else:
                 attention_mask = torch.ones_like(input_ids)
             
+            # Context Window Clamping: Prevent CUDA OOM on massive issue descriptions
+            MAX_CONTEXT = 5120
+            if input_ids.shape[1] > MAX_CONTEXT:
+                # Keep system prompt & instructions (first 512 tokens) and the tail of the error (last 4608 tokens)
+                input_ids = torch.cat([input_ids[:, :512], input_ids[:, -(MAX_CONTEXT - 512):]], dim=1)
+                attention_mask = torch.cat([attention_mask[:, :512], attention_mask[:, -(MAX_CONTEXT - 512):]], dim=1)
+
             prompt_len = input_ids.shape[1]
             total_prompt_tokens += prompt_len
             
-            with torch.no_grad():
-                outputs = self.model.generate(
-                    input_ids=input_ids,
-                    attention_mask=attention_mask,
-                    max_new_tokens=768,
-                    do_sample=False,
-                    eos_token_id=self.stop_tokens,
-                )
+            try:
+                with torch.no_grad():
+                    outputs = self.model.generate(
+                        input_ids=input_ids,
+                        attention_mask=attention_mask,
+                        max_new_tokens=768,
+                        do_sample=False,
+                        eos_token_id=self.stop_tokens,
+                    )
+            except torch.OutOfMemoryError:
+                print(f"    ⚠️ Warning: Context exceeded GPU capacity for {instance_id}. Evicting cache and falling back safely (gated refusal).", flush=True)
+                if torch.cuda.is_available():
+                    torch.cuda.empty_cache()
+                synthesized_patch = ""
+                break
                 
             completion_ids = outputs[0][prompt_len:]
             total_completion_tokens += len(completion_ids)
