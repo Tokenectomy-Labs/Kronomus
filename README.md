@@ -1,105 +1,78 @@
-# Web3 MCP Directory // Anonymous & Permissionless
+# ⚡ Kronumos: Autonomous Bug Remediation & Self-Healing Agent
 
-Direktori terbuka dan **100% anonim** untuk Model Context Protocol (MCP) servers & AI agent tools di ekosistem Web3 (Ethereum, EVM, Solana, DeFi, Smart Contract Auditing, Storage, ZK Proofs).
+> *"You write the features. Kronumos heals the bugs."*
 
-Dibangun **100% menggunakan Rust** untuk Backend maupun Frontend (Axum + Maud + SQLite), dengan filosofi cypherpunk murni: **Zero KYC, Zero OAuth (tanpa Google/GitHub), Zero Email, Zero Birokrasi Web2**.
-
----
-
-## ⚡ Fitur Utama
-
-1. **Full Anonim & Tanpa Birokrasi Web2**
-   - Siapa saja bisa mendaftarkan server Web3 MCP baru secara instan tanpa perlu mendaftar akun, tanpa verifikasi email, dan tanpa approval berbelit.
-   - Tidak ada cookie pelacak, tidak ada analytics invasif, tidak ada PII (Personally Identifiable Information).
-
-2. **100% Rust Fullstack**
-   - **Backend**: Axum 0.8 + Tokio (asynchronous, zero-cost abstractions, sub-millisecond latency).
-   - **Frontend**: Maud (type-safe compile-time HTML rendering langsung dari Rust).
-   - **Storage**: SQLite embedded (`rusqlite` bundled) — single self-contained binary (~5.6 MB), tanpa butuh dependensi eksternal.
-
-3. **Tampilan Minimalis (No Distracting Accents)**
-   - Desain utilitarian monokrom yang bersih, fokus pada data densitas tinggi dan keterbacaan kode.
-   - Tanpa gradien ungu/neon yang berlebihan atau elemen AI slop visual.
-
-4. **1-Click MCP Config Generator**
-   - Format siap pakai untuk **Claude Desktop** (`claude_desktop_config.json`).
-   - Format siap pakai untuk **Cursor & Windsurf** (`mcp.json`).
-   - Perintah 1-klik untuk **Antigravity CLI** (`agy mcp add <slug> -- <cmd> <args>`).
-
-5. **Machine-to-Machine (M2M) API untuk AI Agents**
-   - Agent otonom (Claude, Cursor, Cline, Antigravity) dapat meng-query dan menambahkan tools langsung lewat HTTP REST API:
-     - `GET /api/tools` — Daftar semua Web3 MCP tools (JSON).
-     - `GET /api/tools?q=solana&category=DeFi` — Filter pencarian instan.
-     - `GET /api/tools/:slug` — Metadata dan schema spesifik.
-     - `POST /api/tools` — Submission anonim tanpa token/autentikasi.
-     - `GET /api/export` — Ekspor seluruh direktori ke file JSON offline.
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Hugging Face Model](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-NadevA23%2FKronumos-yellow)](https://huggingface.co/NadevA23/Kronumos)
+[![GGUF Quantized](https://img.shields.io/badge/GGUF-Quantized-green)](https://huggingface.co/NadevA23/Kronumos-GGUF)
 
 ---
 
-## 📦 Koleksi Web3 MCP Bawaan (Pre-Seeded)
+## 📌 What is Kronumos?
 
-Direktori ini sudah langsung dilengkapi dengan Web3 MCP servers terverifikasi:
-- **Etherscan Explorer MCP**: ABI kontrak terverifikasi, riwayat tx, event logs, gas tracker.
-- **Foundry Anvil MCP**: Local EVM sandbox manipulation, fork testing, cheatcodes.
-- **Slither Static Auditor MCP**: Detektor kerentanan Solidity (reentrancy, access control).
-- **Aderyn Rust Solidity Linter MCP**: AST parser dan static analyzer Solidity berbasis Rust dari Cyfrin.
-- **Solana Helius Agent MCP**: Query akun Solana, DAS tokens, simulasi transaksi.
-- **Uniswap & DefiLlama Liquidity MCP**: Routing DEX swaps, cadangan pool V2/V3, TVL, dan harga token.
-- **Chainlink Oracles MCP**: Data feeds kripto/forex, AggregatorV3 interface, CCIP tracking.
-- **IPFS & Pinata Storage MCP**: Pinning file terdesentralisasi, CID query, dan IPFS metadata.
-- **Safe Multisig MCP**: Inspeksi Gnosis Safe, pending threshold transactions, simulasi eksekusi.
-- **The Graph Subgraph MCP**: Query GraphQL ke subgraph terdesentralisasi.
-- **Circom & SnarkJS ZK MCP**: Inspeksi circuit Zero-Knowledge (.circom), R1CS constraints, Groth16 proof verifier.
-- **Arweave & Irys Storage MCP**: Penyimpanan permanen on-chain dan estimasi biaya permaweb.
+**Kronumos** is a specialized autonomous software engineering agent, fine-tuned specifically for end-to-end bug remediation and automated self-healing — not generic chatbot coding.
+
+Generic AI coding assistants try to do everything: generating unverified applications, hallucinating missing functions, and bloating context with massive raw runtime logs.
+
+Kronumos is scoped narrower and deeper. It handles a single, closed-loop engineering workflow:
+1. **Diagnose** runtime failures & test crashes from raw error logs.
+2. **Sub-Cortex Token Surgery**: Excise framework noise and redact sensitive credentials (JWT, AWS, DB keys) using Tokenectomy Rust engine (95.2% token reduction).
+3. **Analyze Blast Radius**: Map caller dependency graphs before applying edits.
+4. **Synthesize & Verify Atomic Patch**: Apply search-and-replace AST patches with zero dirty diffs.
+5. **Git Delivery**: Automatically branch, commit, open Pull Requests, and close incident tracking issues.
 
 ---
 
-## 🚀 Cara Menjalankan
+## 🗺️ Product & Engineering Roadmap
 
-### 1. Jalankan Langsung Binary Release
+Read the complete engineering roadmap and evaluation methodology in [kronumos_product.roadmap.md](kronumos_product.roadmap.md).
+
+---
+
+## 🛠️ Tool Schema (Agent Sub-Cortex)
+
+Kronumos is fine-tuned to emit structured JSON tool calls:
+
+| Tool | Purpose |
+| :--- | :--- |
+| `get_error_context` | Excise framework noise, redact credentials, and extract exact offending code snippets from raw logs |
+| `apply_code_patch` | Apply an atomic search-and-replace AST patch, verified before commit |
+| `inspect_docker` | Diagnose container crashes (e.g. exit code 137 OOMKilled) via logs and resource stats |
+| `probe_database` | Triage connection pool starvation and lock deadlocks |
+| `sentinel_analyze_blast_radius` | Map caller dependency graph for a symbol/file before applying a patch |
+| `create_fix_branch` | Create a new isolated git branch for the fix |
+| `commit_fix` | Commit the verified patch to the fix branch |
+| `open_pull_request` | Open a PR from the fix branch to the target branch |
+| `create_incident_issue` | Open a tracking issue for a diagnosed incident |
+| `link_issue_to_fix_pr` | Link an existing incident issue to its resolving PR |
+| `close_incident_issue` | Close the incident issue once verified and merged |
+
+---
+
+## 🚀 Quickstart
+
+### Running locally via Ollama:
 ```bash
-./target/release/web3-mcp-anon
+ollama run hf.co/NadevA23/Kronumos-GGUF:Q4_K_M
 ```
-Server akan aktif di: `http://localhost:3000`
 
-### 2. Jalankan Mode Development
-```bash
-cargo run
-```
+### Python (Transformers):
+```python
+import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
-### 3. Ganti Port (Opsional)
-```bash
-PORT=8080 ./target/release/web3-mcp-anon
+model_id = "NadevA23/Kronumos"
+tokenizer = AutoTokenizer.from_pretrained(model_id)
+model = AutoModelForCausalLM.from_pretrained(
+    model_id,
+    torch_dtype=torch.bfloat16,
+    device_map="auto",
+)
 ```
 
 ---
 
-## 📡 REST API Examples
-
-### List Semua Tools
-```bash
-curl http://localhost:3000/api/tools
-```
-
-### Cari Tools (Filter)
-```bash
-curl "http://localhost:3000/api/tools?q=solana"
-```
-
-### Submit Tool Baru secara Anonim
-```bash
-curl -X POST http://localhost:3000/api/tools \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Biconomy Smart Account MCP",
-    "description": "ERC-4337 Account Abstraction bundling and gasless paymaster tooling.",
-    "category": "Wallets & Governance",
-    "chains": "Ethereum, Arbitrum, Base",
-    "command": "npx",
-    "args": "-y @biconomy/mcp-server",
-    "env_vars": "BICONOMY_API_KEY",
-    "repo_url": "https://github.com/biconomy/biconomy-mcp",
-    "docs_url": "https://docs.biconomy.io",
-    "author_alias": "0xAnon"
-  }'
-```
+## 🏢 Organization & Author
+- **Developed by:** Daffa ([@daffa2555](https://github.com/daffa2555)) — Universitas Muhammadiyah Mataram
+- **Organization:** Tokenectomy Labs
+- **License:** Apache 2.0
