@@ -1,1047 +1,1935 @@
 {
-  "timestamp": "2026-09-23T03:51:13.753557",
+  "timestamp": "2026-09-23T11:48:06.087229",
   "model": "NadevA23/Kronumos",
   "dataset": "princeton-nlp/SWE-bench_Verified",
-  "total_instances": 130,
+  "total_instances": 500,
   "results": [
     {
-      "instance_id": "astropy__astropy-12907",
+      "instance_id": "matplotlib__matplotlib-21568",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1419,
+      "latency_sec": 29.56,
+      "errors": 0
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-22719",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 7300,
+      "latency_sec": 70.83,
+      "errors": 0
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-22865",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2841,
+      "latency_sec": 48.12,
+      "errors": 0
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-22871",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2683,
+      "latency_sec": 33.9,
+      "errors": 0
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-23299",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 4280,
+      "latency_sec": 94.82,
+      "errors": 0
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-23314",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2254,
+      "latency_sec": 30.25,
+      "errors": 0
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-23412",
+      "has_patch": false,
+      "turns": 3,
+      "total_tokens": 4766,
+      "latency_sec": 56.07,
+      "errors": 1
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-23476",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 4399,
+      "latency_sec": 47.38,
+      "errors": 0
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-24026",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3018,
+      "latency_sec": 33.11,
+      "errors": 0
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-24149",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3880,
+      "latency_sec": 49.28,
+      "errors": 0
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-24177",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3051,
+      "latency_sec": 51.57,
+      "errors": 0
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-24570",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2703,
+      "latency_sec": 38.11,
+      "errors": 0
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-24627",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2286,
+      "latency_sec": 49.64,
+      "errors": 0
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-24637",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2900,
+      "latency_sec": 32.39,
+      "errors": 0
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-24870",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2578,
+      "latency_sec": 31.26,
+      "errors": 0
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-24970",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2676,
+      "latency_sec": 32.79,
+      "errors": 0
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-25122",
       "has_patch": true,
       "turns": 2,
       "total_tokens": 2414,
-      "latency_sec": 31.1,
+      "latency_sec": 28.47,
       "errors": 0
     },
     {
-      "instance_id": "astropy__astropy-13033",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 3155,
-      "latency_sec": 40.67,
-      "errors": 0
-    },
-    {
-      "instance_id": "astropy__astropy-13236",
-      "has_patch": false,
-      "turns": 1,
-      "total_tokens": 1437,
-      "latency_sec": 37.3,
-      "errors": 0
-    },
-    {
-      "instance_id": "astropy__astropy-13398",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 4142,
-      "latency_sec": 49.59,
-      "errors": 0
-    },
-    {
-      "instance_id": "astropy__astropy-13453",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 6237,
-      "latency_sec": 77.19,
-      "errors": 0
-    },
-    {
-      "instance_id": "astropy__astropy-13579",
+      "instance_id": "matplotlib__matplotlib-25287",
       "has_patch": true,
       "turns": 3,
-      "total_tokens": 7066,
-      "latency_sec": 79.17,
+      "total_tokens": 5204,
+      "latency_sec": 127.79,
       "errors": 0
     },
     {
-      "instance_id": "astropy__astropy-13977",
+      "instance_id": "matplotlib__matplotlib-25311",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2210,
+      "latency_sec": 29.87,
+      "errors": 0
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-25332",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2247,
+      "latency_sec": 24.98,
+      "errors": 0
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-25479",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 5421,
+      "latency_sec": 51.22,
+      "errors": 0
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-25775",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2083,
+      "latency_sec": 24.1,
+      "errors": 0
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-25960",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2232,
+      "latency_sec": 27.35,
+      "errors": 0
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-26113",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 7252,
+      "latency_sec": 59.23,
+      "errors": 0
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-26208",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3218,
+      "latency_sec": 36.58,
+      "errors": 0
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-26291",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 4238,
+      "latency_sec": 56.22,
+      "errors": 0
+    },
+    {
+      "instance_id": "matplotlib__matplotlib-26342",
       "has_patch": false,
       "turns": 1,
-      "total_tokens": 1735,
-      "latency_sec": 25.59,
+      "total_tokens": 958,
+      "latency_sec": 7.28,
       "errors": 0
     },
     {
-      "instance_id": "astropy__astropy-14096",
+      "instance_id": "matplotlib__matplotlib-26466",
       "has_patch": true,
       "turns": 2,
-      "total_tokens": 2337,
-      "latency_sec": 44.49,
-      "errors": 0
-    },
-    {
-      "instance_id": "astropy__astropy-14182",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 2933,
-      "latency_sec": 45.91,
-      "errors": 0
-    },
-    {
-      "instance_id": "astropy__astropy-14309",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 4625,
-      "latency_sec": 69.38,
-      "errors": 0
-    },
-    {
-      "instance_id": "astropy__astropy-14365",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 2593,
-      "latency_sec": 34.0,
-      "errors": 0
-    },
-    {
-      "instance_id": "astropy__astropy-14369",
-      "has_patch": false,
-      "turns": 2,
-      "total_tokens": 3354,
-      "latency_sec": 54.16,
-      "errors": 1
-    },
-    {
-      "instance_id": "astropy__astropy-14508",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 3451,
-      "latency_sec": 48.9,
-      "errors": 0
-    },
-    {
-      "instance_id": "astropy__astropy-14539",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 2619,
-      "latency_sec": 39.78,
-      "errors": 0
-    },
-    {
-      "instance_id": "astropy__astropy-14598",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 3340,
-      "latency_sec": 42.91,
-      "errors": 0
-    },
-    {
-      "instance_id": "astropy__astropy-14995",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 3216,
-      "latency_sec": 46.18,
-      "errors": 0
-    },
-    {
-      "instance_id": "astropy__astropy-7166",
-      "has_patch": false,
-      "turns": 1,
-      "total_tokens": 1530,
-      "latency_sec": 97.61,
-      "errors": 0
-    },
-    {
-      "instance_id": "astropy__astropy-7336",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 2531,
-      "latency_sec": 38.0,
-      "errors": 0
-    },
-    {
-      "instance_id": "astropy__astropy-7606",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 2655,
-      "latency_sec": 53.12,
-      "errors": 0
-    },
-    {
-      "instance_id": "astropy__astropy-7671",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 2760,
-      "latency_sec": 37.42,
-      "errors": 0
-    },
-    {
-      "instance_id": "astropy__astropy-8707",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 2070,
-      "latency_sec": 34.05,
-      "errors": 0
-    },
-    {
-      "instance_id": "astropy__astropy-8872",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 2474,
-      "latency_sec": 41.98,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-10097",
-      "has_patch": false,
-      "turns": 1,
-      "total_tokens": 2074,
-      "latency_sec": 107.23,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-10554",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 3418,
-      "latency_sec": 49.87,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-10880",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 1895,
-      "latency_sec": 36.18,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-10914",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 2191,
-      "latency_sec": 35.15,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-10973",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 1866,
-      "latency_sec": 32.5,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-10999",
-      "has_patch": false,
-      "turns": 1,
-      "total_tokens": 1708,
-      "latency_sec": 100.83,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-11066",
-      "has_patch": false,
-      "turns": 1,
-      "total_tokens": 1922,
-      "latency_sec": 104.6,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-11087",
-      "has_patch": false,
-      "turns": 1,
-      "total_tokens": 4123,
-      "latency_sec": 149.75,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-11095",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 2014,
-      "latency_sec": 42.96,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-11099",
-      "has_patch": false,
-      "turns": 1,
-      "total_tokens": 937,
-      "latency_sec": 12.31,
-      "errors": 1
-    },
-    {
-      "instance_id": "django__django-11119",
-      "has_patch": false,
-      "turns": 1,
-      "total_tokens": 943,
-      "latency_sec": 21.43,
-      "errors": 1
-    },
-    {
-      "instance_id": "django__django-11133",
-      "has_patch": false,
-      "turns": 1,
-      "total_tokens": 1677,
-      "latency_sec": 100.38,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-11138",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 3631,
-      "latency_sec": 56.43,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-11141",
-      "has_patch": false,
-      "turns": 1,
-      "total_tokens": 1677,
-      "latency_sec": 100.57,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-11149",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 2349,
-      "latency_sec": 51.6,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-11163",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 1930,
-      "latency_sec": 30.76,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-11179",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 1874,
-      "latency_sec": 32.14,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-11206",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 2203,
-      "latency_sec": 48.32,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-11211",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 2142,
-      "latency_sec": 31.99,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-11239",
-      "has_patch": false,
-      "turns": 1,
-      "total_tokens": 1764,
-      "latency_sec": 101.76,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-11265",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 4034,
-      "latency_sec": 65.45,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-11276",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 2262,
-      "latency_sec": 33.16,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-11292",
-      "has_patch": false,
-      "turns": 2,
-      "total_tokens": 2516,
-      "latency_sec": 113.49,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-11299",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 3192,
-      "latency_sec": 45.02,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-11333",
-      "has_patch": true,
-      "turns": 3,
-      "total_tokens": 3639,
-      "latency_sec": 54.43,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-11400",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 2607,
-      "latency_sec": 61.5,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-11433",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 2085,
-      "latency_sec": 39.18,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-11451",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 2873,
-      "latency_sec": 54.15,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-11477",
-      "has_patch": false,
-      "turns": 1,
-      "total_tokens": 848,
-      "latency_sec": 14.98,
-      "errors": 1
-    },
-    {
-      "instance_id": "django__django-11490",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 1971,
-      "latency_sec": 33.07,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-11532",
-      "has_patch": false,
-      "turns": 1,
-      "total_tokens": 2196,
-      "latency_sec": 109.56,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-11551",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 4520,
-      "latency_sec": 70.43,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-11555",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 2137,
-      "latency_sec": 41.51,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-11603",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 1911,
-      "latency_sec": 34.51,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-11728",
-      "has_patch": false,
-      "turns": 2,
-      "total_tokens": 1997,
-      "latency_sec": 38.17,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-11734",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 2185,
-      "latency_sec": 36.18,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-11740",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 2782,
-      "latency_sec": 50.63,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-11749",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 2375,
-      "latency_sec": 44.67,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-11790",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 2015,
+      "total_tokens": 2681,
       "latency_sec": 34.33,
       "errors": 0
     },
     {
-      "instance_id": "django__django-11815",
+      "instance_id": "mwaskom__seaborn-3069",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2384,
+      "latency_sec": 33.42,
+      "errors": 0
+    },
+    {
+      "instance_id": "mwaskom__seaborn-3187",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2640,
+      "latency_sec": 33.44,
+      "errors": 0
+    },
+    {
+      "instance_id": "pallets__flask-5014",
       "has_patch": false,
       "turns": 1,
-      "total_tokens": 1238,
-      "latency_sec": 26.87,
+      "total_tokens": 1067,
+      "latency_sec": 30.58,
       "errors": 0
     },
     {
-      "instance_id": "django__django-11820",
+      "instance_id": "psf__requests-1142",
       "has_patch": true,
       "turns": 2,
-      "total_tokens": 2022,
-      "latency_sec": 37.43,
+      "total_tokens": 1964,
+      "latency_sec": 27.16,
       "errors": 0
     },
     {
-      "instance_id": "django__django-11848",
+      "instance_id": "psf__requests-1724",
       "has_patch": true,
       "turns": 2,
-      "total_tokens": 2219,
-      "latency_sec": 47.64,
+      "total_tokens": 6108,
+      "latency_sec": 56.29,
       "errors": 0
     },
     {
-      "instance_id": "django__django-11880",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 2353,
-      "latency_sec": 40.42,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-11885",
+      "instance_id": "psf__requests-1766",
       "has_patch": false,
-      "turns": 1,
-      "total_tokens": 1779,
-      "latency_sec": 101.93,
+      "turns": 2,
+      "total_tokens": 2221,
+      "latency_sec": 28.11,
       "errors": 0
     },
     {
-      "instance_id": "django__django-11951",
+      "instance_id": "psf__requests-1921",
       "has_patch": true,
       "turns": 2,
-      "total_tokens": 2058,
-      "latency_sec": 36.56,
+      "total_tokens": 2131,
+      "latency_sec": 26.34,
       "errors": 0
     },
     {
-      "instance_id": "django__django-11964",
+      "instance_id": "psf__requests-2317",
       "has_patch": true,
       "turns": 2,
-      "total_tokens": 3080,
-      "latency_sec": 59.6,
+      "total_tokens": 2233,
+      "latency_sec": 27.2,
       "errors": 0
     },
     {
-      "instance_id": "django__django-11999",
-      "has_patch": false,
-      "turns": 1,
-      "total_tokens": 1634,
-      "latency_sec": 99.48,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-12039",
-      "has_patch": false,
-      "turns": 1,
-      "total_tokens": 1786,
-      "latency_sec": 101.9,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-12050",
+      "instance_id": "psf__requests-2931",
       "has_patch": true,
       "turns": 2,
-      "total_tokens": 1892,
-      "latency_sec": 34.16,
+      "total_tokens": 1996,
+      "latency_sec": 27.29,
       "errors": 0
     },
     {
-      "instance_id": "django__django-12125",
+      "instance_id": "psf__requests-5414",
       "has_patch": true,
       "turns": 2,
-      "total_tokens": 2468,
-      "latency_sec": 35.88,
+      "total_tokens": 2658,
+      "latency_sec": 30.05,
       "errors": 0
     },
     {
-      "instance_id": "django__django-12143",
+      "instance_id": "psf__requests-6028",
       "has_patch": true,
       "turns": 2,
       "total_tokens": 2564,
-      "latency_sec": 45.14,
+      "latency_sec": 27.77,
       "errors": 0
     },
     {
-      "instance_id": "django__django-12155",
+      "instance_id": "pydata__xarray-2905",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1609,
+      "latency_sec": 25.82,
+      "errors": 1
+    },
+    {
+      "instance_id": "pydata__xarray-3095",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2860,
+      "latency_sec": 33.32,
+      "errors": 0
+    },
+    {
+      "instance_id": "pydata__xarray-3151",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3263,
+      "latency_sec": 35.22,
+      "errors": 0
+    },
+    {
+      "instance_id": "pydata__xarray-3305",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3038,
+      "latency_sec": 33.65,
+      "errors": 0
+    },
+    {
+      "instance_id": "pydata__xarray-3677",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2744,
+      "latency_sec": 39.21,
+      "errors": 0
+    },
+    {
+      "instance_id": "pydata__xarray-3993",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2404,
+      "latency_sec": 35.96,
+      "errors": 0
+    },
+    {
+      "instance_id": "pydata__xarray-4075",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3268,
+      "latency_sec": 34.43,
+      "errors": 0
+    },
+    {
+      "instance_id": "pydata__xarray-4094",
+      "has_patch": false,
+      "turns": 2,
+      "total_tokens": 3699,
+      "latency_sec": 115.06,
+      "errors": 0
+    },
+    {
+      "instance_id": "pydata__xarray-4356",
       "has_patch": true,
       "turns": 2,
       "total_tokens": 2192,
-      "latency_sec": 45.44,
+      "latency_sec": 26.39,
       "errors": 0
     },
     {
-      "instance_id": "django__django-12193",
-      "has_patch": false,
-      "turns": 1,
-      "total_tokens": 978,
-      "latency_sec": 17.95,
-      "errors": 1
-    },
-    {
-      "instance_id": "django__django-12209",
+      "instance_id": "pydata__xarray-4629",
       "has_patch": true,
       "turns": 2,
-      "total_tokens": 2429,
-      "latency_sec": 47.91,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-12262",
-      "has_patch": false,
-      "turns": 1,
-      "total_tokens": 1718,
-      "latency_sec": 100.84,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-12273",
-      "has_patch": false,
-      "turns": 2,
-      "total_tokens": 2282,
-      "latency_sec": 45.55,
-      "errors": 1
-    },
-    {
-      "instance_id": "django__django-12276",
-      "has_patch": false,
-      "turns": 1,
-      "total_tokens": 1655,
-      "latency_sec": 99.89,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-12304",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 2221,
-      "latency_sec": 44.52,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-12308",
-      "has_patch": false,
-      "turns": 1,
-      "total_tokens": 1589,
-      "latency_sec": 98.57,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-12325",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 2135,
-      "latency_sec": 38.72,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-12406",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 2267,
-      "latency_sec": 36.0,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-12419",
-      "has_patch": false,
-      "turns": 1,
-      "total_tokens": 1651,
-      "latency_sec": 99.71,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-12663",
-      "has_patch": false,
-      "turns": 2,
-      "total_tokens": 3273,
-      "latency_sec": 46.15,
-      "errors": 1
-    },
-    {
-      "instance_id": "django__django-12708",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 2339,
+      "total_tokens": 3646,
       "latency_sec": 41.37,
       "errors": 0
     },
     {
-      "instance_id": "django__django-12713",
+      "instance_id": "pydata__xarray-4687",
       "has_patch": true,
       "turns": 2,
-      "total_tokens": 1901,
-      "latency_sec": 39.26,
+      "total_tokens": 4464,
+      "latency_sec": 43.12,
       "errors": 0
     },
     {
-      "instance_id": "django__django-12741",
+      "instance_id": "pydata__xarray-4695",
       "has_patch": true,
       "turns": 2,
-      "total_tokens": 1839,
-      "latency_sec": 28.81,
+      "total_tokens": 4402,
+      "latency_sec": 45.69,
       "errors": 0
     },
     {
-      "instance_id": "django__django-12754",
+      "instance_id": "pydata__xarray-4966",
       "has_patch": true,
       "turns": 2,
-      "total_tokens": 2398,
-      "latency_sec": 55.48,
+      "total_tokens": 4601,
+      "latency_sec": 64.88,
       "errors": 0
     },
     {
-      "instance_id": "django__django-12774",
+      "instance_id": "pydata__xarray-6461",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2352,
+      "latency_sec": 28.08,
+      "errors": 0
+    },
+    {
+      "instance_id": "pydata__xarray-6599",
       "has_patch": false,
       "turns": 1,
-      "total_tokens": 1775,
-      "latency_sec": 101.85,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-12858",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 2340,
-      "latency_sec": 44.19,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-12965",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 3408,
-      "latency_sec": 59.03,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-13012",
-      "has_patch": true,
-      "turns": 2,
-      "total_tokens": 2433,
-      "latency_sec": 40.0,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-13023",
-      "has_patch": false,
-      "turns": 4,
-      "total_tokens": 4324,
-      "latency_sec": 71.96,
+      "total_tokens": 2948,
+      "latency_sec": 26.22,
       "errors": 1
     },
     {
-      "instance_id": "django__django-13028",
+      "instance_id": "pydata__xarray-6721",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 7638,
+      "latency_sec": 70.63,
+      "errors": 0
+    },
+    {
+      "instance_id": "pydata__xarray-6744",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2725,
+      "latency_sec": 33.19,
+      "errors": 0
+    },
+    {
+      "instance_id": "pydata__xarray-6938",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3714,
+      "latency_sec": 39.81,
+      "errors": 0
+    },
+    {
+      "instance_id": "pydata__xarray-6992",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1443,
+      "latency_sec": 34.47,
+      "errors": 0
+    },
+    {
+      "instance_id": "pydata__xarray-7229",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 4132,
+      "latency_sec": 59.31,
+      "errors": 0
+    },
+    {
+      "instance_id": "pydata__xarray-7233",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2979,
+      "latency_sec": 33.99,
+      "errors": 0
+    },
+    {
+      "instance_id": "pydata__xarray-7393",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3392,
+      "latency_sec": 40.91,
+      "errors": 0
+    },
+    {
+      "instance_id": "pylint-dev__pylint-4551",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2395,
+      "latency_sec": 31.04,
+      "errors": 0
+    },
+    {
+      "instance_id": "pylint-dev__pylint-4604",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2166,
+      "latency_sec": 24.97,
+      "errors": 0
+    },
+    {
+      "instance_id": "pylint-dev__pylint-4661",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2382,
+      "latency_sec": 34.73,
+      "errors": 0
+    },
+    {
+      "instance_id": "pylint-dev__pylint-4970",
       "has_patch": false,
       "turns": 2,
-      "total_tokens": 3761,
-      "latency_sec": 89.18,
+      "total_tokens": 2827,
+      "latency_sec": 106.68,
+      "errors": 0
+    },
+    {
+      "instance_id": "pylint-dev__pylint-6386",
+      "has_patch": false,
+      "turns": 2,
+      "total_tokens": 2312,
+      "latency_sec": 34.14,
       "errors": 1
     },
     {
-      "instance_id": "django__django-13033",
+      "instance_id": "pylint-dev__pylint-6528",
       "has_patch": true,
       "turns": 2,
-      "total_tokens": 3825,
-      "latency_sec": 55.01,
+      "total_tokens": 3025,
+      "latency_sec": 35.19,
       "errors": 0
     },
     {
-      "instance_id": "django__django-13089",
+      "instance_id": "pylint-dev__pylint-6903",
       "has_patch": true,
       "turns": 2,
-      "total_tokens": 2532,
-      "latency_sec": 35.76,
+      "total_tokens": 3834,
+      "latency_sec": 45.22,
       "errors": 0
     },
     {
-      "instance_id": "django__django-13109",
+      "instance_id": "pylint-dev__pylint-7080",
       "has_patch": true,
       "turns": 2,
-      "total_tokens": 2630,
-      "latency_sec": 45.76,
+      "total_tokens": 10459,
+      "latency_sec": 99.95,
       "errors": 0
     },
     {
-      "instance_id": "django__django-13112",
+      "instance_id": "pylint-dev__pylint-7277",
       "has_patch": true,
       "turns": 2,
-      "total_tokens": 2738,
-      "latency_sec": 42.31,
+      "total_tokens": 2424,
+      "latency_sec": 31.7,
       "errors": 0
     },
     {
-      "instance_id": "django__django-13121",
+      "instance_id": "pylint-dev__pylint-8898",
       "has_patch": true,
       "turns": 2,
-      "total_tokens": 2388,
-      "latency_sec": 42.05,
+      "total_tokens": 3798,
+      "latency_sec": 40.26,
       "errors": 0
     },
     {
-      "instance_id": "django__django-13128",
+      "instance_id": "pytest-dev__pytest-10051",
       "has_patch": true,
       "turns": 2,
-      "total_tokens": 1876,
-      "latency_sec": 32.57,
+      "total_tokens": 2679,
+      "latency_sec": 28.61,
       "errors": 0
     },
     {
-      "instance_id": "django__django-13158",
+      "instance_id": "pytest-dev__pytest-10081",
       "has_patch": true,
       "turns": 2,
-      "total_tokens": 2355,
-      "latency_sec": 40.42,
+      "total_tokens": 3361,
+      "latency_sec": 41.59,
       "errors": 0
     },
     {
-      "instance_id": "django__django-13195",
-      "has_patch": true,
-      "turns": 3,
-      "total_tokens": 4615,
-      "latency_sec": 80.05,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-13212",
+      "instance_id": "pytest-dev__pytest-10356",
       "has_patch": true,
       "turns": 2,
-      "total_tokens": 1914,
-      "latency_sec": 33.31,
+      "total_tokens": 4487,
+      "latency_sec": 61.04,
       "errors": 0
     },
     {
-      "instance_id": "django__django-13279",
-      "has_patch": false,
-      "turns": 2,
-      "total_tokens": 2705,
-      "latency_sec": 119.01,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-13297",
+      "instance_id": "pytest-dev__pytest-5262",
       "has_patch": true,
       "turns": 2,
-      "total_tokens": 2675,
-      "latency_sec": 57.37,
+      "total_tokens": 4275,
+      "latency_sec": 50.46,
       "errors": 0
     },
     {
-      "instance_id": "django__django-13315",
-      "has_patch": false,
-      "turns": 1,
-      "total_tokens": 1550,
-      "latency_sec": 98.16,
+      "instance_id": "pytest-dev__pytest-5631",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3119,
+      "latency_sec": 36.98,
       "errors": 0
     },
     {
-      "instance_id": "django__django-13343",
+      "instance_id": "pytest-dev__pytest-5787",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 4137,
+      "latency_sec": 64.1,
+      "errors": 0
+    },
+    {
+      "instance_id": "pytest-dev__pytest-5809",
       "has_patch": false,
       "turns": 1,
-      "total_tokens": 1738,
-      "latency_sec": 101.23,
+      "total_tokens": 1830,
+      "latency_sec": 92.15,
       "errors": 0
     },
     {
-      "instance_id": "django__django-13344",
+      "instance_id": "pytest-dev__pytest-5840",
       "has_patch": true,
       "turns": 2,
-      "total_tokens": 2299,
-      "latency_sec": 33.85,
+      "total_tokens": 2126,
+      "latency_sec": 23.03,
       "errors": 0
     },
     {
-      "instance_id": "django__django-13346",
+      "instance_id": "pytest-dev__pytest-6197",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3883,
+      "latency_sec": 51.96,
+      "errors": 0
+    },
+    {
+      "instance_id": "pytest-dev__pytest-6202",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3412,
+      "latency_sec": 38.55,
+      "errors": 0
+    },
+    {
+      "instance_id": "pytest-dev__pytest-7205",
+      "has_patch": false,
+      "turns": 2,
+      "total_tokens": 4110,
+      "latency_sec": 41.36,
+      "errors": 1
+    },
+    {
+      "instance_id": "pytest-dev__pytest-7236",
       "has_patch": false,
       "turns": 1,
-      "total_tokens": 1014,
-      "latency_sec": 23.81,
+      "total_tokens": 2043,
+      "latency_sec": 74.29,
       "errors": 0
     },
     {
-      "instance_id": "django__django-13363",
+      "instance_id": "pytest-dev__pytest-7324",
+      "has_patch": false,
+      "turns": 2,
+      "total_tokens": 2856,
+      "latency_sec": 107.48,
+      "errors": 0
+    },
+    {
+      "instance_id": "pytest-dev__pytest-7432",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2180,
+      "latency_sec": 25.74,
+      "errors": 0
+    },
+    {
+      "instance_id": "pytest-dev__pytest-7490",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 10389,
+      "latency_sec": 99.74,
+      "errors": 0
+    },
+    {
+      "instance_id": "pytest-dev__pytest-7521",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 4441,
+      "latency_sec": 61.44,
+      "errors": 0
+    },
+    {
+      "instance_id": "pytest-dev__pytest-7571",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 1957,
+      "latency_sec": 20.86,
+      "errors": 0
+    },
+    {
+      "instance_id": "pytest-dev__pytest-7982",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2048,
+      "latency_sec": 27.69,
+      "errors": 0
+    },
+    {
+      "instance_id": "pytest-dev__pytest-8399",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1094,
+      "latency_sec": 13.76,
+      "errors": 1
+    },
+    {
+      "instance_id": "scikit-learn__scikit-learn-10297",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1959,
+      "latency_sec": 94.54,
+      "errors": 0
+    },
+    {
+      "instance_id": "scikit-learn__scikit-learn-10844",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3199,
+      "latency_sec": 46.45,
+      "errors": 0
+    },
+    {
+      "instance_id": "scikit-learn__scikit-learn-10908",
+      "has_patch": false,
+      "turns": 2,
+      "total_tokens": 2796,
+      "latency_sec": 34.37,
+      "errors": 1
+    },
+    {
+      "instance_id": "scikit-learn__scikit-learn-11310",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2359,
+      "latency_sec": 28.02,
+      "errors": 0
+    },
+    {
+      "instance_id": "scikit-learn__scikit-learn-11578",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 3364,
+      "latency_sec": 118.8,
+      "errors": 0
+    },
+    {
+      "instance_id": "scikit-learn__scikit-learn-12585",
       "has_patch": false,
       "turns": 1,
       "total_tokens": 1877,
-      "latency_sec": 103.63,
+      "latency_sec": 93.2,
       "errors": 0
     },
     {
-      "instance_id": "django__django-13401",
+      "instance_id": "scikit-learn__scikit-learn-12682",
       "has_patch": true,
       "turns": 2,
-      "total_tokens": 2383,
-      "latency_sec": 43.24,
+      "total_tokens": 2105,
+      "latency_sec": 29.36,
       "errors": 0
     },
     {
-      "instance_id": "django__django-13406",
+      "instance_id": "scikit-learn__scikit-learn-12973",
       "has_patch": true,
       "turns": 2,
-      "total_tokens": 3450,
-      "latency_sec": 53.25,
+      "total_tokens": 2896,
+      "latency_sec": 40.2,
       "errors": 0
     },
     {
-      "instance_id": "django__django-13410",
+      "instance_id": "scikit-learn__scikit-learn-13124",
       "has_patch": true,
       "turns": 2,
-      "total_tokens": 2608,
-      "latency_sec": 52.05,
+      "total_tokens": 7803,
+      "latency_sec": 77.86,
       "errors": 0
     },
     {
-      "instance_id": "django__django-13417",
+      "instance_id": "scikit-learn__scikit-learn-13135",
       "has_patch": true,
       "turns": 2,
-      "total_tokens": 2294,
-      "latency_sec": 42.26,
+      "total_tokens": 5083,
+      "latency_sec": 51.13,
       "errors": 0
     },
     {
-      "instance_id": "django__django-13449",
+      "instance_id": "scikit-learn__scikit-learn-13142",
       "has_patch": true,
       "turns": 2,
-      "total_tokens": 5448,
-      "latency_sec": 68.73,
+      "total_tokens": 3847,
+      "latency_sec": 41.98,
       "errors": 0
     },
     {
-      "instance_id": "django__django-13512",
+      "instance_id": "scikit-learn__scikit-learn-13328",
       "has_patch": true,
       "turns": 2,
-      "total_tokens": 1949,
-      "latency_sec": 32.46,
+      "total_tokens": 4690,
+      "latency_sec": 48.23,
       "errors": 0
     },
     {
-      "instance_id": "django__django-13513",
+      "instance_id": "scikit-learn__scikit-learn-13439",
       "has_patch": true,
       "turns": 2,
-      "total_tokens": 2580,
-      "latency_sec": 49.27,
+      "total_tokens": 2648,
+      "latency_sec": 37.62,
       "errors": 0
     },
     {
-      "instance_id": "django__django-13516",
+      "instance_id": "scikit-learn__scikit-learn-13496",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3171,
+      "latency_sec": 109.86,
+      "errors": 0
+    },
+    {
+      "instance_id": "scikit-learn__scikit-learn-13779",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2093,
+      "latency_sec": 29.15,
+      "errors": 0
+    },
+    {
+      "instance_id": "scikit-learn__scikit-learn-14053",
+      "has_patch": false,
+      "turns": 2,
+      "total_tokens": 3492,
+      "latency_sec": 37.69,
+      "errors": 0
+    },
+    {
+      "instance_id": "scikit-learn__scikit-learn-14087",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3253,
+      "latency_sec": 39.44,
+      "errors": 0
+    },
+    {
+      "instance_id": "scikit-learn__scikit-learn-14141",
       "has_patch": false,
       "turns": 1,
-      "total_tokens": 1260,
-      "latency_sec": 51.76,
+      "total_tokens": 1586,
+      "latency_sec": 88.07,
       "errors": 0
     },
     {
-      "instance_id": "django__django-13551",
+      "instance_id": "scikit-learn__scikit-learn-14496",
       "has_patch": true,
       "turns": 2,
-      "total_tokens": 2011,
-      "latency_sec": 40.27,
+      "total_tokens": 3569,
+      "latency_sec": 55.46,
       "errors": 0
     },
     {
-      "instance_id": "django__django-13568",
+      "instance_id": "scikit-learn__scikit-learn-14629",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2854,
+      "latency_sec": 28.14,
+      "errors": 0
+    },
+    {
+      "instance_id": "scikit-learn__scikit-learn-14710",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 5326,
+      "latency_sec": 54.73,
+      "errors": 0
+    },
+    {
+      "instance_id": "scikit-learn__scikit-learn-14894",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3124,
+      "latency_sec": 40.26,
+      "errors": 0
+    },
+    {
+      "instance_id": "scikit-learn__scikit-learn-14983",
       "has_patch": false,
-      "turns": 1,
-      "total_tokens": 1662,
-      "latency_sec": 99.76,
+      "turns": 4,
+      "total_tokens": 5632,
+      "latency_sec": 51.13,
       "errors": 0
     },
     {
-      "instance_id": "django__django-13569",
+      "instance_id": "scikit-learn__scikit-learn-15100",
       "has_patch": true,
       "turns": 2,
-      "total_tokens": 2983,
+      "total_tokens": 3243,
+      "latency_sec": 44.03,
+      "errors": 0
+    },
+    {
+      "instance_id": "scikit-learn__scikit-learn-25102",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2926,
+      "latency_sec": 33.18,
+      "errors": 0
+    },
+    {
+      "instance_id": "scikit-learn__scikit-learn-25232",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2381,
+      "latency_sec": 24.5,
+      "errors": 0
+    },
+    {
+      "instance_id": "scikit-learn__scikit-learn-25747",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 5388,
+      "latency_sec": 48.78,
+      "errors": 0
+    },
+    {
+      "instance_id": "scikit-learn__scikit-learn-25931",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3705,
+      "latency_sec": 54.61,
+      "errors": 0
+    },
+    {
+      "instance_id": "scikit-learn__scikit-learn-25973",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2727,
+      "latency_sec": 30.89,
+      "errors": 0
+    },
+    {
+      "instance_id": "scikit-learn__scikit-learn-26194",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2741,
+      "latency_sec": 40.78,
+      "errors": 0
+    },
+    {
+      "instance_id": "scikit-learn__scikit-learn-26323",
+      "has_patch": true,
+      "turns": 3,
+      "total_tokens": 5581,
       "latency_sec": 55.61,
       "errors": 0
     },
     {
-      "instance_id": "django__django-13590",
-      "has_patch": false,
-      "turns": 1,
-      "total_tokens": 1684,
-      "latency_sec": 100.25,
-      "errors": 0
-    },
-    {
-      "instance_id": "django__django-13658",
+      "instance_id": "scikit-learn__scikit-learn-9288",
       "has_patch": true,
       "turns": 2,
-      "total_tokens": 2394,
-      "latency_sec": 40.24,
+      "total_tokens": 4366,
+      "latency_sec": 88.84,
       "errors": 0
     },
     {
-      "instance_id": "django__django-13670",
+      "instance_id": "sphinx-doc__sphinx-10323",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3305,
+      "latency_sec": 29.71,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-10435",
       "has_patch": false,
       "turns": 2,
-      "total_tokens": 2215,
-      "latency_sec": 40.34,
+      "total_tokens": 3484,
+      "latency_sec": 35.67,
       "errors": 1
     },
     {
-      "instance_id": "django__django-13741",
+      "instance_id": "sphinx-doc__sphinx-10449",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3948,
+      "latency_sec": 40.62,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-10466",
+      "has_patch": false,
+      "turns": 4,
+      "total_tokens": 6998,
+      "latency_sec": 58.52,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-10614",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3601,
+      "latency_sec": 49.55,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-10673",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2645,
+      "latency_sec": 38.55,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-11445",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2908,
+      "latency_sec": 32.92,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-11510",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 4829,
+      "latency_sec": 47.49,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-7440",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2412,
+      "latency_sec": 30.19,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-7454",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3426,
+      "latency_sec": 42.46,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-7462",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2503,
+      "latency_sec": 25.86,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-7590",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2214,
+      "latency_sec": 28.78,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-7748",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1628,
+      "latency_sec": 88.82,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-7757",
       "has_patch": false,
       "turns": 2,
-      "total_tokens": 2168,
-      "latency_sec": 37.25,
+      "total_tokens": 2188,
+      "latency_sec": 26.59,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-7889",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2522,
+      "latency_sec": 33.69,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-7910",
+      "has_patch": false,
+      "turns": 2,
+      "total_tokens": 2692,
+      "latency_sec": 43.68,
       "errors": 1
     },
     {
-      "instance_id": "django__django-13786",
-      "has_patch": false,
-      "turns": 1,
-      "total_tokens": 1649,
-      "latency_sec": 99.71,
+      "instance_id": "sphinx-doc__sphinx-7985",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2713,
+      "latency_sec": 31.95,
       "errors": 0
     },
     {
-      "instance_id": "django__django-13794",
+      "instance_id": "sphinx-doc__sphinx-8035",
       "has_patch": false,
       "turns": 1,
-      "total_tokens": 855,
-      "latency_sec": 14.36,
+      "total_tokens": 997,
+      "latency_sec": 11.73,
       "errors": 0
     },
     {
-      "instance_id": "django__django-13807",
-      "has_patch": false,
-      "turns": 1,
-      "total_tokens": 1876,
-      "latency_sec": 103.78,
+      "instance_id": "sphinx-doc__sphinx-8056",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2974,
+      "latency_sec": 58.56,
       "errors": 0
     },
     {
-      "instance_id": "django__django-13809",
+      "instance_id": "sphinx-doc__sphinx-8120",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2888,
+      "latency_sec": 40.52,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-8265",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2861,
+      "latency_sec": 32.91,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-8269",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2431,
+      "latency_sec": 25.55,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-8459",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2447,
+      "latency_sec": 25.93,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-8475",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2383,
+      "latency_sec": 35.58,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-8548",
+      "has_patch": false,
+      "turns": 2,
+      "total_tokens": 2721,
+      "latency_sec": 103.79,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-8551",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2964,
+      "latency_sec": 34.22,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-8593",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2070,
+      "latency_sec": 21.89,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-8595",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2122,
+      "latency_sec": 25.77,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-8621",
+      "has_patch": false,
+      "turns": 2,
+      "total_tokens": 2939,
+      "latency_sec": 32.42,
+      "errors": 1
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-8638",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3273,
+      "latency_sec": 34.99,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-8721",
       "has_patch": true,
       "turns": 3,
-      "total_tokens": 3435,
-      "latency_sec": 77.07,
+      "total_tokens": 3164,
+      "latency_sec": 34.88,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-9229",
+      "has_patch": true,
+      "turns": 3,
+      "total_tokens": 6559,
+      "latency_sec": 142.47,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-9230",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2624,
+      "latency_sec": 29.95,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-9258",
+      "has_patch": false,
+      "turns": 2,
+      "total_tokens": 2161,
+      "latency_sec": 37.85,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-9281",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2165,
+      "latency_sec": 24.26,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-9320",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1109,
+      "latency_sec": 8.36,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-9367",
+      "has_patch": false,
+      "turns": 2,
+      "total_tokens": 2058,
+      "latency_sec": 26.66,
+      "errors": 1
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-9461",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 2078,
+      "latency_sec": 95.81,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-9591",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2715,
+      "latency_sec": 27.98,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-9602",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1897,
+      "latency_sec": 92.96,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-9658",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3457,
+      "latency_sec": 39.27,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-9673",
+      "has_patch": true,
+      "turns": 3,
+      "total_tokens": 4105,
+      "latency_sec": 61.92,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-9698",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1805,
+      "latency_sec": 91.61,
+      "errors": 0
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-9711",
+      "has_patch": false,
+      "turns": 2,
+      "total_tokens": 2745,
+      "latency_sec": 43.48,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-11618",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 1945,
+      "latency_sec": 25.86,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-12096",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2156,
+      "latency_sec": 26.99,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-12419",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2560,
+      "latency_sec": 36.25,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-12481",
+      "has_patch": false,
+      "turns": 2,
+      "total_tokens": 2245,
+      "latency_sec": 54.87,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-12489",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2656,
+      "latency_sec": 42.36,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-13031",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2393,
+      "latency_sec": 28.67,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-13091",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1979,
+      "latency_sec": 94.34,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-13372",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2550,
+      "latency_sec": 30.01,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-13480",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1704,
+      "latency_sec": 89.97,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-13551",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2305,
+      "latency_sec": 36.31,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-13615",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 1911,
+      "latency_sec": 25.2,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-13647",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3452,
+      "latency_sec": 53.53,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-13757",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2121,
+      "latency_sec": 29.97,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-13798",
+      "has_patch": false,
+      "turns": 2,
+      "total_tokens": 2283,
+      "latency_sec": 30.83,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-13852",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3291,
+      "latency_sec": 54.48,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-13877",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 4495,
+      "latency_sec": 42.51,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-13878",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3730,
+      "latency_sec": 48.55,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-13974",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2583,
+      "latency_sec": 32.58,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-14248",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2230,
+      "latency_sec": 35.97,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-14531",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2220,
+      "latency_sec": 27.74,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-14711",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2300,
+      "latency_sec": 25.45,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-14976",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2514,
+      "latency_sec": 39.96,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-15017",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2363,
+      "latency_sec": 30.18,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-15345",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 1952,
+      "latency_sec": 29.69,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-15349",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2240,
+      "latency_sec": 27.77,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-15599",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3014,
+      "latency_sec": 34.56,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-15809",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2032,
+      "latency_sec": 32.56,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-15875",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2106,
+      "latency_sec": 29.31,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-15976",
+      "has_patch": false,
+      "turns": 2,
+      "total_tokens": 3416,
+      "latency_sec": 112.6,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-16450",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2832,
+      "latency_sec": 53.61,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-16597",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2141,
+      "latency_sec": 36.28,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-16766",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2076,
+      "latency_sec": 26.82,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-16792",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2678,
+      "latency_sec": 26.7,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-16886",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 1887,
+      "latency_sec": 21.95,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-17139",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3101,
+      "latency_sec": 34.23,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-17318",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 3666,
+      "latency_sec": 41.19,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-17630",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 4026,
+      "latency_sec": 48.5,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-17655",
+      "has_patch": false,
+      "turns": 2,
+      "total_tokens": 2874,
+      "latency_sec": 37.64,
+      "errors": 1
+    },
+    {
+      "instance_id": "sympy__sympy-18189",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2412,
+      "latency_sec": 29.31,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-18199",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1645,
+      "latency_sec": 89.14,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-18211",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2233,
+      "latency_sec": 31.85,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-18698",
+      "has_patch": false,
+      "turns": 2,
+      "total_tokens": 2445,
+      "latency_sec": 51.67,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-18763",
+      "has_patch": false,
+      "turns": 2,
+      "total_tokens": 2256,
+      "latency_sec": 29.87,
+      "errors": 1
+    },
+    {
+      "instance_id": "sympy__sympy-19040",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2542,
+      "latency_sec": 27.16,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-19346",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2059,
+      "latency_sec": 26.97,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-19495",
+      "has_patch": false,
+      "turns": 4,
+      "total_tokens": 6511,
+      "latency_sec": 64.14,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-19637",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 1929,
+      "latency_sec": 24.93,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-19783",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 1957,
+      "latency_sec": 25.53,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-19954",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2617,
+      "latency_sec": 42.06,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-20154",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2060,
+      "latency_sec": 26.11,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-20428",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 4866,
+      "latency_sec": 47.3,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-20438",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2947,
+      "latency_sec": 43.83,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-20590",
+      "has_patch": true,
+      "turns": 3,
+      "total_tokens": 3448,
+      "latency_sec": 40.95,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-20801",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2162,
+      "latency_sec": 30.7,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-20916",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 1971,
+      "latency_sec": 26.36,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-21379",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2769,
+      "latency_sec": 34.94,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-21596",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2459,
+      "latency_sec": 37.67,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-21612",
+      "has_patch": false,
+      "turns": 1,
+      "total_tokens": 1198,
+      "latency_sec": 23.84,
+      "errors": 1
+    },
+    {
+      "instance_id": "sympy__sympy-21847",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2371,
+      "latency_sec": 28.93,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-21930",
+      "has_patch": false,
+      "turns": 2,
+      "total_tokens": 2815,
+      "latency_sec": 101.59,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-22080",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2400,
+      "latency_sec": 38.86,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-22456",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 1975,
+      "latency_sec": 28.17,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-22714",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2822,
+      "latency_sec": 34.07,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-22914",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2196,
+      "latency_sec": 32.94,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-23262",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2374,
+      "latency_sec": 26.08,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-23413",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2326,
+      "latency_sec": 35.93,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-23534",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2184,
+      "latency_sec": 30.03,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-23824",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2835,
+      "latency_sec": 26.21,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-23950",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2372,
+      "latency_sec": 34.75,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-24066",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2138,
+      "latency_sec": 31.85,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-24213",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2521,
+      "latency_sec": 40.28,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-24443",
+      "has_patch": true,
+      "turns": 4,
+      "total_tokens": 4820,
+      "latency_sec": 55.45,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-24539",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2196,
+      "latency_sec": 21.74,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-24562",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2135,
+      "latency_sec": 31.73,
+      "errors": 0
+    },
+    {
+      "instance_id": "sympy__sympy-24661",
+      "has_patch": true,
+      "turns": 2,
+      "total_tokens": 2007,
+      "latency_sec": 25.47,
       "errors": 0
     }
   ]
