@@ -24,10 +24,10 @@
 
 ---
 
-## 📈 Visual Progression: Runner 1 (Raw Kaggle) vs Runner 2 (Tokenectomy Sub-Cortex)
+## 📈 Empirical Ablation: Runner 1 (Raw Kaggle) vs Runner 2 (Tokenectomy Sub-Cortex)
 
 <p align="center">
-  <img src="assets/benchmark_run1_vs_run2.svg" alt="Kronumos Runner 1 vs Runner 2 Progression" width="760" />
+  <img src="assets/figure1_swebench_ablation.svg" alt="Figure 1: Empirical ablation of the Tokenectomy Sub-Cortex on SWE-bench Verified (N = 500)" width="800" />
 </p>
 
 ### Head-to-Head Progression Analysis

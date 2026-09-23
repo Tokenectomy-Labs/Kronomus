@@ -40,7 +40,7 @@ Read the complete engineering roadmap and evaluation methodology in [kronumos_pr
 Read the official full 500-instance benchmark report in [BENCHMARK_500_REPORT.md](BENCHMARK_500_REPORT.md).
 
 <p align="center">
-  <img src="assets/benchmark_run1_vs_run2.svg" alt="Kronumos Runner 1 vs Runner 2 Progression" width="760" />
+  <img src="assets/figure1_swebench_ablation.svg" alt="Figure 1: Empirical ablation of the Tokenectomy Sub-Cortex on SWE-bench Verified (N = 500)" width="800" />
 </p>
 
 * **Evaluated Tasks**: 500 / 500 (100% completed, 0 OOM crashes)
