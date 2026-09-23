@@ -1,0 +1,103 @@
+name: 🥊 Kronumos SWE-bench Docker Evaluation
+
+on:
+  push:
+    paths:
+      - 'predictions.jsonl'
+      - 'output/predictions.jsonl'
+  workflow_dispatch:
+    inputs:
+      dataset_name:
+        description: 'SWE-bench dataset split to evaluate'
+        required: true
+        default: 'princeton-nlp/SWE-bench_Verified'
+        type: choice
+        options:
+          - 'princeton-nlp/SWE-bench_Verified'
+          - 'princeton-nlp/SWE-bench_Lite'
+      predictions_file:
+        description: 'Path to predictions.jsonl'
+        required: true
+        default: 'predictions.jsonl'
+
+permissions:
+  contents: write
+
+jobs:
+  docker-swebench-eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360 # 6 hours max for deep test suite runs
+
+    steps:
+      - name: 📥 Check out repository
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
+      - name: 🐳 Verify Docker Daemon
+        run: |
+          docker --version
+          docker info
+
+      - name: 📦 Install SWE-bench official harness
+        run: |
+          python -m pip install --upgrade pip
+          pip install swebench datasets
+
+      - name: 🔍 Locate Predictions File
+        id: locate_pred
+        run: |
+          PRED_PATH="${{ github.event.inputs.predictions_file || 'predictions.jsonl' }}"
+          if [ ! -f "$PRED_PATH" ] && [ -f "output/predictions.jsonl" ]; then
+            PRED_PATH="output/predictions.jsonl"
+          fi
+          if [ ! -f "$PRED_PATH" ]; then
+            echo "❌ Error: predictions file not found at $PRED_PATH or output/predictions.jsonl"
+            exit 1
+          fi
+          echo "Found predictions file at: $PRED_PATH"
+          echo "pred_path=$PRED_PATH" >> $GITHUB_OUTPUT
+
+      - name: 🚀 Run Official Docker SWE-bench Evaluation
+        run: |
+          DATASET="${{ github.event.inputs.dataset_name || 'princeton-nlp/SWE-bench_Verified' }}"
+          PRED_FILE="${{ steps.locate_pred.outputs.pred_path }}"
+          echo "Running SWE-bench official evaluation harness on $DATASET..."
+          
+          python -m swebench.harness.run_evaluation \
+            --dataset_name "$DATASET" \
+            --predictions_path "$PRED_FILE" \
+            --max_workers 2 \
+            --run_id kronumos_run
+
+      - name: 📊 Generate Scorecard & Step Summary
+        if: always()
+        run: |
+          echo "### 🥊 Kronumos SWE-bench Evaluation Results" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "| :--- | :--- |" >> $GITHUB_STEP_SUMMARY
+          
+          REPORT_FILE=$(find . -name "*.json" -path "*/kronumos_run/*.json" | head -n 1)
+          if [ -f "$REPORT_FILE" ]; then
+            RESOLVED=$(jq -r '.resolved_instances // 0' "$REPORT_FILE" 2>/dev/null || echo "N/A")
+            TOTAL=$(jq -r '.total_instances // 0' "$REPORT_FILE" 2>/dev/null || echo "N/A")
+            echo "| **Resolved Tasks** | **$RESOLVED / $TOTAL** |" >> $GITHUB_STEP_SUMMARY
+            echo "| **Status** | ✅ Verified by Docker Test Harness |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| **Status** | Evaluated (Check raw artifacts) |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: 📦 Upload Benchmark Logs & Scorecard Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kronumos-swebench-results
+          path: |
+            *.log
+            *.json
+            logs/
+            output/
