@@ -69,14 +69,91 @@ Kronumos is fine-tuned to emit structured JSON tool calls:
 
 ---
 
-## 🚀 Quickstart
+## 💻 Interactive CLI Agent (Transparent Terminal REPL)
 
-### Running locally via Ollama:
+Kronumos includes a native agentic CLI interface featuring an ambient, transparent-terminal aesthetic, live streaming tokens, and an autonomous repair loop:
+
+```text
+  ╦╔═╦═╗╔═╗╔╗╔╦ ╦╔╦╗╔═╗╔═╗
+  ╠╩╗╠╦╝║ ║║║║║ ║║║║║ ║╚═╗
+  ╩ ╩╩╚═╚═╝╝╚╝╚═╝╩ ╩╚═╝╚═╝
+  Autonomous Code Remediation & SRE Agent • v1.0
+
+╭──────────────────────────────────────────────────────────────╮
+│  Workspace : /home/developer/payment-service                 │
+│  Project   : Rust (Cargo)                                    │
+│  Backend   : cloudflare                                      │
+│  Sub-Cortex: ACTIVE (Zero-Leak Redaction + AST)              │
+╰──────────────────────────────────────────────────────────────╯
+
+Interactive Agent Commands:
+  Any text     chat with Kronumos or explain code/errors
+  /fix         autonomous diagnostics & repair loop
+  /diff        inspect git diff in workspace
+  /test        run test suite with Sub-Cortex scrubbing
+  /clear       clear conversation memory buffer
+  /help        display help and shortcuts
+  /exit        exit Kronumos cleanly
+
+⚡ kronumos ❯ 
+```
+
+### Installation
+
+```bash
+# Via Cargo:
+cargo install --git https://github.com/Tokenectomy-Labs/Tokenectomy --bin kronumos
+
+# Or 1-line installer:
+curl -fsSL https://raw.githubusercontent.com/Tokenectomy-Labs/Kronomus/main/cli/install.sh | bash
+```
+
+### Usage
+
+```bash
+# 1. Interactive terminal chat REPL:
+kronumos
+
+# 2. Autonomous test-driven repair loop:
+kronumos --fix
+
+# 3. Choose your backend (Cloudflare Edge, Local Ollama, or OpenAI/Groq):
+kronumos --backend cloudflare --cf-url https://kronumos-gateway.<account>.workers.dev
+kronumos --backend ollama --ollama-model hf.co/NadevA23/Kronumos-GGUF:Q4_K_M
+```
+
+---
+
+## ☁️ Zero-Cost Cloudflare Edge Gateway ($0 Serverless)
+
+Deploy Kronumos on Cloudflare's global edge network in under 60 seconds with **$0 server infrastructure cost** using Cloudflare Workers AI:
+
+```bash
+# 1. Navigate to the gateway directory:
+cd gateway
+
+# 2. Deploy directly to the edge:
+npm run deploy
+```
+
+* **Free Tier Allocation**: 10,000 Neurons per day (~500+ debugging turns/day for free).
+* **Global Edge Acceleration**: Runs on Cloudflare edge GPUs across 300+ datacenters worldwide.
+* **Architecture Details**: See [`gateway/README.md`](gateway/README.md).
+
+---
+
+## 🏠 Offline Local Inference via Ollama
+
+Run Kronumos 100% locally and offline with GGUF quantization:
+
 ```bash
 ollama run hf.co/NadevA23/Kronumos-GGUF:Q4_K_M
 ```
 
-### Python (Transformers):
+---
+
+## 🐍 Python SDK (Transformers)
+
 ```python
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -96,3 +173,4 @@ model = AutoModelForCausalLM.from_pretrained(
 - **Developed by:** Daffa ([@daffa2555](https://github.com/daffa2555))
 - **Organization:** Tokenectomy Labs
 - **License:** Apache 2.0
+

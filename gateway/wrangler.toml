@@ -1,0 +1,12 @@
+name = "kronumos-gateway"
+main = "worker.js"
+compatibility_date = "2024-09-23"
+
+# Cloudflare Workers AI Binding (Zero-cost GPU inference at edge)
+[ai]
+binding = "AI"
+
+# Optional environment variables
+[vars]
+DEFAULT_MODEL = "@cf/qwen/qwen2.5-coder-32b-instruct"
+# Set KRONUMOS_API_KEY via `npx wrangler secret put KRONUMOS_API_KEY` if you want private authentication

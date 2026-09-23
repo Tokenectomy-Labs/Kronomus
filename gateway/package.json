@@ -1,0 +1,16 @@
+{
+  "name": "kronumos-gateway",
+  "version": "1.0.0",
+  "description": "Serverless edge gateway for Kronumos autonomous AI agent powered by Cloudflare Workers AI",
+  "main": "worker.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "keywords": ["cloudflare-workers", "workers-ai", "kronumos", "ai-agent", "serverless"],
+  "author": "Daffa (@daffa2555), Tokenectomy Labs",
+  "license": "MIT",
+  "devDependencies": {
+    "wrangler": "^3.114.0"
+  }
+}
