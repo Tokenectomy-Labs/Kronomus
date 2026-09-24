@@ -116,18 +116,27 @@ cargo install --git https://github.com/Tokenectomy-Labs/Tokenectomy --bin kronum
 curl -fsSL https://raw.githubusercontent.com/Tokenectomy-Labs/Kronomus/main/cli/install.sh | bash
 ```
 
-### Usage
+### Usage Modes
 
 ```bash
-# 1. Interactive terminal chat REPL:
+# 1. Autonomous TDD self-healing loop (runs test suite, patches, verifies on hardware):
+kronumos --loop
+kronumos --fix --workspace /path/to/repo
+
+# 2. One-shot terminal command execution (headless):
+kronumos "Explain the blast radius of refactoring auth module"
+
+# 3. Unix piping (clean quiet mode for CI/CD or log diagnosis):
+cat error.log | kronumos -q
+pytest 2>&1 | kronumos -q "Diagnose and fix assertions"
+
+# 4. Interactive ambient terminal REPL:
 kronumos
 
-# 2. Autonomous test-driven repair loop:
-kronumos --fix
-
-# 3. Choose your backend (Cloudflare Edge, Local Ollama, or OpenAI/Groq):
+# 5. Multi-Backend inference (Cloudflare Edge, Local Ollama, OpenAI/Groq):
 kronumos --backend cloudflare --cf-url https://kronumos-gateway.<account>.workers.dev
 kronumos --backend ollama --ollama-model hf.co/NadevA23/Kronumos-GGUF:Q4_K_M
+kronumos --backend openai --openai-key $GROQ_API_KEY --openai-model qwen-2.5-coder-32b
 ```
 
 

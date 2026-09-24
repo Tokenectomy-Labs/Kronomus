@@ -30,19 +30,42 @@ curl -fsSL https://raw.githubusercontent.com/Tokenectomy-Labs/Kronomus/main/cli/
 
 ## 🚀 Usage Modes
 
-### 1. Interactive Chat REPL (Transparent Terminal)
-Launch directly into the interactive agent loop:
+### 1. Autonomous TDD Self-Healing Loop (Headless CI/CD)
+Point Kronumos at any workspace. It automatically detects the project build system (`cargo`, `pytest`, `npm test`, `go test`), probes test baselines, excises noise and sensitive credentials via Sub-Cortex, synthesizes surgical AST patches, and verifies that tests pass on real hardware before completing:
+```bash
+# Run autonomous self-healing loop until green
+kronumos --loop
+
+# Or use the --fix alias
+kronumos --fix --workspace /path/to/repo
+
+# Set custom per-command timeout (default: 120s) and max retry rounds
+kronumos --loop --timeout 60 --max-iterations 5
+```
+* **Semantic Exit Codes**: Exits with code `0` on verified test pass, or code `1` if failures remain unresolved after max iterations — perfectly suited for GitHub Actions and headless CI/CD pipelines.
+
+### 2. One-Shot Positional Execution
+Ask questions or request code audits directly from your terminal without entering the interactive shell:
+```bash
+kronumos "Analyze src/auth.rs and identify potential race conditions"
+kronumos "Explain the blast radius of refactoring UserSession"
+```
+
+### 3. Unix Pipeline & Headless Piping
+Pipe compiler errors, stack traces, or container logs directly into Kronumos with quiet mode (`-q / --quiet`) to strip visual banners and spinners:
+```bash
+cat cargo_build.log | kronumos -q
+pytest 2>&1 | kronumos -q "Diagnose and fix these failing assertions"
+docker logs app_container 2>&1 | kronumos -q "Identify root cause of OOM crash"
+```
+
+### 4. Interactive Chat REPL (Transparent Terminal)
+Launch directly into the ambient, transparent-terminal pair-debugging REPL:
 ```bash
 kronumos
 ```
 
-### 2. Autonomous Non-Interactive Fix Loop
-Point Kronumos at a failing project, immediately run the test suite, plan a fix, apply surgical patches, and verify clean test passes:
-```bash
-kronumos --fix
-```
-
-### 3. Inference Backends
+### 5. Multi-Backend Inference
 Kronumos supports multiple inference backends:
 
 ```bash
