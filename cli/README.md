@@ -36,13 +36,19 @@ Point Kronumos at any workspace. It automatically detects the project build syst
 # Run autonomous self-healing loop until green
 kronumos --loop
 
-# Or use the --fix alias
+# Or use the --fix alias with custom workspace
 kronumos --fix --workspace /path/to/repo
 
-# Set custom per-command timeout (default: 120s) and max retry rounds
-kronumos --loop --timeout 60 --max-iterations 5
+# Auto-rollback on failure (guarantees 0 dirty diff if loop cannot resolve all tests)
+kronumos --loop --auto-rollback
+
+# Auto Git Delivery: automatically branch and commit verified patch once tests pass
+kronumos --loop --branch fix/auth-race --commit
+
+# Machine-to-Machine JSON output for CI/CD pipelines
+kronumos --loop --json
 ```
-* **Semantic Exit Codes**: Exits with code `0` on verified test pass, or code `1` if failures remain unresolved after max iterations — perfectly suited for GitHub Actions and headless CI/CD pipelines.
+* **Semantic Exit Codes**: Exits with code `0` on verified test pass, or code `1` if failures remain unresolved after max iterations.
 
 ### 2. One-Shot Positional Execution
 Ask questions or request code audits directly from your terminal without entering the interactive shell:
@@ -79,6 +85,32 @@ kronumos --backend ollama --ollama-model hf.co/NadevA23/Kronumos-GGUF:Q4_K_M
 kronumos --backend openai --openai-url https://api.groq.com/openai/v1 --openai-key $GROQ_API_KEY --openai-model qwen-2.5-coder-32b
 ```
 
+### 6. Persistent Configuration File
+Avoid re-typing CLI flags by setting your preferred backend and options in `~/.config/kronumos/config.toml` (global) or `.kronumos.toml` (project-level):
+
+```toml
+# ~/.config/kronumos/config.toml or .kronumos.toml
+backend = "ollama"
+ollama_model = "hf.co/NadevA23/Kronumos-GGUF:Q4_K_M"
+timeout = 120
+max_iterations = 10
+auto_rollback = true
+```
+
+
+## 🛠️ Built-in Agent Tools
+
+During autonomous diagnosis, Kronumos invokes the following sub-cortex tools with zero human intervention:
+
+| Tool | Purpose |
+| :--- | :--- |
+| `run_command` | Executes test runners, build commands, and compiler checks with timeout guards |
+| `view_file` | Inspects exact source code lines and context |
+| `search_code` | Searches codebase for symbol definitions or error text patterns across all project files |
+| `list_files` | Explores repository file hierarchy and directory structure |
+| `apply_patch` | Applies surgical, character-exact search-and-replace AST patches |
+| `git_action` | Inspects diffs, manages branches, and commits verified fixes |
+
 
 ## ⌨️ Built-in Agent Slash Commands
 
@@ -86,14 +118,16 @@ kronumos --backend openai --openai-url https://api.groq.com/openai/v1 --openai-k
 | :--- | :--- |
 | `Any text` | Freeform conversation — ask questions about errors, explain code, or request refactors |
 | `/fix` | Triggers the autonomous test-driven remediation loop |
+| `/undo` | Reverts uncommitted patches immediately (guarantees zero dirty diff) |
 | `/diff` | Displays the current uncommitted git diff in the workspace |
 | `/test` | Executes project tests directly and scrubs framework noise with Sub-Cortex |
 | `/clear` | Clears conversation context buffer |
 | `/help` | Displays command reference and agent capabilities |
-| `/exit` | Exits the session cleanly with a zero dirty diff guarantee |
+| `/exit` | Exits the session cleanly |
 
 
 ## 🛡️ Sub-Cortex Security Invariant
 
 - **Zero-Leak Redaction**: All user inputs and command outputs pass through Tokenectomy's compiled ReDoS-safe linear regex engine. JWTs, Bearer tokens, and connection strings are automatically masked before prompt transmission.
 - **Surgical Atomic Patches**: All code modifications are character-exact search-and-replace hunks. Kronumos never blindly rewrites entire source files.
+- **Context Sliding Window**: Automatically compacts multi-turn debugging steps to prevent token overflow during long-running sessions.

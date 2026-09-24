@@ -121,7 +121,9 @@ curl -fsSL https://raw.githubusercontent.com/Tokenectomy-Labs/Kronomus/main/cli/
 ```bash
 # 1. Autonomous TDD self-healing loop (runs test suite, patches, verifies on hardware):
 kronumos --loop
-kronumos --fix --workspace /path/to/repo
+kronumos --loop --auto-rollback      # Auto-revert broken patches on failure (0 dirty diff)
+kronumos --loop --branch fix/auth --commit  # Auto Git branch & commit on pass
+kronumos --loop --json               # Machine-to-machine JSON output for CI/CD
 
 # 2. One-shot terminal command execution (headless):
 kronumos "Explain the blast radius of refactoring auth module"
