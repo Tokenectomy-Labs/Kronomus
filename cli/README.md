@@ -71,12 +71,16 @@ Launch directly into the ambient, transparent-terminal pair-debugging cockpit st
 kronumos
 ```
 * **Live Animated Spinners**: Real-time cyan spinners (`⠋⠙⠹...`) while querying Sub-Cortex, streaming tokens, or executing test suites.
-* **Framed Tool Cards**: Visual status cards for `run_command`, `apply_patch`, `search_code`, `view_file`, and `git_action` with `[✓ exit 0]` and `[✗ exit 1]` badges.
+* **Framed Tool Cards**: Visual status cards for `run_command`, `apply_patch`, `write_file`, `search_code`, `view_file`, and `git_action` with `[✓ exit 0]` and `[✗ exit 1]` badges.
+* **Direct Shell Escape (`!<cmd>`)**: Run shell commands directly on physical hardware with zero token consumption and zero LLM latency (e.g. `!cargo test`, `!git status`).
+* **Interactive File Mentions (`@<file>`)**: Press Tab after `@` to autocomplete project files; auto-inlines file content into model context.
+* **Multi-Line Continuation**: Support trailing backslashes (`\`) or triple-quote blocks (`"""`) for pasting multi-line code or logs.
+* **Double Ctrl+C Safety**: Press Ctrl+C once to cancel ongoing inputs; double-tap within 2s to exit cleanly.
 * **Visual Diff Highlighting**: Instant syntax-colored diff cards (`+` green, `-` red, `@@` cyan) in `/diff` and during patch applications.
 * **Kairos Status Cockpit**: Ambient HUD displaying current workspace, detected project build system, Sub-Cortex token surgery state, and active Kairos v1.0 engine.
 
-### 5. Multi-Backend Inference
-Kronumos supports multiple inference backends:
+### 5. Multi-Backend Inference & Zero-Config Auto-Detection
+Kronumos auto-detects running local Ollama engines or environment API keys (`OPENAI_API_KEY`, `GROQ_API_KEY`) on first launch, providing zero-config setup out of the box:
 
 ```bash
 # Cloudflare Workers AI ($0 edge serverless inference)
@@ -112,26 +116,34 @@ During autonomous diagnosis, Kronumos invokes the following sub-cortex tools wit
 | `view_file` | Inspects exact source code lines and context |
 | `search_code` | Searches codebase for symbol definitions or error text patterns across all project files |
 | `list_files` | Explores repository file hierarchy and directory structure |
+| `write_file` | Creates new files or writes full file content with automatic parent directory creation |
 | `apply_patch` | Applies surgical, character-exact search-and-replace AST patches |
 | `git_action` | Inspects diffs, manages branches, and commits verified fixes |
 
 
-## ⌨️ Built-in Agent Slash Commands
+## ⌨️ Built-in Agent Slash Commands & Keyboard Shortcuts
 
 | Command | Action |
 | :--- | :--- |
 | `Any text` | Freeform conversation — ask questions about errors, explain code, or request refactors |
+| `@<path>` | Autocompletes via Tab and inlines workspace file content into model context |
+| `!<cmd>` | Direct shell execution on physical hardware without LLM latency or token waste |
 | `/fix` | Triggers the autonomous test-driven remediation loop |
 | `/undo` | Reverts uncommitted patches immediately (guarantees zero dirty diff) |
 | `/diff` | Displays the current uncommitted git diff in the workspace |
 | `/test` | Executes project tests directly and scrubs framework noise with Sub-Cortex |
+| `/stats` | Displays FinOps telemetry: pruned lines, session duration, and tokens saved |
 | `/clear` | Clears conversation context buffer |
 | `/help` | Displays command reference and agent capabilities |
-| `/exit` | Exits the session cleanly |
+| `/exit` | Exits the session cleanly (or double Ctrl+C) |
 
 
-## 🛡️ Sub-Cortex Security Invariant
+## 🛡️ Sub-Cortex Security Invariants & Critical File Guard
 
-- **Zero-Leak Redaction**: All user inputs and command outputs pass through Tokenectomy's compiled ReDoS-safe linear regex engine. JWTs, Bearer tokens, and connection strings are automatically masked before prompt transmission.
+- **Zero-Leak Redaction**: All user inputs and command outputs pass through Tokenectomy's compiled ReDoS-safe linear regex engine. JWTs, Bearer tokens, private keys, and connection strings are automatically masked before prompt transmission.
+- **Strict Sandbox & Path Traversal Guard**: Prevents path traversal (`../`) outside workspace boundaries. Prohibits reading or modifying sensitive credentials (`.env*`, `id_rsa*`, `.ssh/`, `.aws/`, `.gnupg/`, `passwd`, `.git/config`, `access_token`, `auth.json`).
+- **Human-in-the-Loop Confirmation Gate**: Whenever the agent attempts to inspect or modify critical build manifests (`Cargo.toml`, `package.json`, `pyproject.toml`, `go.mod`, `Makefile`, `Dockerfile`, `.github/workflows/*`, `migrations/*`), it requires explicit terminal confirmation:
+  - For viewing: `Allow agent to view this file? [Y/n]`
+  - For patching / writing: `Allow this modification? [y/N/v (view proposed changes)]` with an interactive preview before applying changes.
 - **Surgical Atomic Patches**: All code modifications are character-exact search-and-replace hunks. Kronumos never blindly rewrites entire source files.
 - **Context Sliding Window**: Automatically compacts multi-turn debugging steps to prevent token overflow during long-running sessions.
