@@ -16,7 +16,6 @@ An agentic terminal REPL powered by **Kronumos Core** and the **Tokenectomy Rust
 ╰──────────────────────────────────────────────────────────────╯
 ```
 
----
 
 ## ⚡ Installation
 
@@ -30,7 +29,6 @@ cargo install --git https://github.com/Tokenectomy-Labs/Tokenectomy --bin kronum
 curl -fsSL https://raw.githubusercontent.com/Tokenectomy-Labs/Kronomus/main/cli/install.sh | bash
 ```
 
----
 
 ## 🚀 Usage Modes
 
@@ -60,7 +58,6 @@ kronumos --backend ollama --ollama-model hf.co/NadevA23/Kronumos-GGUF:Q4_K_M
 kronumos --backend openai --openai-url https://api.groq.com/openai/v1 --openai-key $GROQ_API_KEY --openai-model qwen-2.5-coder-32b
 ```
 
----
 
 ## ⌨️ Built-in Agent Slash Commands
 
@@ -74,7 +71,6 @@ kronumos --backend openai --openai-url https://api.groq.com/openai/v1 --openai-k
 | `/help` | Displays command reference and agent capabilities |
 | `/exit` | Exits the session cleanly with a zero dirty diff guarantee |
 
----
 
 ## 🛡️ Sub-Cortex Security Invariant
 

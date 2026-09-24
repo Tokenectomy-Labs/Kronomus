@@ -13,7 +13,6 @@
   <a href="https://huggingface.co/NadevA23/Kronumos-GGUF"><img src="https://img.shields.io/badge/GGUF-Quantized-green" alt="GGUF Quantized" /></a>
 </p>
 
----
 
 ## 📌 What is Kronumos?
 
@@ -28,7 +27,6 @@ Kronumos is scoped narrower and deeper. It handles a single, closed-loop enginee
 4. **Synthesize & Verify Atomic Patch**: Apply search-and-replace AST patches with zero dirty diffs.
 5. **Git Delivery**: Automatically branch, commit, open Pull Requests, and close incident tracking issues.
 
----
 
 ## 📄 Academic Paper & Preprint
 
@@ -38,13 +36,11 @@ Read the formal preprint paper on Zenodo: **[DOI: 10.5281/zenodo.22929676](https
 > *Author: Muhammad Naufal Daffa ([@daffa2555](https://github.com/daffa2555)), Tokenectomy Labs*  
 > *Permanent DOI: [10.5281/zenodo.22929676](https://doi.org/10.5281/zenodo.22929676)*
 
----
 
 ## 🗺️ Product & Engineering Roadmap
 
 Read the complete engineering roadmap and evaluation methodology in [kronumos_product.roadmap.md](kronumos_product.roadmap.md).
 
----
 
 ## 📊 Empirical Benchmark Results (SWE-bench Verified)
 
@@ -63,7 +59,6 @@ Read the official full 500-instance benchmark report in [BENCHMARK_500_REPORT.md
 * **Average Remediation Latency**: 43.6 seconds / task
 * **Marginal Inference Cost**: **$0.00 (Self-Hosted / Cloudflare Edge)**
 
----
 
 ## 🛠️ Tool Schema (Agent Sub-Cortex)
 
@@ -83,7 +78,6 @@ Kronumos is fine-tuned to emit structured JSON tool calls:
 | `link_issue_to_fix_pr` | Link an existing incident issue to its resolving PR |
 | `close_incident_issue` | Close the incident issue once verified and merged |
 
----
 
 ## 💻 Interactive CLI Agent (Transparent Terminal REPL)
 
@@ -138,7 +132,6 @@ kronumos --backend cloudflare --cf-url https://kronumos-gateway.<account>.worker
 kronumos --backend ollama --ollama-model hf.co/NadevA23/Kronumos-GGUF:Q4_K_M
 ```
 
----
 
 ## ☁️ Zero-Cost Cloudflare Edge Gateway ($0 Serverless)
 
@@ -156,7 +149,6 @@ npm run deploy
 * **Global Edge Acceleration**: Runs on Cloudflare edge GPUs across 300+ datacenters worldwide.
 * **Architecture Details**: See [`gateway/README.md`](gateway/README.md).
 
----
 
 ## 🏠 Offline Local Inference via Ollama
 
@@ -166,7 +158,6 @@ Run Kronumos 100% locally and offline with GGUF quantization:
 ollama run hf.co/NadevA23/Kronumos-GGUF:Q4_K_M
 ```
 
----
 
 ## 🐍 Python SDK (Transformers)
 
@@ -183,14 +174,12 @@ model = AutoModelForCausalLM.from_pretrained(
 )
 ```
 
----
 
 ## 🏢 Organization & Author
 - **Developed by:** Muhammad Naufal Daffa ([@daffa2555](https://github.com/daffa2555))
 - **Organization:** Tokenectomy Labs
 - **License:** Apache 2.0
 
----
 
 ## 📖 Citation
 

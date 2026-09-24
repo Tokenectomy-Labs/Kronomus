@@ -2,16 +2,13 @@
 
 Serverless, zero-operational-cost AI edge inference gateway for **Kronumos CLI** and autonomous agents, powered by **Cloudflare Workers AI**.
 
----
-
 ## 🌟 Why Cloudflare Workers AI for Kronumos?
 
 - **$0 Operational Cost**: Free tier provides **10,000 Neurons per day** (~500+ debugging turns/day for free).
 - **Sub-Second Global Edge Latency**: Direct GPU inference across Cloudflare's 300+ global datacenters.
 - **Model**: Runs `@cf/qwen/qwen2.5-coder-32b-instruct` (or `@cf/meta/llama-3.1-8b-instruct-fast`).
+- **Dual Compatibility**: Supports native Kronumos SSE `/chat` as well as standard OpenAI `/v1/chat/completions` and `/v1/models`.
 - **Streaming**: Native Server-Sent Events (SSE) streaming with zero latency buffering.
-
----
 
 ## 🚀 60-Second Deployment
 
@@ -26,7 +23,7 @@ wrangler login
 cd gateway
 npm run dev
 ```
-Open `http://localhost:8787/health` to verify:
+Open `http://localhost:8787/health` or `http://localhost:8787/models` to verify:
 ```json
 {
   "status": "online",
@@ -53,8 +50,6 @@ If you want to protect your gateway with a private key before public distributio
 npx wrangler secret put KRONUMOS_API_KEY
 # Enter your secret password/key when prompted
 ```
-
----
 
 ## 💻 Connecting Kronumos CLI to the Gateway
 
