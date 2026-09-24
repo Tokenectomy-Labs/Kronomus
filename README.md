@@ -7,6 +7,7 @@
 </p>
 
 <p align="center">
+  <a href="https://doi.org/10.5281/zenodo.22929676"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.22929676.svg" alt="DOI: 10.5281/zenodo.22929676" /></a>
   <a href="https://opensource.org/licenses/Apache-2.0"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="License: Apache 2.0" /></a>
   <a href="https://huggingface.co/NadevA23/Kronumos"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-NadevA23%2FKronumos-yellow" alt="Hugging Face Model" /></a>
   <a href="https://huggingface.co/NadevA23/Kronumos-GGUF"><img src="https://img.shields.io/badge/GGUF-Quantized-green" alt="GGUF Quantized" /></a>
@@ -22,19 +23,20 @@ Generic AI coding assistants try to do everything: generating unverified applica
 
 Kronumos is scoped narrower and deeper. It handles a single, closed-loop engineering workflow:
 1. **Diagnose** runtime failures & test crashes from raw error logs.
-2. **Sub-Cortex Token Surgery**: Excise framework noise and redact sensitive credentials (JWT, AWS, DB keys) using Tokenectomy Rust engine (95.2% token reduction).
+2. **Sub-Cortex Token Surgery**: Excise framework noise and redact sensitive credentials (JWT, AWS, DB keys) using Tokenectomy Rust engine (91.3% token reduction).
 3. **Analyze Blast Radius**: Map caller dependency graphs before applying edits.
 4. **Synthesize & Verify Atomic Patch**: Apply search-and-replace AST patches with zero dirty diffs.
 5. **Git Delivery**: Automatically branch, commit, open Pull Requests, and close incident tracking issues.
 
 ---
 
-## 📄 Academic Paper & Technical Report
+## 📄 Academic Paper & Preprint
 
-Read the formal preprint paper in [paper/KRONUMOS_TECHNICAL_REPORT.md](paper/KRONUMOS_TECHNICAL_REPORT.md) or view the publication-ready LaTeX source in [paper/main.tex](paper/main.tex):
+Read the formal preprint paper on Zenodo: **[DOI: 10.5281/zenodo.22929676](https://doi.org/10.5281/zenodo.22929676)**, read the [Technical Report](paper/KRONUMOS_TECHNICAL_REPORT.md), or view the publication-ready LaTeX source in [paper/main.tex](paper/main.tex):
 
-> **"Kronumos: Autonomous Code Remediation via Zero-Leak Context Surgery and POSIX-Anchored Diff Synthesis on SWE-bench Verified"**  
-> *Author: Daffa (@daffa2555), Tokenectomy Labs*
+> **"Kronumos: Cost-Bounded Automated Program Repair via Context Surgery and POSIX Diff Re-Anchoring on SWE-bench Verified"**  
+> *Author: Muhammad Naufal Daffa ([@daffa2555](https://github.com/daffa2555)), Tokenectomy Labs*  
+> *Permanent DOI: [10.5281/zenodo.22929676](https://doi.org/10.5281/zenodo.22929676)*
 
 ---
 
@@ -52,12 +54,12 @@ Read the official full 500-instance benchmark report in [BENCHMARK_500_REPORT.md
   <img src="assets/figure1_swebench_ablation.svg" alt="Figure 1: Empirical ablation of the Tokenectomy Sub-Cortex on SWE-bench Verified (N = 500)" width="800" />
 </p>
 
-* **Evaluated Tasks**: 500 / 500 (100% completed, 0 OOM crashes)
-* **Officially Resolved Tasks (`Pass@1`)**: **10 Resolved** (12.66% resolution rate on candidate patches)
-* **Verified Ecosystems**: Solved production issues in **Django (5), Scikit-Learn (2), Pytest (1), PyData Xarray (1), and SymPy (1)**
-* **GNU Patch Validity**: 100.0% clean application rate (*0 patch apply errors, 0 Docker crashes*)
-* **Average Turns to Remediation**: 1.97 turns
-* **Average Token Consumption**: 3,009 tokens / task (*98.2% token bloat reduction*)
+* **Evaluated Tasks**: 500 / 500 tasks (475 synthesized, 25 structural safe refusals)
+* **Officially Resolved Tasks (`Pass@1`)**: **12 Resolved** (15.0% candidate precision on Docker-evaluated tasks, 2.4% full-benchmark lower bound [1.4%, 4.1%])
+* **Verified Ecosystems**: Solved production issues in **Django (7), Scikit-Learn (2), Pytest (1), PyData Xarray (1), and SymPy (1)**
+* **GNU Patch Validity**: 100.0% clean application rate (*0 hunk errors on evaluated instances*)
+* **Average Turns to Remediation**: 2.34 turns
+* **Average Token Consumption**: 3,361.0 tokens / task (*91.3% token bloat reduction vs raw context*)
 * **Average Remediation Latency**: 43.6 seconds / task
 * **Marginal Inference Cost**: **$0.00 (Self-Hosted / Cloudflare Edge)**
 
@@ -184,7 +186,25 @@ model = AutoModelForCausalLM.from_pretrained(
 ---
 
 ## 🏢 Organization & Author
-- **Developed by:** Daffa ([@daffa2555](https://github.com/daffa2555))
+- **Developed by:** Muhammad Naufal Daffa ([@daffa2555](https://github.com/daffa2555))
 - **Organization:** Tokenectomy Labs
 - **License:** Apache 2.0
+
+---
+
+## 📖 Citation
+
+If you use Kronumos in your research or benchmarks, please cite our preprint:
+
+```bibtex
+@article{daffa2026kronumos,
+  author    = {Daffa, Muhammad Naufal},
+  title     = {Kronumos: Cost-Bounded Automated Program Repair via Context Surgery and POSIX Diff Re-Anchoring on SWE-bench Verified},
+  journal   = {Zenodo},
+  year      = {2026},
+  month     = sep,
+  doi       = {10.5281/zenodo.22929676},
+  url       = {https://doi.org/10.5281/zenodo.22929676}
+}
+```
 
