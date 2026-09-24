@@ -3,10 +3,14 @@
 An agentic terminal REPL powered by **Kronumos Core** and the **Tokenectomy Rust Sub-Cortex**. Designed with a minimalist, transparent-terminal aesthetic for pair-debugging, continuous test verification, and automated root-cause healing.
 
 ```text
-  ╦╔═╦═╗╔═╗╔╗╔╦ ╦╔╦╗╔═╗╔═╗
-  ╠╩╗╠╦╝║ ║║║║║ ║║║║║ ║╚═╗
-  ╩ ╩╩╚═╚═╝╝╚╝╚═╝╩ ╩╚═╝╚═╝
-  Autonomous Code Remediation & SRE Agent • v1.0
+    ██╗  ██╗██████╗  ██████╗ ███╗   ██╗██╗   ██╗███╗   ███╗ ██████╗ ███████╗
+    ██║ ██╔╝██╔══██╗██╔═══██╗████╗  ██║██║   ██║████╗ ████║██╔═══██╗██╔════╝
+    █████╔╝ ██████╔╝██║   ██║██╔██╗ ██║██║   ██║██╔████╔██║██║   ██║███████╗
+    ██╔═██╗ ██╔══██╗██║   ██║██║╚██╗██║██║   ██║██║╚██╔╝██║██║   ██║╚════██║
+    ██║  ██╗██║  ██║╚██████╔╝██║ ╚████║╚██████╔╝██║ ╚═╝ ██║╚██████╔╝███████║
+    ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝ ╚═╝     ╚═╝ ╚═════╝ ╚══════╝
+
+                 Autonomous Code Remediation & SRE Agent • v1.0
 
 ╭──────────────────────────────────────────────────────────────╮
 │  Workspace : /home/developer/payment-service                 │
