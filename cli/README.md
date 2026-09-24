@@ -10,7 +10,8 @@ An agentic terminal REPL powered by **Kronumos Core** and the **Tokenectomy Rust
     ██║  ██╗██║  ██║╚██████╔╝██║ ╚████║╚██████╔╝██║ ╚═╝ ██║╚██████╔╝███████║
     ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝ ╚═╝     ╚═╝ ╚═════╝ ╚══════╝
 
-                 Autonomous Code Remediation & SRE Agent • v1.0
+                     · K R O N U M O S   K A I R O S ·
+               Autonomous Code Remediation & SRE Agent • v1.0
 ```
 
 

@@ -91,7 +91,8 @@ Kronumos includes a native agentic CLI interface featuring an ambient, transpare
     ██║  ██╗██║  ██║╚██████╔╝██║ ╚████║╚██████╔╝██║ ╚═╝ ██║╚██████╔╝███████║
     ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝ ╚═╝     ╚═╝ ╚═════╝ ╚══════╝
 
-                 Autonomous Code Remediation & SRE Agent • v1.0
+                     · K R O N U M O S   K A I R O S ·
+               Autonomous Code Remediation & SRE Agent • v1.0
 
 Interactive Agent Commands:
   Any text     chat with Kronumos or explain code/errors

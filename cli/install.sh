@@ -12,7 +12,8 @@ echo "    ██╔═██╗ ██╔══██╗██║   ██║█
 echo "    ██║  ██╗██║  ██║╚██████╔╝██║ ╚████║╚██████╔╝██║ ╚═╝ ██║╚██████╔╝███████║"
 echo "    ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝ ╚═╝     ╚═╝ ╚═════╝ ╚══════╝"
 echo ""
-echo "                 Autonomous Code Remediation & SRE Agent • v1.0"
+echo "                     · K R O N U M O S   K A I R O S ·"
+echo "               Autonomous Code Remediation & SRE Agent • v1.0"
 echo ""
 
 INSTALL_DIR="${CARGO_HOME:-$HOME/.cargo}/bin"
