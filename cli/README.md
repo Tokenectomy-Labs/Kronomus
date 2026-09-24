@@ -73,7 +73,7 @@ kronumos
 * **Live Animated Spinners**: Real-time cyan spinners (`⠋⠙⠹...`) while querying Sub-Cortex, streaming tokens, or executing test suites.
 * **Framed Tool Cards**: Visual status cards for `run_command`, `apply_patch`, `search_code`, `view_file`, and `git_action` with `[✓ exit 0]` and `[✗ exit 1]` badges.
 * **Visual Diff Highlighting**: Instant syntax-colored diff cards (`+` green, `-` red, `@@` cyan) in `/diff` and during patch applications.
-* **Kairos Status Cockpit**: Ambient HUD displaying current workspace, detected project build system, Sub-Cortex token surgery state, and active backend.
+* **Kairos Status Cockpit**: Ambient HUD displaying current workspace, detected project build system, Sub-Cortex token surgery state, and active Kairos v1.0 engine.
 
 ### 5. Multi-Backend Inference
 Kronumos supports multiple inference backends:
