@@ -3,6 +3,18 @@
 An agentic terminal REPL powered by **Kronumos Core** and the **Tokenectomy Rust Sub-Cortex**. Designed with a minimalist, transparent-terminal aesthetic for pair-debugging, continuous test verification, and automated root-cause healing.
 
 ```text
+                                       /▀▀\/▀▀\
+                                     ▄██████ (O)
+                            \ /    /████████\_/ \
+                             \____████████████/  \
+                                    \█████████    \
+                                      ▀████████    \
+                                        ████████    |
+                                 ▄████▄  ███████    /
+                              ▄█████████▄ █████    /
+                           ▄████▀▀   ▀▀███████   _/
+                           ▀████▄▄▄▄▄▄████▀▀  ~-~
+
     ██╗  ██╗██████╗  ██████╗ ███╗   ██╗██╗   ██╗███╗   ███╗ ██████╗ ███████╗
     ██║ ██╔╝██╔══██╗██╔═══██╗████╗  ██║██║   ██║████╗ ████║██╔═══██╗██╔════╝
     █████╔╝ ██████╔╝██║   ██║██╔██╗ ██║██║   ██║██╔████╔██║██║   ██║███████╗
@@ -11,13 +23,6 @@ An agentic terminal REPL powered by **Kronumos Core** and the **Tokenectomy Rust
     ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝ ╚═╝     ╚═╝ ╚═════╝ ╚══════╝
 
                  Autonomous Code Remediation & SRE Agent • v1.0
-
-╭──────────────────────────────────────────────────────────────╮
-│  Workspace : /home/developer/payment-service                 │
-│  Project   : Rust (Cargo)                                    │
-│  Backend   : cloudflare                                      │
-│  Sub-Cortex: ACTIVE (Zero-Leak Redaction + AST)              │
-╰──────────────────────────────────────────────────────────────╯
 ```
 
 

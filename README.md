@@ -84,6 +84,18 @@ Kronumos is fine-tuned to emit structured JSON tool calls:
 Kronumos includes a native agentic CLI interface featuring an ambient, transparent-terminal aesthetic, live streaming tokens, and an autonomous repair loop:
 
 ```text
+                                       /▀▀\/▀▀\
+                                     ▄██████ (O)
+                            \ /    /████████\_/ \
+                             \____████████████/  \
+                                    \█████████    \
+                                      ▀████████    \
+                                        ████████    |
+                                 ▄████▄  ███████    /
+                              ▄█████████▄ █████    /
+                           ▄████▀▀   ▀▀███████   _/
+                           ▀████▄▄▄▄▄▄████▀▀  ~-~
+
     ██╗  ██╗██████╗  ██████╗ ███╗   ██╗██╗   ██╗███╗   ███╗ ██████╗ ███████╗
     ██║ ██╔╝██╔══██╗██╔═══██╗████╗  ██║██║   ██║████╗ ████║██╔═══██╗██╔════╝
     █████╔╝ ██████╔╝██║   ██║██╔██╗ ██║██║   ██║██╔████╔██║██║   ██║███████╗
@@ -92,13 +104,6 @@ Kronumos includes a native agentic CLI interface featuring an ambient, transpare
     ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝ ╚═╝     ╚═╝ ╚═════╝ ╚══════╝
 
                  Autonomous Code Remediation & SRE Agent • v1.0
-
-╭──────────────────────────────────────────────────────────────╮
-│  Workspace : /home/developer/payment-service                 │
-│  Project   : Rust (Cargo)                                    │
-│  Backend   : cloudflare                                      │
-│  Sub-Cortex: ACTIVE (Zero-Leak Redaction + AST)              │
-╰──────────────────────────────────────────────────────────────╯
 
 Interactive Agent Commands:
   Any text     chat with Kronumos or explain code/errors
