@@ -151,6 +151,26 @@ To isolate the contribution of the Tokenectomy Sub-Cortex, we compare raw genera
 | **Testbed Patch Compliance** | 0.0% (Rejected hunks) | **100.0% (80 / 80)** | **Eliminates 100% of patch application errors** |
 | **Structural Safe Refusal Invariant** | 0 (polluted codebase) | **25 Clean Refusals (5.0%)** | **Zero Dirty Diff guarantee** |
 
+### 4.3 Per-Repository Evaluation and Resolution Breakdown
+
+The distribution across all 12 repositories in SWE-bench Verified ($N=500$) is detailed below:
+
+| Repository | Total | Synthesized | Completed | Not Evaluated | Resolved | Precision (Completed) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| `django/django` | 231 | 222 | 29 | 202 | **7** | 24.14% |
+| `sympy/sympy` | 75 | 69 | 18 | 57 | **1** | 5.56% |
+| `sphinx-doc/sphinx` | 44 | 40 | 2 | 42 | 0 | 0.00% |
+| `matplotlib/matplotlib` | 34 | 34 | 3 | 31 | 0 | 0.00% |
+| `scikit-learn/scikit-learn` | 32 | 30 | 9 | 23 | **2** | 22.22% |
+| `pydata/xarray` | 22 | 22 | 5 | 17 | **1** | 20.00% |
+| `astropy/astropy` | 22 | 20 | 6 | 16 | 0 | 0.00% |
+| `pytest-dev/pytest` | 19 | 19 | 3 | 16 | **1** | 33.33% |
+| `pylint-dev/pylint` | 10 | 10 | 2 | 8 | 0 | 0.00% |
+| `psf/requests` | 8 | 7 | 3 | 5 | 0 | 0.00% |
+| `mwaskom/seaborn` | 2 | 2 | 0 | 2 | 0 | N/A |
+| `pallets/flask` | 1 | 0 | 0 | 1 | 0 | N/A |
+| **Total Benchmark** | **500** | **475** | **80** | **420** | **12** | **15.00%** |
+
 ---
 
 ## 5. Case Studies: The 12 Resolved Production Issues
@@ -181,7 +201,7 @@ Kronumos successfully resolved 12 production bugs across five diverse open-sourc
 ### Case Study 3: `sympy__sympy-22714` (Geometry Point Calculations)
 - **Target File**: `sympy/geometry/point.py`
 - **Root Cause**: Evaluating imaginary coordinates within `Point2D` with `evaluate=False` incorrectly triggered coordinate dimension validation exceptions.
-- **Kronumos Resolution**: Injected a guard `if evaluate is False: return None` before the exception. While this patch officially passes the complete SWE-bench Verified test suite (and is counted among the 12 verified resolutions), we report transparently that returning `None` from a constructor is semantically contentious compared to the upstream maintainer fix (which refined the imaginary coordinate validation predicate).
+- **Kronumos Resolution**: Injected a guard `if evaluate is False: return None` before the exception. While this patch officially passes the complete SWE-bench Verified test suite (and is counted among the 12 verified resolutions), we report transparently that returning `None` from a constructor is semantically contentious compared to the upstream maintainer fix (which refined the imaginary coordinate validation predicate). Excluding this instance yields a sensitivity lower bound of 11/500 (2.2%, 95% Wilson CI [1.2%, 3.9%]) and a candidate precision of 11/80 (13.75%); we report 12 as the official benchmark score alongside this sensitivity analysis.
 
 ---
 
@@ -199,7 +219,20 @@ To capture this potential, Kronumos v2 introduces the **Kronumos Interactive CLI
 3. **Turn 3**: Synthesizes surgical replacement hunks.
 4. **Turn 4**: Re-runs `pytest` immediately for validation.
 
-By retaining our 91.3% token reduction per turn and bounding feedback iterations to a maximum of 3 turns, dynamic execution tracebacks provide the critical runtime signals needed to repair near-miss candidates, positioning multi-turn self-healing to significantly elevate full-benchmark resolution beyond the blind single-turn floor while preserving our sub-cent cost profile.
+By retaining our 91.3% token reduction per turn and bounding feedback iterations to a maximum of 3 turns with a finite-state machine circuit breaker, dynamic execution tracebacks provide the critical runtime signals needed to repair near-miss candidates, positioning multi-turn self-healing to significantly elevate full-benchmark resolution beyond the blind single-turn floor while preserving our sub-cent cost profile. Anti-overfitting guards from Tokenectomy (assertion stripping detection, lazy logic deletion, and domain narrowing) prevent test-pleasing degeneration.
+
+### 6.3 Threats to Validity
+- **Internal Validity**:
+  - *Evaluation Coverage*: 395 of 475 synthesized patches could not be evaluated due to Docker Hub 404 image availability constraints. We score all 395 as unresolved (0), establishing 12/500 as a strict lower bound. Precision (15.0%, 12/80) applies strictly to the evaluated subset.
+  - *Decontamination*: Multi-tier checks confirmed zero overlap on instance IDs, commit SHAs, and patch hashes. However, foundation model pre-training exposure cannot be ruled out.
+  - *File Localization*: Relies on natural issue tracebacks (68.4% of tasks) and AST symbol extraction, testing patch synthesis rather than full repository search.
+- **Construct Validity**:
+  - *Test-Driven Benchmark*: Pass@1 reflects test suite satisfaction; semantic optimality is not guaranteed (e.g., SymPy-22714 sensitivity: 11/500, 2.2%).
+  - *Abstention Function*: Empty patches ($\epsilon$) reflect structural validation failure rather than calibrated Bayesian uncertainty.
+- **External Validity**:
+  - Evaluation is confined to 12 Python repositories in SWE-bench Verified and an open-weight 7B parameter model.
+- **Conclusion Validity**:
+  - Full-benchmark Wilson 95% CI is [1.4%, 4.1%], and evaluated precision CI is [8.8%, 24.4%]. External baseline comparisons reflect differing benchmark splits and protocols.
 
 ---
 
@@ -214,5 +247,7 @@ We presented Kronumos, a cost-bounded program repair architecture demonstrating 
 1. Jimenez, C. E., Yang, J., Wettig, A., Yao, S., Pei, K., Press, O., & Narasimhan, K. (2024). *SWE-bench: Can Language Models Resolve Real-World GitHub Issues?* International Conference on Learning Representations (ICLR 2024).
 2. Yang, J., Jimenez, C. E., Wettig, A., Lieret, K., Yao, S., Narasimhan, K., & Press, O. (2024). *SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering*. arXiv preprint arXiv:2405.15793.
 3. Wang, G. et al. (2024). *OpenHands: An Open Platform for AI Software Developers as Generalist Agents*. arXiv preprint.
-4. Qwen Team. (2024). *Qwen2.5-Coder: Code Intelligence at Scale*. Alibaba Cloud.
-5. Daffa. (2026). *Tokenectomy: Autonomous M2M Context Surgery Engine for AI Coding Agents*. Tokenectomy Labs.
+4. Xia, C. S., Deng, Y., Dunn, S., & Zhang, L. (2024). *Agentless: Demystifying LLM-based Software Engineering Agents*. arXiv preprint arXiv:2407.01489.
+5. Zhang, Y., Ruan, H., Fan, Z., & Roychoudhury, A. (2024). *AutoCodeRover: Autonomous Program Improvement*. ACM ISSTA 2024.
+6. Qwen Team. (2024). *Qwen2.5-Coder: Code Intelligence at Scale*. Alibaba Cloud.
+7. Daffa. (2026). *Tokenectomy: Autonomous M2M Context Surgery Engine for AI Coding Agents*. Tokenectomy Labs.

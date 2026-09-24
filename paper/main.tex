@@ -474,24 +474,24 @@ The 12 officially resolved production instances span five distinct domains, demo
 \small
 \caption{Per-repository evaluation and resolution distribution ($N=500$).}
 \resizebox{\columnwidth}{!}{%
-\begin{tabular}{lcccc}
+\begin{tabular}{lcccccc}
 \toprule
-\textbf{Repository} & \textbf{Total} & \textbf{Completed} & \textbf{Resolved} & \textbf{Precision} \\
+\textbf{Repository} & \textbf{Total} & \textbf{Synth.} & \textbf{Compl.} & \textbf{Uneval.} & \textbf{Resolved} & \textbf{Precision} \\
 \midrule
-\texttt{django/django} & 231 & 29 & \textbf{7} & 24.14\% \\
-\texttt{scikit-learn/scikit-learn} & 32 & 9 & \textbf{2} & 22.22\% \\
-\texttt{pytest-dev/pytest} & 19 & 3 & \textbf{1} & 33.33\% \\
-\texttt{pydata/xarray} & 22 & 5 & \textbf{1} & 20.00\% \\
-\texttt{sympy/sympy} & 75 & 18 & \textbf{1} & 5.56\% \\
-\texttt{astropy/astropy} & 22 & 6 & 0 & 0.00\% \\
-\texttt{matplotlib/matplotlib} & 34 & 3 & 0 & 0.00\% \\
-\texttt{psf/requests} & 8 & 3 & 0 & 0.00\% \\
-\texttt{pylint-dev/pylint} & 10 & 2 & 0 & 0.00\% \\
-\texttt{sphinx-doc/sphinx} & 44 & 2 & 0 & 0.00\% \\
-\texttt{mwaskom/seaborn} & 2 & 0 & 0 & 0.00\% \\
-\texttt{pallets/flask} & 1 & 0 & 0 & 0.00\% \\
+\texttt{django/django} & 231 & 222 & 29 & 202 & \textbf{7} & 24.14\% \\
+\texttt{sympy/sympy} & 75 & 69 & 18 & 57 & \textbf{1} & 5.56\% \\
+\texttt{sphinx-doc/sphinx} & 44 & 40 & 2 & 42 & 0 & 0.00\% \\
+\texttt{matplotlib/matplotlib} & 34 & 34 & 3 & 31 & 0 & 0.00\% \\
+\texttt{scikit-learn/scikit-learn} & 32 & 30 & 9 & 23 & \textbf{2} & 22.22\% \\
+\texttt{pydata/xarray} & 22 & 22 & 5 & 17 & \textbf{1} & 20.00\% \\
+\texttt{astropy/astropy} & 22 & 20 & 6 & 16 & 0 & 0.00\% \\
+\texttt{pytest-dev/pytest} & 19 & 19 & 3 & 16 & \textbf{1} & 33.33\% \\
+\texttt{pylint-dev/pylint} & 10 & 10 & 2 & 8 & 0 & 0.00\% \\
+\texttt{psf/requests} & 8 & 7 & 3 & 5 & 0 & 0.00\% \\
+\texttt{mwaskom/seaborn} & 2 & 2 & 0 & 2 & 0 & N/A \\
+\texttt{pallets/flask} & 1 & 0 & 0 & 1 & 0 & N/A \\
 \midrule
-\textbf{Total Benchmark} & \textbf{500} & \textbf{80} & \textbf{12} & \textbf{15.00\%} \\
+\textbf{Total Benchmark} & \textbf{500} & \textbf{475} & \textbf{80} & \textbf{420} & \textbf{12} & \textbf{15.00\%} \\
 \bottomrule
 \end{tabular}%
 }
@@ -592,7 +592,7 @@ We examine five character-exact case studies of production defects resolved by K
 +                return None
              raise ValueError('Imaginary coordinates are not permitted.')
 \end{lstlisting}
-\textbf{Analysis}: Kronumos injected a defensive guard checking \texttt{if evaluate is False: return None}, bypassing premature validation during symbolic expression tree initialization. Under the official SWE-bench evaluation rules, this candidate patch passed the complete test suite and is counted among the 12 verified resolutions. However, we report transparently that returning \texttt{None} from \texttt{Point.\_\_new\_\_} is semantically contentious; the upstream maintainer fix resolved the issue by refining the imaginary validation predicate (\texttt{not a.is\_number}) rather than early-exiting with \texttt{None}. This case illustrates a known phenomenon in automated program repair: test suite satisfaction is a necessary but not always sufficient condition for semantic optimality, emphasizing the importance of human code review and multi-turn regression suites in production deployment.
+\textbf{Analysis}: Kronumos injected a defensive guard checking \texttt{if evaluate is False: return None}, bypassing premature validation during symbolic expression tree initialization. Under the official SWE-bench evaluation rules, this candidate patch passed the complete test suite and is counted among the 12 verified resolutions. However, we report transparently that returning \texttt{None} from \texttt{Point.\_\_new\_\_} is semantically contentious; the upstream maintainer fix resolved the issue by refining the imaginary validation predicate (\texttt{not a.is\_number}) rather than early-exiting with \texttt{None}. This case illustrates a known phenomenon in automated program repair: test suite satisfaction is a necessary but not always sufficient condition for semantic optimality, emphasizing the importance of human code review and multi-turn regression suites in production deployment. Excluding this instance yields a sensitivity lower bound of 11/500 (2.2\%, 95\% Wilson CI [1.2\%, 3.9\%]) and a candidate precision of 11/80 (13.75\%); we report 12 as the official benchmark score alongside this sensitivity analysis.
 
 \section{Discussion: The Single-Turn to Multi-Turn Transition}
 
@@ -612,15 +612,35 @@ To bridge this gap, Kronumos v2 extends the architecture with the \textbf{Kronum
 \begin{equation}
     \text{Issue} \longrightarrow \mathcal{P}_1 \longrightarrow \text{pytest} \longrightarrow \mathcal{T}_{\text{feedback}} \longrightarrow \mathcal{P}_2 \longrightarrow \text{PASS}
 \end{equation}
-By maintaining our 91.3\% token reduction per turn and bounding iterations to a maximum of 3 turns, dynamic execution tracebacks provide the critical runtime signals needed to repair trivial off-by-one errors and type mismatches that accounted for nearly half of the single-turn failures. This positions multi-turn self-healing to significantly elevate full-benchmark resolution beyond the blind single-turn floor while preserving our sub-cent cost profile.
+By maintaining our 91.3\% token reduction per turn and bounding iterations to a maximum of 3 turns with a finite-state machine circuit breaker, dynamic execution tracebacks provide the critical runtime signals needed to repair trivial off-by-one errors and type mismatches. Furthermore, to mitigate the risk of test-pleasing overfitting highlighted by our SymPy case study, Kronumos v2 integrates Tokenectomy anti-overfitting sentinels: automated detection of assertion stripping, test-skipping annotations, lazy logic deletion, and input-domain narrowing.
+
+\subsection{Threats to Validity}
+\noindent \textbf{Internal Validity}:
+\begin{itemize}
+    \item \textit{Evaluation Coverage}: Due to upstream Docker Hub 404 availability constraints, 395 of 475 synthesized patches could not be evaluated in the official harness. We treat all 395 as unresolved (0), establishing 12/500 as a strict lower bound. Precision (15.0\%, 12/80) is computed strictly on the infrastructure-viable subset.
+    \item \textit{Decontamination \& Data Overlap}: Multi-tier decontamination filtered out exact instance IDs, commit SHAs, and patch hashes. However, indirect pre-training corpus exposure of the open-weight base model cannot be entirely eliminated.
+    \item \textit{File Localization Scope}: Target files were identified via issue tracebacks (68.4\% of instances) and AST symbol extraction. This file-localized setting measures patch synthesis rather than unconstrained repository search.
+\end{itemize}
+
+\noindent \textbf{Construct Validity}:
+\begin{itemize}
+    \item \textit{Test Suite vs.\ Semantic Optimality}: Benchmark resolution is determined by private test suites. As demonstrated by SymPy-22714, a candidate patch may pass regression tests while remaining semantically contentious. We report sensitivity metrics (11/500, 2.2\%) alongside the official result.
+    \item \textit{Abstention Invariant}: The structural gate emits empty patches ($\epsilon$) upon syntax or dry-run failure; this reflects syntactic non-viability rather than calibrated Bayesian confidence.
+\end{itemize}
+
+\noindent \textbf{External Validity}:
+The evaluation is conducted on 12 Python repositories in SWE-bench Verified and an open-weight 7B model. Generalization to other languages or larger model families requires independent empirical testing.
+
+\noindent \textbf{Conclusion Validity}:
+The full-benchmark lower bound of 2.4\% corresponds to a 95\% Wilson confidence interval of $[1.4\%, 4.1\%]$, and evaluated precision (15.0\%) to $[8.8\%, 24.4\%]$. Comparisons against external published models reflect differing benchmark splits and protocols and are reported strictly for empirical context.
 
 \section{Related Work}
 
 \subsection{Classical Automated Program Repair}
 Early APR systems relied on genetic programming (GenProg~\cite{le2011genprog}), symbolic execution (SemFix~\cite{nguyen2013semfix}), and constraint solving (Angelix~\cite{mechtaev2016angelix}). While theoretically sound, these systems suffered from search space explosion and frequently generated degenerate patches that bypassed tests by deleting functionality.
 
-\subsection{LLM-Based Program Repair}
-The advent of code language models~\cite{roziere2023code, hui2024qwen25coder} enabled generative repair. SWE-bench~\cite{jimenez2024swebench} established the current standard for repository-level evaluation. Frameworks such as SWE-agent~\cite{yang2024sweagent} and OpenHands~\cite{wang2024openhands} pioneered agent-computer interfaces that allow frontier models to navigate repositories. Kronumos differs fundamentally by addressing the efficiency and security frontiers: demonstrating that a 7B model paired with a specialized Rust Sub-Cortex can match early frontier models at zero API cost.
+\subsection{LLM-Based Program Repair and Pipeline Architectures}
+The advent of code language models~\cite{roziere2023code, hui2024qwen25coder} enabled generative repair. SWE-bench~\cite{jimenez2024swebench} established the current standard for repository-level evaluation. Frameworks such as SWE-agent~\cite{yang2024sweagent} and OpenHands~\cite{wang2024openhands} pioneered agent-computer interfaces that allow frontier models to navigate repositories via dynamic multi-turn execution loops. More recently, pipeline-style architectures such as Agentless~\cite{xia2024agentless} and AutoCodeRover~\cite{zhang2024autocoderover} demonstrated that hierarchical, non-agentic workflows (localizing, repairing, and validating) can achieve high repair effectiveness without open-ended agentic search. Kronumos shares this philosophy of bounded intervention, demonstrating that pairing an open-weight 7B model with a specialized Rust Sub-Cortex can establish a viable zero-cost baseline under a strict blind single-turn protocol.
 
 \section{Conclusion}
 Kronumos demonstrates that specialized open-weight 7B models equipped with deterministic M2M context surgery can solve verified production bugs on SWE-bench Verified at zero marginal API cost. By enforcing linear-time secret redaction, Tree-sitter AST log surgery, and POSIX hunk re-anchoring, Kronumos establishes an efficient, secure, and production-safe foundation for cost-bounded automated program repair.
@@ -681,10 +701,20 @@ G.~Wang, et~al.
 \newblock OpenHands: An Open Platform for AI Software Developers as Generalist Agents.
 \newblock {\em arXiv:2407.16741}, 2024.
 
+\bibitem{xia2024agentless}
+C.~S. Xia, Y.~Deng, S.~Dunn, and L.~Zhang.
+\newblock Agentless: Demystifying LLM-based Software Engineering Agents.
+\newblock {\em arXiv:2407.01489}, 2024.
+
 \bibitem{yang2024sweagent}
 J.~Yang, C.~E. Jimenez, A.~Wettig, K.~Lieret, S.~Yao, O.~Press, and K.~Narasimhan.
 \newblock SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering.
 \newblock {\em arXiv:2405.15793}, 2024.
+
+\bibitem{zhang2024autocoderover}
+Y.~Zhang, H.~Ruan, Z.~Fan, and A.~Roychoudhury.
+\newblock AutoCodeRover: Autonomous Program Improvement.
+\newblock In {\em Proceedings of the 33rd ACM SIGSOFT International Symposium on Software Testing and Analysis (ISSTA)}, 2024.
 
 \end{thebibliography}
 
