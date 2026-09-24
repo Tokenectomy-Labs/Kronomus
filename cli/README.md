@@ -3,18 +3,6 @@
 An agentic terminal REPL powered by **Kronumos Core** and the **Tokenectomy Rust Sub-Cortex**. Designed with a minimalist, transparent-terminal aesthetic for pair-debugging, continuous test verification, and automated root-cause healing.
 
 ```text
-                                       /▀▀\/▀▀\
-                                     ▄██████ (O)
-                            \ /    /████████\_/ \
-                             \____████████████/  \
-                                    \█████████    \
-                                      ▀████████    \
-                                        ████████    |
-                                 ▄████▄  ███████    /
-                              ▄█████████▄ █████    /
-                           ▄████▀▀   ▀▀███████   _/
-                           ▀████▄▄▄▄▄▄████▀▀  ~-~
-
     ██╗  ██╗██████╗  ██████╗ ███╗   ██╗██╗   ██╗███╗   ███╗ ██████╗ ███████╗
     ██║ ██╔╝██╔══██╗██╔═══██╗████╗  ██║██║   ██║████╗ ████║██╔═══██╗██╔════╝
     █████╔╝ ██████╔╝██║   ██║██╔██╗ ██║██║   ██║██╔████╔██║██║   ██║███████╗

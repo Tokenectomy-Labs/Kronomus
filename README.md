@@ -84,18 +84,6 @@ Kronumos is fine-tuned to emit structured JSON tool calls:
 Kronumos includes a native agentic CLI interface featuring an ambient, transparent-terminal aesthetic, live streaming tokens, and an autonomous repair loop:
 
 ```text
-                                       /▀▀\/▀▀\
-                                     ▄██████ (O)
-                            \ /    /████████\_/ \
-                             \____████████████/  \
-                                    \█████████    \
-                                      ▀████████    \
-                                        ████████    |
-                                 ▄████▄  ███████    /
-                              ▄█████████▄ █████    /
-                           ▄████▀▀   ▀▀███████   _/
-                           ▀████▄▄▄▄▄▄████▀▀  ~-~
-
     ██╗  ██╗██████╗  ██████╗ ███╗   ██╗██╗   ██╗███╗   ███╗ ██████╗ ███████╗
     ██║ ██╔╝██╔══██╗██╔═══██╗████╗  ██║██║   ██║████╗ ████║██╔═══██╗██╔════╝
     █████╔╝ ██████╔╝██║   ██║██╔██╗ ██║██║   ██║██╔████╔██║██║   ██║███████╗
