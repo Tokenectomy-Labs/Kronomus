@@ -65,11 +65,15 @@ pytest 2>&1 | kronumos -q "Diagnose and fix these failing assertions"
 docker logs app_container 2>&1 | kronumos -q "Identify root cause of OOM crash"
 ```
 
-### 4. Interactive Chat REPL (Transparent Terminal)
-Launch directly into the ambient, transparent-terminal pair-debugging REPL:
+### 4. Interactive Agent Cockpit (Antigravity-Grade Terminal UX)
+Launch directly into the ambient, transparent-terminal pair-debugging cockpit styled with Kronumos Kairos design, live animated spinners, framed tool execution cards, and visual diffs:
 ```bash
 kronumos
 ```
+* **Live Animated Spinners**: Real-time cyan spinners (`⠋⠙⠹...`) while querying Sub-Cortex, streaming tokens, or executing test suites.
+* **Framed Tool Cards**: Visual status cards for `run_command`, `apply_patch`, `search_code`, `view_file`, and `git_action` with `[✓ exit 0]` and `[✗ exit 1]` badges.
+* **Visual Diff Highlighting**: Instant syntax-colored diff cards (`+` green, `-` red, `@@` cyan) in `/diff` and during patch applications.
+* **Kairos Status Cockpit**: Ambient HUD displaying current workspace, detected project build system, Sub-Cortex token surgery state, and active backend.
 
 ### 5. Multi-Backend Inference
 Kronumos supports multiple inference backends:
