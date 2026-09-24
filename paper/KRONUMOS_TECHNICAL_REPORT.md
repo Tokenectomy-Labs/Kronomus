@@ -1,8 +1,13 @@
 # Kronumos: Cost-Bounded Automated Program Repair via Context Surgery and POSIX Diff Re-Anchoring on SWE-bench Verified
 
-**Author**: M N Daffa ([@daffa2555](https://github.com/daffa2555))  
+<p align="center">
+  <a href="https://doi.org/10.5281/zenodo.22929676"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.22929676.svg" alt="DOI: 10.5281/zenodo.22929676" /></a>
+</p>
+
+**Author**: Muhammad Naufal Daffa ([@daffa2555](https://github.com/daffa2555))  
 **Affiliation**: Tokenectomy Labs  
 **Date**: September 2026  
+**Permanent DOI**: [`10.5281/zenodo.22929676`](https://doi.org/10.5281/zenodo.22929676)  
 **Repository**: [`https://github.com/Tokenectomy-Labs/Kronomus`](https://github.com/Tokenectomy-Labs/Kronomus)  
 **Artifact Archive**: `Kronumos-7B.kronumos_run.json` (Run ID: `35939194882`)
 
