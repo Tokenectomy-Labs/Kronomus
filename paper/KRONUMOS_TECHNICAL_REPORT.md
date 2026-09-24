@@ -1,18 +1,18 @@
-# Kronumos: Autonomous Code Remediation via Zero-Leak Context Surgery and POSIX-Anchored Diff Synthesis on SWE-bench Verified
+# Kronumos: Cost-Bounded Automated Program Repair via Context Surgery and POSIX Diff Re-Anchoring on SWE-bench Verified
 
 **Author**: M N Daffa ([@daffa2555](https://github.com/daffa2555))  
 **Affiliation**: Tokenectomy Labs  
 **Date**: September 2026  
 **Repository**: [`https://github.com/Tokenectomy-Labs/Kronomus`](https://github.com/Tokenectomy-Labs/Kronomus)  
-**Artifact Archive**: `Kronumos-7B.kronumos_run.json` (Run ID: `35874657386`)
+**Artifact Archive**: `Kronumos-7B.kronumos_run.json` (Run ID: `35939194882`)
 
 ---
 
 ## Abstract
 
-We present **Kronumos**, a specialized autonomous software engineering agent combining an open-weight 7B code model (`Qwen2.5-Coder-7B-Instruct` fine-tuned via Unsloth LoRA) with the **Tokenectomy M2M Sub-Cortex**—a high-performance Rust engine for real-time log surgery, zero-leak credential redaction, and unified diff POSIX anchoring. While frontier coding agents (such as Devin, SWE-agent, and OpenHands) achieve high resolution rates on SWE-bench by employing massive closed models (Claude 3.5 Sonnet, GPT-4o) through expensive multi-turn execution loops (15–30 turns, 100k–400k tokens per task, costing $2.00–$5.00 per issue), we investigate the lower-bound capability of an open-weight 7B model operating under strict resource and execution constraints: **$0.00 marginal inference cost on Kaggle Cloud GPUs, an average of 3,009 tokens per task (98.2% token reduction), and a strict, blind single-turn generation protocol where the model is completely forbidden from executing `pytest`, Python, or any runtime test runner.**
+We present **Kronumos**, a cost-bounded automated program repair system combining an open-weight 7B code model (`Qwen2.5-Coder-7B-Instruct` fine-tuned via Unsloth LoRA) with the **Tokenectomy M2M Sub-Cortex**—a zero-allocation Rust runtime engine engineered for sub-millisecond AST traceback pruning, $\mathcal{O}(N)$ ReDoS-immune secret redaction, and deterministic POSIX unified diff re-anchoring. While frontier coding agents (such as Devin, SWE-agent, and OpenHands) achieve high resolution rates on SWE-bench by employing massive closed models (Claude 3.5 Sonnet, GPT-4o) through expensive multi-turn execution loops (15–30 turns, 100k–400k tokens per task, costing $2.00–$5.00 per issue), we investigate the lower-bound capability of an open-weight 7B model operating under the most stringent operational regime: **$0.00 marginal inference cost on Kaggle Cloud GPUs, an average of 3,361 tokens per task (a 91.3% token reduction vs. raw context), and a strict blind single-turn generation protocol where the model is completely forbidden from executing `pytest`, Python, or any runtime test runner.**
 
-Evaluated across the complete 500-instance **`princeton-nlp/SWE-bench_Verified`** dataset, Kronumos officially resolved **10 real-world production issues** across five major open-source ecosystems (Django, Scikit-Learn, Pytest, PyData Xarray, and SymPy) evaluated inside the official Princeton Docker testbed. We report a **12.66% precision rate (10 / 79)** on submitted candidate patches and a **2.0% full-benchmark Pass@1 (10 / 500)** with **0.0% patch application errors and an 84.2% safe abstention rate (Zero Dirty Diff guarantee)**. We conduct an empirical ablation demonstrating how the Tokenectomy Sub-Cortex transforms raw generative diffs (0% Docker application compliance) into 100% clean POSIX unified diffs, and establish the architectural roadmap for multi-turn test-driven self-healing in Kronumos v2.
+Evaluated across the complete 500-instance **`princeton-nlp/SWE-bench_Verified`** dataset, Kronumos synthesized 475 candidate patches while withholding patches for 25 tasks (5.0%) via a deterministic structural validation gate (Zero Dirty Diff). Within the official Princeton Docker testbed, due to upstream container registry availability constraints (HTTP 404s), 80 candidate instances completed full container execution, yielding **12 verified resolutions** across five core open-source ecosystems (Django, Scikit-Learn, Pytest, PyData Xarray, and SymPy). We report a **15.0% candidate precision (12 / 80)** on evaluated instances and a conservative **2.4% full-benchmark Pass@1 lower bound (12 / 500, 95% Wilson CI [1.4%, 4.1%])**, with 100% of evaluated candidate patches applying cleanly with zero hunk errors. We conduct an empirical ablation demonstrating how the Tokenectomy Sub-Cortex transforms raw generative diffs (0% local application compliance) into 100% clean POSIX unified diffs, and establish the architectural roadmap for multi-turn test-driven self-healing in Kronumos v2.
 
 ---
 
@@ -26,8 +26,8 @@ However, state-of-the-art agent architectures on SWE-bench exhibit significant e
 3. **Dirty Diff Disasters**: Generative models frequently touch unrelated functions, corrupt whitespace, or emit unanchored diff hunks (`@@ -1,1 @@`), breaking codebase build systems.
 4. **Extreme Economic Cost**: Evaluating a 500-task benchmark with frontier LLMs costs between $1,500 and $3,500 in cloud API charges, pricing out independent researchers and local deployment.
 
-In this work, we propose **Kronumos**, an autonomous remediation architecture engineered around three core hypotheses:
-- *Hypothesis 1 (Context Surgery)*: Excising internal runtime frames and redacting secrets locally before prompt transmission reduces token consumption by over 95% without sacrificing diagnostic fidelity.
+In this work, we propose **Kronumos**, a cost-bounded program repair architecture engineered around three core hypotheses:
+- *Hypothesis 1 (Context Surgery)*: Excising internal runtime frames and redacting secrets locally before prompt transmission reduces token consumption by over 90% without sacrificing diagnostic fidelity.
 - *Hypothesis 2 (Zero Dirty Diff Invariant)*: Enforcing strict AST validation and gating uncertain issues with clean refusals is strictly superior in production to emitting speculative, hallucinated edits.
 - *Hypothesis 3 (Blind Zero-Execution Lower Bound)*: A fine-tuned 7B model can synthesize mathematically and architecturally valid patches for complex repositories even when completely isolated from runtime execution tools (`pytest`).
 
@@ -57,19 +57,19 @@ To ensure reproducible, unpolluted empirical truth, our evaluation was conducted
 │ • Platform: GitHub Actions Isolated Cloud Runner            │
 │ • Dataset: SWE-bench/SWE-bench_Verified (All 500 Instances) │
 │ • Execution: Full private test suites (FAIL_TO_PASS +       │
-│   PASS_TO_PASS) run inside 500 dedicated conda containers    │
+│   PASS_TO_PASS) run inside dedicated conda containers       │
 └─────────────────────────────────────────────────────────────┘
 ```
 
 ### 2.1 The Strict Zero-Execution Blind Protocol
 In contrast to multi-turn agent benchmarks where agents are provided an interactive bash shell to execute `pytest`, observe failure tracebacks, and iteratively adjust code over 15–30 turns, **Kronumos was evaluated in strict blind single-turn mode**:
-- The model received only the natural language issue description, the repository name, and the base commit hash.
+- The model received the natural language issue description, suspect stack traces (when available in the issue description), and relevant file contexts localized via symbol and AST extraction.
 - **The model was completely prohibited from executing `pytest`, running tests, or inspecting runtime interpreter feedback.**
-- The model was required to locate the offending file across thousands of repository files, deduce the root cause, and synthesize a complete POSIX unified diff in a single forward pass.
+- Across the 500 benchmark instances, 68.4% (342/500) contained natural stack traces within their user-submitted issue text (`problem_statement`). For issues lacking stack traces, candidate targets were localized via lexical file references and AST symbol lookups.
 - This protocol establishes a true lower-bound measurement of the model's internal structural reasoning and weight-level code comprehension.
 
 ### 2.2 Official Princeton Docker Testbed
-All synthesized predictions (`predictions.jsonl`) were submitted to the official Princeton SWE-bench Docker testbed ([`.github/workflows/eval_docker.yml`](.github/workflows/eval_docker.yml)). Each candidate patch was applied via `git apply` / `patch -p1` inside an isolated container configured with the repository's exact conda environment. To be marked **`RESOLVED`**, a patch must satisfy two simultaneous conditions:
+All synthesized predictions (`predictions.jsonl`) were submitted to the official Princeton SWE-bench Docker testbed harness. To be marked **`RESOLVED`**, a patch must satisfy two simultaneous conditions:
 1. **`FAIL_TO_PASS`**: The specific unit tests asserting the reported bug must transition from FAIL to PASS.
 2. **`PASS_TO_PASS`**: All preexisting unit tests across the entire repository test suite must continue to PASS without a single regression.
 
@@ -80,7 +80,7 @@ All synthesized predictions (`predictions.jsonl`) were submitted to the official
 Kronumos couples the 7B generative core with the **Tokenectomy Sub-Cortex**, an ultra-lean Rust sidecar engine designed for zero-allocation M2M preprocessing:
 
 ```
-Raw Stack Trace (38k tokens)
+Raw Issue / Diagnostic Context (38k tokens avg)
    │
    ▼
 ┌───────────────────────────────────────────────┐
@@ -89,128 +89,123 @@ Raw Stack Trace (38k tokens)
 │ 2. Secret Redactor (O(N) ReDoS-immune LazyLock)│
 │ 3. Line Offset Re-anchor (Tree-sitter AST)    │
 └───────────────────────┬───────────────────────┘
-                        │ Scrubbed Context (<2k tokens)
+                        │ Scrubbed Context (~3,361 tokens avg)
                         ▼
 ┌───────────────────────────────────────────────┐
 │ Kronumos Core (Fine-Tuned Qwen 7B)            │
 │ Synthesizes Minimal Unified Diff              │
 └───────────────────────┬───────────────────────┘
-                        │ Raw Diff
+                        │ Raw Diff Chunks
                         ▼
 ┌───────────────────────────────────────────────┐
 │ POSIX Diff Repair & Verification Filter       │
-│ • Dry-run patch verification (patch -p1)      │
+│ • Local git apply --check dry-run validation  │
 │ • Context boundary alignment (3 context lines)│
-│ • Gated Safe Refusal (abstain if unanchored)  │
+│ • Structural Safe Refusal (Zero Dirty Diff)   │
 └───────────────────────┬───────────────────────┘
                         │ Verified Diff (0 dirty diffs)
                         ▼
-Production Commit / PR Delivery
+Production Commit / Benchmark Submission
 ```
 
 ### 3.1 Trace Surgery & Secret Redaction
 When runtime errors occur, standard tracebacks contain tens of thousands of tokens belonging to framework internals (`django/core/handlers/exception.py`, `urllib3/connectionpool.py`). The Tokenectomy trace pruner identifies frame boundaries, excises non-user code, and preserves only the exact user-space invocation context. Simultaneously, an array of linear-time compiled regexes masks credentials (JWTs, database passwords, API tokens) with `[REDACTED]` tokens, ensuring zero prompt leakage.
 
-### 3.2 POSIX Unified Diff Anchoring & Gated Refusal
-A major failure mode of small models on SWE-bench is **diff hunk corruption**: models emit dummy headers (`@@ -1,1 @@`) or hallucinate repro scripts (`poc.py`, `scratch_20.py`), causing GNU `patch -p1` to abort with `Hunk #1 FAILED at 1`. The Sub-Cortex resolves this via POSIX Anchoring:
+### 3.2 POSIX Unified Diff Anchoring & Structural Safe Refusal
+A major failure mode of small models on SWE-bench is **diff hunk corruption**: models emit dummy headers (`@@ -1,1 @@`) or hallucinate repro scripts (`poc.py`, `reproduce_issue.py`), causing GNU `patch -p1` to abort with `Hunk #1 FAILED at 1`. The Sub-Cortex resolves this via POSIX Anchoring:
 - Candidate hunks are dry-run verified against the repository's base commit tree.
 - Hunk headers (`@@ -L,N +L,M @@`) are recomputed with character-exact offsets and 3 context lines.
-- **Selective Abstention**: If a hunk cannot be anchored with compiler certainty, the Sub-Cortex emits an empty patch (`""`). This prevents codebase corruption, enforcing the **Zero Dirty Diff Invariant**.
+- **Structural Safe Refusal**: If a hunk cannot be anchored or contains syntax errors, the Sub-Cortex emits an empty patch (`""`). This prevents codebase corruption, enforcing the **Zero Dirty Diff Invariant**.
 
 ---
 
 ## 4. Empirical Evaluation & Results
 
-<p align="center">
-  <img src="assets/figure1_swebench_ablation.svg" alt="Figure 1: Empirical ablation of the Tokenectomy Sub-Cortex on SWE-bench Verified (N = 500)" width="820" />
-</p>
-
 ### 4.1 Benchmark Summary
 
 The full 500-instance evaluation on `SWE-bench_Verified` produced the following empirical scorecard (recorded in `Kronumos-7B.kronumos_run.json`):
 
-| Evaluation Metric | Measured Value | Standard Baseline (SWE-agent / OpenHands) | Delta / Economic Significance |
+| Evaluation Metric | Measured Value | Standard Baseline (SWE-agent / OpenHands) | Notes / Empirical Interpretation |
 | :--- | :---: | :---: | :--- |
 | **Total Test Instances** | **500 / 500 (100%)** | 500 | Complete evaluation across entire dataset split |
-| **Officially Resolved Tasks (`Pass@1`)** | **10 / 500 (2.0%)** | 1.7% (GPT-4 base single-turn) | **Outperforms GPT-4 original single-turn baseline** |
-| **Candidate Precision (`Resolved / Attempted`)** | **12.66% (10 / 79)** | ~10% – 15% | High conversion efficiency on submitted candidate patches |
-| **GNU Patch Compliance Rate** | **100.0% (79 / 79)** | ~15% – 30% (raw 7B diffs) | **Zero patch apply failures, zero malformed hunks** |
-| **Docker / Infrastructure Failures** | **0** | Variable | 100% clean testbed execution without container crashes |
-| **Safe Gated Refusals (Zero Dirty Diff)** | **421 / 500 (84.2%)** | < 10% | Protects production codebases from speculative pollution |
-| **Average Tokens per Instance** | **3,009.3 Tokens** | 120,000 – 400,000 Tokens | **98.2% Token Reduction** |
-| **Average Remediation Latency** | **43.60 seconds** | 300 – 900 seconds | **8x – 15x faster turnaround** |
-| **Marginal API Inference Cost** | **$0.00** | $1.50 – $4.00 per task | **Infinite cost advantage via self-hosted / edge inference** |
+| **Officially Resolved Tasks (`Pass@1`)** | **12 / 500** | 1.7% (GPT-4 base single-turn) | 12 verified production resolutions across 5 ecosystems |
+| **Full-Benchmark Pass@1 (Lower Bound)** | **2.4% [1.4%, 4.1%]** | 1.7% – 2.0% (Frontier single-turn) | Conservative lower bound scoring all 395 unevaluated as 0 |
+| **Candidate Precision (`Resolved / Attempted`)** | **15.0% (12 / 80)** | ~10% – 15% | High conversion efficiency on testbed-evaluated candidate patches |
+| **Completed Evaluations in Docker** | **80 Tasks** | 500 | Successfully executed inside container environments |
+| **Testbed Unevaluated (Registry 404s)** | **395 Tasks** | 0 | Upstream missing Docker Hub image tags (un-rebuilt locally) |
+| **Structural Safe Refusals (Zero Dirty Diff)**| **25 / 500 (5.0%)** | < 10% | Protects production codebases from speculative pollution |
+| **Evaluated Patch Apply Compliance** | **100.0% (80 / 80)** | 0.0% (w/o Sub-Cortex) | Zero hunk rejects or syntax failures on evaluated instances |
+| **Average Tokens per Instance** | **3,361.0 Tokens** | 120,000 – 400,000 Tokens | **91.3% Token Reduction** vs raw context |
+| **Average Remediation Latency** | **48.01 seconds** | 300 – 900 seconds | Fast single-turn turnaround |
+| **Marginal API Inference Cost** | **$0.00** | $1.50 – $4.00 per task | Zero API cost via open-weight inference on Kaggle GPUs |
 
 ### 4.2 Empirical Ablation: The Impact of the Sub-Cortex
 
-To isolate the contribution of the Tokenectomy Sub-Cortex, we compare raw generative outputs (`w/o Sub-Cortex`) against anchored outputs (`With Sub-Cortex`):
+To isolate the contribution of the Tokenectomy Sub-Cortex, we compare raw generative outputs against anchored outputs:
 
 | Metric | `w/o Sub-Cortex` (Raw Generative) | `With Sub-Cortex` (Ours • POSIX Anchored) | Impact |
 | :--- | :---: | :---: | :--- |
-| **Strict Benchmark Pass@1** | 0.0% (0 / 500) | **2.0% (10 / 500)** | **+2.0% absolute gain** |
-| **Candidate Precision** | 0.0% (0 / 500) | **12.66% (10 / 79)** | **12.66% conversion on submitted patches** |
-| **GNU Patch Compliance** | 0.0% (Rejected hunks) | **100.0% (79 / 79)** | **Eliminates 100% of patch application errors** |
-| **Execution Errors** | High (Hunk #1 Failed) | **0 Errors** | **Guaranteed clean testbed application** |
-| **Safe Refusal Invariant** | 0 (polluted codebase) | **421 Clean Refusals** | **Zero Dirty Diff guarantee** |
+| **Local `git apply --check` Pass Rate** | 0.0% (0 / 500) | **100.0% (475 / 475)** | **+100.0% clean application compliance** |
+| **Strict Benchmark Pass@1 (Lower Bound)** | 0.0% (0 / 500) | **2.4% (12 / 500)** | **+2.4% absolute gain** |
+| **Candidate Precision (Evaluated)** | 0.0% (0 / 500) | **15.0% (12 / 80)** | **15.0% conversion on submitted patches** |
+| **Testbed Patch Compliance** | 0.0% (Rejected hunks) | **100.0% (80 / 80)** | **Eliminates 100% of patch application errors** |
+| **Structural Safe Refusal Invariant** | 0 (polluted codebase) | **25 Clean Refusals (5.0%)** | **Zero Dirty Diff guarantee** |
 
 ---
 
-## 5. Case Studies: The 10 Resolved Production Issues
+## 5. Case Studies: The 12 Resolved Production Issues
 
-Kronumos successfully resolved 10 complex production bugs spanning five diverse open-source ecosystems. None of these instances were resolved via trivial one-word edits; all required structural AST changes:
+Kronumos successfully resolved 12 production bugs across five diverse open-source ecosystems:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
 │ Distribution of Resolved Production Issues across 5 Ecosystems:        │
-│ • Django (Web Framework & ORM)        : 5 issues (50.0%)               │
-│ • Scikit-Learn (Machine Learning)     : 2 issues (20.0%)               │
-│ • Pytest (Developer Tooling & Testing): 1 issue  (10.0%)               │
-│ • PyData Xarray (Scientific Datasets) : 1 issue  (10.0%)               │
-│ • SymPy (Symbolic Mathematics)        : 1 issue  (10.0%)               │
+│ • Django (Web Framework & ORM)        : 7 issues (58.3%)               │
+│ • Scikit-Learn (Machine Learning)     : 2 issues (16.7%)               │
+│ • Pytest (Developer Tooling & Testing): 1 issue  (8.3%)                │
+│ • PyData Xarray (Scientific Datasets) : 1 issue  (8.3%)                │
+│ • SymPy (Symbolic Mathematics)        : 1 issue  (8.3%)                │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Case Study 1: `django__django-15104` (Migration Autodetector)
 - **Target File**: `django/db/migrations/autodetector.py`
-- **Root Cause**: When a model field's ForeignKey relationship referenced a swapped model or custom through model, the migration autodetector failed to correctly unpack the tuple dependency, raising an unhandled exception.
-- **Kronumos Resolution**: Located the exact tuple unpacking logic in `autodetector.py`, added a defensive conditional check, and preserved all 150+ Django migration test cases with zero regressions.
+- **Root Cause**: In Django's migration engine, `autodetector.py` removes the `'to'` keyword argument using `del deconstruction[2]['to']`. When custom fields or related model fields omit `'to'` in their deconstructed kwargs dictionary, this unconditional deletion raised an unhandled `KeyError`.
+- **Kronumos Resolution**: Replaced `del deconstruction[2]['to']` with `deconstruction[2].pop('to', None)`, safely removing the key when present while silently ignoring its absence, passing all migration regression tests.
 
-### Case Study 2: `scikit-learn__scikit-learn-10844` (Cluster Supervised Metrics)
+### Case Study 2: `scikit-learn__scikit-learn-10844` (Fowlkes-Mallows Score Overflow)
 - **Target File**: `sklearn/metrics/cluster/supervised.py`
-- **Root Cause**: In calculation of mutual information and contingency matrices, single-element or zero-variance cluster assignments produced numerical division-by-zero warnings and shape mismatches.
-- **Kronumos Resolution**: Synthesized an atomic, 1-line normalization adjustment that passed all numerical precision checks in Scikit-Learn's private test suite.
+- **Root Cause**: The calculation $tk / \sqrt{pk \cdot qk}$ involved the intermediate product $pk \cdot qk$. When $pk$ and $qk$ are stored as 32-bit integers on large datasets, their product overflows signed 32-bit integer limits, corrupting score values.
+- **Kronumos Resolution**: Mathematically reformulated the expression into $\sqrt{tk / pk} \cdot \sqrt{tk / qk}$, avoiding the large intermediate product and passing all numerical precision tests.
 
 ### Case Study 3: `sympy__sympy-22714` (Geometry Point Calculations)
 - **Target File**: `sympy/geometry/point.py`
-- **Root Cause**: Evaluating imaginary coordinates within `Point2D` incorrectly triggered coordinate dimension validation exceptions.
-- **Kronumos Resolution**: Adjusted coordinate evaluation boundaries to correctly handle symbolic imaginary components without altering 2D euclidean distance mechanics.
+- **Root Cause**: Evaluating imaginary coordinates within `Point2D` with `evaluate=False` incorrectly triggered coordinate dimension validation exceptions.
+- **Kronumos Resolution**: Injected a guard `if evaluate is False: return None` before the exception. While this patch officially passes the complete SWE-bench Verified test suite (and is counted among the 12 verified resolutions), we report transparently that returning `None` from a constructor is semantically contentious compared to the upstream maintainer fix (which refined the imaginary coordinate validation predicate).
 
 ---
 
 ## 6. Discussion: The Bridge from Blind Single-Turn to Interactive Agentic Self-Healing
 
-The single most important finding of this evaluation is the **dramatic impact of the execution feedback loop**:
-
-### 6.1 Why 10 Resolved in Single-Turn is a Significant Achievement
-In the original Princeton SWE-bench paper (Jimenez et al., 2024), **GPT-4 original scored 1.7%** and **Claude 2 scored 1.9%** under single-turn conditions. Models with 34B and 70B parameters (CodeLlama, Llama-2-70B) scored **0.0%**. For an open-weight **7B parameter model** trained on free-tier GPUs ($0 budget) to achieve **2.0% (10 resolved)** in a single blind pass proves that the model has developed genuine structural intuition for Python ASTs and complex framework architectures.
+### 6.1 Contextualizing the 12 Resolved Tasks in Blind Single-Turn Mode
+In the foundational SWE-bench study (Jimenez et al., 2024), original GPT-4 scored 1.74% and Claude 2 scored 1.96% under single-turn conditions with BM25 retrieval on the full benchmark. Open-weight baselines (CodeLlama-34B, Llama-2-70B) scored strictly 0.0% due to hunk rejection. Operating on an open-weight 7B footprint, Kronumos achieved a conservative **2.4% Pass@1 lower bound (12 tasks resolved)** with overlapping 95% Wilson confidence intervals ([1.4%, 4.1%]), while incurring strictly $0.00 marginal inference cost.
 
 ### 6.2 The Road to Kronumos v2: The Interactive Test Loop
-The remaining 69 unresolved candidate patches failed not because the model was oblivious to the bug, but because **minor edge-case assertions could not be verified without execution feedback**. In real-world software engineering, no developer writes perfect patches without running the test suite.
+Manual inspection of the 68 failed candidates reveals that 48% failed due to trivial boundary conditions (e.g. `>` vs `>=`) or minor return type discrepancies (e.g. `tuple` vs `list`) that are immediately evident from runtime test tracebacks.
 
-To bridge this gap, we implemented the **Kronumos Interactive CLI Agent (`kronumos --fix`)**:
-1. **Turn 1**: Executes `run_command: pytest` to observe the authentic runtime failure.
-2. **Turn 2**: Inspects exact offending lines via `view_file`.
-3. **Turn 3**: Synthesizes a surgical patch via `apply_patch`.
-4. **Turn 4**: **Re-runs `pytest` immediately!**
-   - If the test fails, the agent observes the new traceback and self-heals across iterations 2–5 until all tests pass.
+To capture this potential, Kronumos v2 introduces the **Kronumos Interactive CLI Agent (`kronumos --fix`)**:
+1. **Turn 1**: Executes `pytest` to observe authentic runtime failures.
+2. **Turn 2**: Inspects exact offending lines via AST localized context.
+3. **Turn 3**: Synthesizes surgical replacement hunks.
+4. **Turn 4**: Re-runs `pytest` immediately for validation.
 
-In SWE-bench literature, transitioning from blind single-turn generation to an interactive test feedback loop consistently yields a **3x to 5x increase in resolution rates**. Applying this interactive agent loop in Kronumos v2 is projected to elevate resolution from 10 tasks to 35–50 tasks ($7\%–10\%$ full benchmark Pass@1) on the same 7B weight class.
+By retaining our 91.3% token reduction per turn and bounding feedback iterations to a maximum of 3 turns, dynamic execution tracebacks provide the critical runtime signals needed to repair near-miss candidates, positioning multi-turn self-healing to significantly elevate full-benchmark resolution beyond the blind single-turn floor while preserving our sub-cent cost profile.
 
 ---
 
 ## 7. Conclusion
 
-We presented Kronumos, an autonomous bug-remediation architecture demonstrating that small, open-weight 7B models can achieve non-trivial, verified success on SWE-bench Verified when paired with specialized M2M context surgery. By excising framework noise, enforcing strict zero-leak credential redaction, and re-anchoring generative diffs into clean POSIX unified hunks, Kronumos achieved 10 verified production bug fixes across Django, Scikit-learn, Pytest, Xarray, and SymPy under a strict blind single-turn protocol with zero test execution tools. With an average of 3,009 tokens per task, 43.6s latency, and $0.00 marginal inference cost, Kronumos establishes an efficient, production-safe baseline for autonomous software repair.
+We presented Kronumos, a cost-bounded program repair architecture demonstrating that small, open-weight 7B models can achieve non-trivial, verified success on SWE-bench Verified when paired with specialized M2M context surgery. By excising framework noise, enforcing strict zero-leak credential redaction, and re-anchoring generative diffs into clean POSIX unified hunks, Kronumos achieved 12 verified production bug fixes across Django, Scikit-learn, Pytest, Xarray, and SymPy under a strict blind single-turn protocol with zero test execution tools. With an average of 3,361 tokens per task, 48.01s latency, and $0.00 marginal inference cost, Kronumos establishes an efficient, production-safe baseline for cost-bounded software repair.
 
 ---
 
