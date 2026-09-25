@@ -1,0 +1,32 @@
+TOKENECTOMY LABS DUAL LICENSING MODEL
+=====================================
+
+Kronumos is licensed under a dual-licensing structure to support both the open-source community and sustainable commercial enterprise operations:
+
+1. OPEN SOURCE LICENSE (GNU Affero General Public License v3.0 - AGPLv3)
+------------------------------------------------------------------------
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, and/or sublicense copies of the Software, subject to the conditions of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+Network interaction condition (AGPLv3 Section 13):
+If you modify the Software or embed it into a hosted network service, you must make the complete source code of your modified version available to all network users under the terms of the AGPLv3.
+
+A complete copy of the AGPLv3 license is available at: https://www.gnu.org/licenses/agpl-3.0.txt
+
+2. COMMERCIAL ENTERPRISE LICENSE
+--------------------------------
+If you intend to:
+- Use Kronumos in a proprietary commercial environment without complying with AGPLv3 copyleft provisions,
+- Embed Kronumos into a closed-source SaaS, PaaS, or developer platform,
+- Deploy on-premises air-gapped instances with custom SLA and enterprise indemnification,
+- Distribute derivative works without providing corresponding source code,
+
+You must obtain a Commercial Enterprise License from Tokenectomy Labs.
+
+For commercial licensing inquiries, enterprise agreements, and pricing:
+- Organization: Tokenectomy Labs
+- Email: licensing@tokenectomy.com / support@tokenectomy.com
+- Repository: https://github.com/Tokenectomy-Labs/Kronomus
+
+DISCLAIMER OF WARRANTY & LIMITATION OF LIABILITY
+------------------------------------------------
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL TOKENECTOMY LABS, ITS CONTRIBUTORS, OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, LOST PROFITS, OR SYSTEM DOWNTIME ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

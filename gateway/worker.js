@@ -17,6 +17,25 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Kronumos-Key",
 };
 
+const SECURITY_HEADERS = {
+  ...CORS_HEADERS,
+  "X-Content-Type-Options": "nosniff",
+  "X-Frame-Options": "DENY",
+  "Referrer-Policy": "strict-origin-when-cross-origin",
+  "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+};
+
+// Edge-level Secret & Credential Scrubber (Defense-in-Depth for Enterprise / Zero-Leakage)
+function redactEdgeSecrets(text) {
+  if (typeof text !== "string") return text;
+  return text
+    .replace(/(?:ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9_]{36,255}/g, "[REDACTED_GITHUB_TOKEN]")
+    .replace(/AKIA[0-9A-Z]{16}/g, "[REDACTED_AWS_KEY]")
+    .replace(/eyJ[A-Za-z0-9-_]{10,}\.[A-Za-z0-9-_]{10,}\.[A-Za-z0-9-_]{10,}/g, "[REDACTED_JWT]")
+    .replace(/(?:sk-[A-Za-z0-9]{20,}|sk-ant-[A-Za-z0-9-_]{20,})/g, "[REDACTED_API_KEY]")
+    .replace(/-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----[\s\S]*?-----END (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/g, "[REDACTED_PRIVATE_KEY]");
+}
+
 // ── In-Memory Edge Rate Limiter & Security Shields ─────────────────────────
 const ipRateLimits = new Map();
 const ipBurstLimits = new Map();
@@ -98,7 +117,7 @@ export default {
         {
           headers: {
             "Content-Type": "application/json",
-            ...CORS_HEADERS,
+            ...SECURITY_HEADERS,
           },
         }
       );
@@ -133,7 +152,7 @@ export default {
         {
           headers: {
             "Content-Type": "application/json",
-            ...CORS_HEADERS,
+            ...SECURITY_HEADERS,
           },
         }
       );
@@ -159,16 +178,20 @@ export default {
             message_en: "Request body exceeds maximum allowed limit of 128KB.",
             message_id: "Ukuran permintaan melebihi batas maksimum 128KB."
           }, null, 2),
-          { status: 413, headers: { "Content-Type": "application/json", ...CORS_HEADERS } }
+          { status: 413, headers: { "Content-Type": "application/json", ...SECURITY_HEADERS } }
         );
       }
 
       // Security Shield 2: Cryptographically Trusted Client IP (prevents spoofing via X-Forwarded-For)
       const clientIp = request.headers.get("cf-connecting-ip") || "anonymous";
 
-      // Optional VIP / Admin Key bypass or IP-based Rate Limiter for free users
+      // Auth / Tier Check: Pro / VIP API Key bypass or IP-based Rate Limiter for free users
       const authHeader = request.headers.get("Authorization") || "";
-      const isAuthorizedVip = env.KRONUMOS_API_KEY && authHeader.trim() === `Bearer ${env.KRONUMOS_API_KEY.trim()}`;
+      const customKeyHeader = request.headers.get("X-Kronumos-Key") || "";
+      const clientKey = (authHeader.startsWith("Bearer ") ? authHeader.substring(7) : customKeyHeader).trim();
+      
+      const isAuthorizedVip = (env.KRONUMOS_API_KEY && clientKey === env.KRONUMOS_API_KEY.trim()) ||
+                              (env.PRO_KEYS && env.PRO_KEYS.split(",").map(k => k.trim()).includes(clientKey));
 
       let rateLimitHeaders = {};
       if (!isAuthorizedVip) {
@@ -186,7 +209,7 @@ export default {
               headers: {
                 "Content-Type": "application/json",
                 "Retry-After": String(burstStatus.retryAfter || 2),
-                ...CORS_HEADERS,
+                ...SECURITY_HEADERS,
               }
             }
           );
@@ -215,7 +238,7 @@ export default {
               headers: {
                 "Content-Type": "application/json",
                 "Retry-After": String(Math.max(1, Math.ceil((limitStatus.resetAt - Date.now()) / 1000))),
-                ...CORS_HEADERS,
+                ...SECURITY_HEADERS,
                 ...rateLimitHeaders,
               }
             }
@@ -233,7 +256,7 @@ export default {
             message_en: "Failed to parse JSON body.",
             message_id: "Gagal memproses JSON payload."
           }, null, 2),
-          { status: 400, headers: { "Content-Type": "application/json", ...CORS_HEADERS } }
+          { status: 400, headers: { "Content-Type": "application/json", ...SECURITY_HEADERS } }
         );
       }
 
@@ -245,7 +268,7 @@ export default {
             message_en: "The 'messages' array is required and must not be empty.",
             message_id: "Array 'messages' wajib diisi dan tidak boleh kosong."
           }, null, 2),
-          { status: 400, headers: { "Content-Type": "application/json", ...CORS_HEADERS } }
+          { status: 400, headers: { "Content-Type": "application/json", ...SECURITY_HEADERS } }
         );
       }
 
@@ -257,7 +280,7 @@ export default {
             message_en: "Conversation history exceeds maximum limit of 50 messages.",
             message_id: "Riwayat percakapan melebihi batas maksimum 50 pesan."
           }, null, 2),
-          { status: 400, headers: { "Content-Type": "application/json", ...CORS_HEADERS } }
+          { status: 400, headers: { "Content-Type": "application/json", ...SECURITY_HEADERS } }
         );
       }
 
@@ -269,7 +292,7 @@ export default {
               message_en: "Single message content exceeds maximum limit of 25,000 characters.",
               message_id: "Isi pesan melebihi batas maksimum 25.000 karakter."
             }, null, 2),
-            { status: 400, headers: { "Content-Type": "application/json", ...CORS_HEADERS } }
+            { status: 400, headers: { "Content-Type": "application/json", ...SECURITY_HEADERS } }
           );
         }
       }
@@ -307,7 +330,7 @@ export default {
         const aiResponse = await env.AI.run(model, {
           messages: processedMessages.map(m => ({
             role: m.role,
-            content: m.content,
+            content: redactEdgeSecrets(m.content),
           })),
           stream: isStream,
           max_tokens: body.max_tokens || 1024,
@@ -321,7 +344,7 @@ export default {
               "Content-Type": "text/event-stream; charset=utf-8",
               "Cache-Control": "no-cache",
               "Connection": "keep-alive",
-              ...CORS_HEADERS,
+              ...SECURITY_HEADERS,
               ...rateLimitHeaders,
             },
           });
@@ -352,7 +375,7 @@ export default {
           return new Response(JSON.stringify(responsePayload), {
             headers: {
               "Content-Type": "application/json",
-              ...CORS_HEADERS,
+              ...SECURITY_HEADERS,
               ...rateLimitHeaders,
             },
           });
@@ -363,11 +386,11 @@ export default {
             error: "Workers AI execution error",
             details: aiErr.message || String(aiErr),
           }),
-          { status: 500, headers: { "Content-Type": "application/json", ...CORS_HEADERS } }
+          { status: 500, headers: { "Content-Type": "application/json", ...SECURITY_HEADERS } }
         );
       }
     }
 
-    return new Response("Not found", { status: 404, headers: CORS_HEADERS });
+    return new Response("Not found", { status: 404, headers: SECURITY_HEADERS });
   },
 };

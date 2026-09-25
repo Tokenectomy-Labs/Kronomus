@@ -36,13 +36,38 @@ else
     esac
 
     BINARY_URL="https://github.com/Tokenectomy-Labs/Kronomus/releases/latest/download/kronumos-${OS}-${ARCH}"
+    SHA_URL="${BINARY_URL}.sha256"
     TEMP_FILE="$(mktemp)"
+    TEMP_SHA="$(mktemp)"
+
     if curl -fsSL "$BINARY_URL" -o "$TEMP_FILE" 2>/dev/null; then
+        # Cryptographic Integrity Verification
+        if curl -fsSL "$SHA_URL" -o "$TEMP_SHA" 2>/dev/null; then
+            EXPECTED_SHA="$(cat "$TEMP_SHA" | tr -d '[:space:]')"
+            ACTUAL_SHA=""
+            if command -v sha256sum >/dev/null 2>&1; then
+                ACTUAL_SHA="$(sha256sum "$TEMP_FILE" | awk '{print $1}')"
+            elif command -v shasum >/dev/null 2>&1; then
+                ACTUAL_SHA="$(shasum -a 256 "$TEMP_FILE" | awk '{print $1}')"
+            fi
+            if [ -n "$EXPECTED_SHA" ] && [ -n "$ACTUAL_SHA" ]; then
+                if [ "$EXPECTED_SHA" != "$ACTUAL_SHA" ]; then
+                    echo "❌ Security Error: SHA256 checksum verification failed!"
+                    echo "   Expected: $EXPECTED_SHA"
+                    echo "   Actual:   $ACTUAL_SHA"
+                    rm -f "$TEMP_FILE" "$TEMP_SHA"
+                    exit 1
+                fi
+                echo "🔒 SHA256 cryptographic integrity verified."
+            fi
+            rm -f "$TEMP_SHA"
+        fi
+
         chmod +x "$TEMP_FILE"
         mv "$TEMP_FILE" "$INSTALL_DIR/kronumos"
         echo "✅ Kronumos successfully installed to $INSTALL_DIR/kronumos"
     else
-        rm -f "$TEMP_FILE"
+        rm -f "$TEMP_FILE" "$TEMP_SHA"
         # If GitHub release asset is not yet uploaded, use already installed binary or notify
         if [ -f "$INSTALL_DIR/kronumos" ]; then
             echo "✅ Kronumos is already installed at $INSTALL_DIR/kronumos"
