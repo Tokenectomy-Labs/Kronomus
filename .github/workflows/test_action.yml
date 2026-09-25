@@ -1,0 +1,27 @@
+name: "Test Kronumos GitHub Action"
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-installer-and-doctor:
+    name: "Verify Installer & Doctor"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Validate Installer Syntax
+        run: |
+          bash -n cli/install.sh
+
+      - name: Install Kronumos Pre-compiled Release
+        run: |
+          bash cli/install.sh
+
+      - name: Run Doctor Diagnostic in Local Runner
+        run: |
+          ~/.cargo/bin/kronumos --doctor

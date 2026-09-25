@@ -128,4 +128,14 @@ runs:
         fi
 
         echo "🚀 Executing: ${CMD[*]}"
-        "${CMD[@]}"
+        EXIT_CODE=0
+        "${CMD[@]}" || EXIT_CODE=$?
+
+        if [ $EXIT_CODE -eq 0 ]; then
+          echo "status=resolved" >> "$GITHUB_OUTPUT"
+          echo "tests_passed=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "status=unresolved" >> "$GITHUB_OUTPUT"
+          echo "tests_passed=false" >> "$GITHUB_OUTPUT"
+        fi
+        exit $EXIT_CODE
