@@ -613,11 +613,14 @@
             <button class="deck-tab" data-target="tab-deb">
               Linux (.deb GUI)
             </button>
-            <button class="deck-tab" data-target="tab-action">
-              GitHub Actions (CI/CD)
+            <button class="deck-tab" data-target="tab-windows">
+              Windows (.exe / WSL)
             </button>
             <button class="deck-tab" data-target="tab-cli">
               Linux / macOS (CLI)
+            </button>
+            <button class="deck-tab" data-target="tab-action">
+              GitHub Actions (CI/CD)
             </button>
           </div>
 
@@ -645,7 +648,38 @@
             </div>
           </div>
 
-          <!-- Tab 2: GitHub Action (Autonomous CI/CD) -->
+          <!-- Tab 2: Windows (.exe Standalone & WSL) -->
+          <div id="tab-windows" class="deck-pane">
+            <div class="install-flow">
+              <a href="https://github.com/Tokenectomy-Labs/Kronomus/releases/download/v1.0.0/kronumos_windows_amd64.exe" class="btn-download-hero">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/></svg>
+                Download Standalone Windows (.exe)
+              </a>
+              <p class="deck-note">
+                <strong>Portable Windows Binary:</strong> Zero installation required. Run directly in PowerShell or Windows Terminal.
+              </p>
+              <div class="terminal-bar">
+                <code>irm https://raw.githubusercontent.com/Tokenectomy-Labs/Kronomus/main/cli/install.ps1 | iex</code>
+                <button class="btn-copy-bar" onclick="copyText('irm https://raw.githubusercontent.com/Tokenectomy-Labs/Kronomus/main/cli/install.ps1 | iex', this)">Copy</button>
+              </div>
+              <p class="deck-note">
+                Or run PowerShell 1-liner to automatically configure WSL 2 and environment variables.
+              </p>
+              <div class="metal-shield-box">
+                <div class="shield-title-row">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+                  Windows Verification Command
+                </div>
+                <div class="shield-explainer">Verify downloaded executable via PowerShell:</div>
+                <div class="checksum-strip">
+                  <span class="checksum-hash">certutil -hashfile kronumos_windows_amd64.exe SHA256</span>
+                  <button class="btn-copy-bar" onclick="copyText('certutil -hashfile kronumos_windows_amd64.exe SHA256', this)">Copy Hash</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 3: GitHub Action (Autonomous CI/CD) -->
           <div id="tab-action" class="deck-pane">
             <div class="install-flow">
               <p class="deck-note" style="margin-top: 0; margin-bottom: 12px;">
@@ -658,13 +692,6 @@
     test-cmd: 'pytest -v'
     commit: true</code></pre>
                 <button class="btn-copy-bar" onclick="copyText('- name: Autonomous Bug Remediation\n  uses: Tokenectomy-Labs/Kronomus@main\n  with:\n    test-cmd: \'pytest -v\'\n    commit: true', this)">Copy YAML</button>
-              </div>
-              <p class="deck-note" style="margin-top: 10px;">
-                Compatible with all GitHub runners. For local execution on Windows, run via WSL 2 with the automated installer:
-              </p>
-              <div class="terminal-bar" style="margin-top: 8px;">
-                <code>irm https://raw.githubusercontent.com/Tokenectomy-Labs/Kronomus/main/cli/install.ps1 | iex</code>
-                <button class="btn-copy-bar" onclick="copyText('irm https://raw.githubusercontent.com/Tokenectomy-Labs/Kronomus/main/cli/install.ps1 | iex', this)">Copy</button>
               </div>
             </div>
           </div>
@@ -791,7 +818,7 @@
       let targetTab = 'tab-deb';
 
       if (ua.includes('win')) {
-        targetTab = 'tab-action';
+        targetTab = 'tab-windows';
       } else if (ua.includes('mac')) {
         targetTab = 'tab-cli';
       } else if (ua.includes('linux')) {
