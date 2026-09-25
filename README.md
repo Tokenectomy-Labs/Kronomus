@@ -8,7 +8,7 @@
 
 <p align="center">
   <a href="https://doi.org/10.5281/zenodo.22929676"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.22929676.svg" alt="DOI: 10.5281/zenodo.22929676" /></a>
-  <a href="https://opensource.org/licenses/Apache-2.0"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="License: Apache 2.0" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-AGPLv3_%2F_Commercial-blue.svg" alt="License: AGPLv3 / Commercial" /></a>
   <a href="https://huggingface.co/NadevA23/Kronumos"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-NadevA23%2FKronumos-yellow" alt="Hugging Face Model" /></a>
   <a href="https://huggingface.co/NadevA23/Kronumos-GGUF"><img src="https://img.shields.io/badge/GGUF-Quantized-green" alt="GGUF Quantized" /></a>
 </p>
@@ -109,11 +109,11 @@ Interactive Agent Commands:
 ### Installation
 
 ```bash
-# Via Cargo:
-cargo install --git https://github.com/Tokenectomy-Labs/Tokenectomy --bin kronumos
-
-# Or 1-line installer:
+# 1-Line Cryptographic Installer (Linux x86_64, with automated SHA256 verification):
 curl -fsSL https://raw.githubusercontent.com/Tokenectomy-Labs/Kronomus/main/cli/install.sh | bash
+
+# Or download pre-compiled standalone release binaries directly:
+# https://github.com/Tokenectomy-Labs/Kronomus/releases/latest
 ```
 
 ### Usage Modes
@@ -184,10 +184,12 @@ model = AutoModelForCausalLM.from_pretrained(
 ```
 
 
-## 🏢 Organization & Author
-- **Developed by:** Muhammad Naufal Daffa ([@daffa2555](https://github.com/daffa2555))
-- **Organization:** Tokenectomy Labs
-- **License:** Apache 2.0
+## 🏢 Organization & Compliance
+- **Engineering & Maintenance:** Tokenectomy Labs
+- **License:** Dual License (GNU Affero General Public License v3 / Commercial Enterprise) — see [`LICENSE`](LICENSE)
+- **Terms of Service:** [`TERMS.md`](TERMS.md)
+- **Privacy & Zero-Retention Policy:** [`PRIVACY.md`](PRIVACY.md)
+- **Security Policy:** [`SECURITY.md`](SECURITY.md)
 
 
 ## 📖 Citation
