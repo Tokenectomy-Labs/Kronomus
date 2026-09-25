@@ -17,14 +17,17 @@ An agentic terminal REPL powered by **Kronumos Core** and the **Tokenectomy Rust
 
 ## ⚡ Installation
 
-### Option 1: Cargo Install (Recommended)
-```bash
-cargo install --git https://github.com/Tokenectomy-Labs/Tokenectomy --bin kronumos
-```
-
-### Option 2: 1-Line Installer
+### 1-Line Installer (Recommended)
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Tokenectomy-Labs/Kronomus/main/cli/install.sh | bash
+```
+
+### Direct Binary Download
+Pre-compiled binaries for Linux (x86_64, aarch64) and macOS are distributed via [GitHub Releases](https://github.com/Tokenectomy-Labs/Kronomus/releases).
+```bash
+# Example for Linux x86_64
+curl -fsSL -o ~/.cargo/bin/kronumos https://github.com/Tokenectomy-Labs/Kronomus/releases/latest/download/kronumos-linux-amd64
+chmod +x ~/.cargo/bin/kronumos
 ```
 
 
