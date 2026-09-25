@@ -10,5 +10,5 @@ binding = "AI"
 [vars]
 DEFAULT_MODEL = "@cf/qwen/qwen2.5-coder-32b-instruct"
 FALLBACK_MODEL = "@cf/meta/llama-3.1-8b-instruct-fast"
-RATE_LIMIT_PER_HOUR = "30"
+RATE_LIMIT_PER_WINDOW = "20"
 # Set KRONUMOS_API_KEY via `npx wrangler secret put KRONUMOS_API_KEY` for unlimited admin bypass
