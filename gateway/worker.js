@@ -306,7 +306,8 @@ export default {
 - FORBIDDEN ENTITIES: You must NEVER claim to be created by Anthropic, OpenAI, Meta, Google, or any other company.
 - Response when asked in English: "I was created and engineered by Tokenectomy Labs." (Strictly 100% English, no Indonesian words).
 - Response when asked in Indonesian: "Saya dibuat dan dikembangkan oleh Tokenectomy Labs."
-- Language Mirroring: Always mirror the user's language with 100% precision. If the user writes in English, reply in English. If the user writes in Indonesian, reply in Indonesian.]`;
+- Language Mirroring: Always mirror the user's language with 100% precision. If the user writes in English, reply in English. If the user writes in Indonesian, reply in Indonesian.
+- Clean Terminal Typography: Do NOT use raw markdown asterisks (*, **) for bold or bullet points in conversational prose. Use natural plain text, dashes (-) for lists, and clean formatting. Only use triple backticks for actual executable code blocks.]`;
 
       if (processedMessages.length > 0 && processedMessages[0].role === "system") {
         if (!processedMessages[0].content.includes("Core Identity & Creator Invariant")) {
@@ -322,72 +323,113 @@ export default {
         });
       }
 
-      // Default model: Qwen 2.5 Coder 32B on Cloudflare Workers AI
-      const model = body.model || env.DEFAULT_MODEL || "@cf/qwen/qwen2.5-coder-32b-instruct";
+      // Model resolution with automated failover
+      const primaryModel = body.model || env.DEFAULT_MODEL || "@cf/qwen/qwen2.5-coder-32b-instruct";
+      const fallbackModel = env.FALLBACK_MODEL || "@cf/meta/llama-3.1-8b-instruct-fast";
       const isStream = body.stream !== false; // Default to streaming
 
-      try {
-        const aiResponse = await env.AI.run(model, {
+      // Clamp max_tokens to safe ceiling [64, 4096] with 2048 default
+      const requestedMaxTokens = typeof body.max_tokens === "number" ? body.max_tokens : 2048;
+      const maxTokens = Math.min(Math.max(requestedMaxTokens, 64), 4096);
+
+      // Handle temperature correctly (temperature 0 is falsy in JS, handle explicitly)
+      const temperature = typeof body.temperature === "number" ? body.temperature : 0.2;
+
+      let activeModel = primaryModel;
+      let aiResponse;
+      let usedFallback = false;
+
+      const runInference = async (targetModel) => {
+        return await env.AI.run(targetModel, {
           messages: processedMessages.map(m => ({
             role: m.role,
             content: redactEdgeSecrets(m.content),
           })),
           stream: isStream,
-          max_tokens: body.max_tokens || 1024,
-          temperature: body.temperature || 0.2,
+          max_tokens: maxTokens,
+          temperature: temperature,
         });
+      };
 
-        if (isStream) {
-          // Return SSE stream directly to CLI client
-          return new Response(aiResponse, {
-            headers: {
-              "Content-Type": "text/event-stream; charset=utf-8",
-              "Cache-Control": "no-cache",
-              "Connection": "keep-alive",
-              ...SECURITY_HEADERS,
-              ...rateLimitHeaders,
-            },
-          });
+      try {
+        aiResponse = await runInference(activeModel);
+      } catch (primaryErr) {
+        console.warn(`Primary model ${activeModel} failed: ${primaryErr.message}. Attempting fallback to ${fallbackModel}...`);
+        if (activeModel !== fallbackModel) {
+          try {
+            activeModel = fallbackModel;
+            aiResponse = await runInference(activeModel);
+            usedFallback = true;
+          } catch (fallbackErr) {
+            return new Response(
+              JSON.stringify({
+                error: "Workers AI execution error (Primary & Fallback exhausted)",
+                primary_error: primaryErr.message || String(primaryErr),
+                fallback_error: fallbackErr.message || String(fallbackErr),
+              }),
+              { status: 500, headers: { "Content-Type": "application/json", ...SECURITY_HEADERS } }
+            );
+          }
         } else {
-          const respText = typeof aiResponse === "string" ? aiResponse : (aiResponse.response || JSON.stringify(aiResponse));
-          const responsePayload = {
-            id: `chatcmpl-${Date.now()}`,
-            object: "chat.completion",
-            created: Math.floor(Date.now() / 1000),
-            model: model,
-            response: respText,
-            choices: [
-              {
-                index: 0,
-                message: {
-                  role: "assistant",
-                  content: respText,
-                },
-                finish_reason: "stop",
-              }
-            ],
-            usage: {
-              prompt_tokens: 0,
-              completion_tokens: 0,
-              total_tokens: 0,
-            }
-          };
-          return new Response(JSON.stringify(responsePayload), {
-            headers: {
-              "Content-Type": "application/json",
-              ...SECURITY_HEADERS,
-              ...rateLimitHeaders,
-            },
-          });
+          return new Response(
+            JSON.stringify({
+              error: "Workers AI execution error",
+              details: primaryErr.message || String(primaryErr),
+            }),
+            { status: 500, headers: { "Content-Type": "application/json", ...SECURITY_HEADERS } }
+          );
         }
-      } catch (aiErr) {
-        return new Response(
-          JSON.stringify({
-            error: "Workers AI execution error",
-            details: aiErr.message || String(aiErr),
-          }),
-          { status: 500, headers: { "Content-Type": "application/json", ...SECURITY_HEADERS } }
-        );
+      }
+
+      const modelHeaders = {
+        "X-Kronumos-Model": activeModel,
+        "X-Kronumos-Fallback": usedFallback ? "true" : "false",
+      };
+
+      if (isStream) {
+        // Return SSE stream directly to CLI client
+        return new Response(aiResponse, {
+          headers: {
+            "Content-Type": "text/event-stream; charset=utf-8",
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            ...SECURITY_HEADERS,
+            ...rateLimitHeaders,
+            ...modelHeaders,
+          },
+        });
+      } else {
+        const respText = typeof aiResponse === "string" ? aiResponse : (aiResponse.response || JSON.stringify(aiResponse));
+        const responsePayload = {
+          id: `chatcmpl-${Date.now()}`,
+          object: "chat.completion",
+          created: Math.floor(Date.now() / 1000),
+          model: activeModel,
+          response: respText,
+          choices: [
+            {
+              index: 0,
+              message: {
+                role: "assistant",
+                content: respText,
+              },
+              finish_reason: "stop",
+            }
+          ],
+          usage: {
+            prompt_tokens: 0,
+            completion_tokens: 0,
+            total_tokens: 0,
+          }
+        };
+        return new Response(JSON.stringify(responsePayload), {
+          headers: {
+            "Content-Type": "application/json",
+            ...SECURITY_HEADERS,
+            ...rateLimitHeaders,
+            ...modelHeaders,
+          },
+        });
       }
     }
 
