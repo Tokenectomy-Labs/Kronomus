@@ -9,4 +9,5 @@ binding = "AI"
 # Optional environment variables
 [vars]
 DEFAULT_MODEL = "@cf/qwen/qwen2.5-coder-32b-instruct"
-# Set KRONUMOS_API_KEY via `npx wrangler secret put KRONUMOS_API_KEY` if you want private authentication
+RATE_LIMIT_PER_HOUR = "30"
+# Set KRONUMOS_API_KEY via `npx wrangler secret put KRONUMOS_API_KEY` for unlimited admin bypass

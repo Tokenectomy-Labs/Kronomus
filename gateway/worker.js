@@ -17,6 +17,37 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Kronumos-Key",
 };
 
+// ── In-Memory Edge Rate Limiter (Sliding Window per IP) ─────────────────────
+const ipRateLimits = new Map();
+const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour window
+
+function checkRateLimit(ip, maxRequests, windowMs = RATE_LIMIT_WINDOW_MS) {
+  const now = Date.now();
+
+  // Periodic garbage collection if map exceeds 5000 entries
+  if (ipRateLimits.size > 5000) {
+    for (const [key, data] of ipRateLimits.entries()) {
+      if (now > data.resetAt) {
+        ipRateLimits.delete(key);
+      }
+    }
+  }
+
+  let record = ipRateLimits.get(ip);
+  if (!record || now > record.resetAt) {
+    record = { count: 1, resetAt: now + windowMs };
+    ipRateLimits.set(ip, record);
+    return { allowed: true, remaining: maxRequests - 1, resetAt: record.resetAt };
+  }
+
+  if (record.count >= maxRequests) {
+    return { allowed: false, remaining: 0, resetAt: record.resetAt };
+  }
+
+  record.count += 1;
+  return { allowed: true, remaining: maxRequests - record.count, resetAt: record.resetAt };
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -35,6 +66,7 @@ export default {
           version: "1.0.0",
           runtime: "Cloudflare Workers AI",
           default_model: "@cf/qwen/qwen2.5-coder-32b-instruct",
+          rate_limit_per_hour: env.RATE_LIMIT_PER_HOUR || "30",
           timestamp: new Date().toISOString(),
         }, null, 2),
         {
@@ -92,14 +124,40 @@ export default {
         return new Response("Method not allowed", { status: 405, headers: CORS_HEADERS });
       }
 
-      // Optional Bearer Authentication check
-      if (env.KRONUMOS_API_KEY) {
-        const authHeader = request.headers.get("Authorization") || "";
-        const expected = `Bearer ${env.KRONUMOS_API_KEY.trim()}`;
-        if (authHeader.trim() !== expected) {
+      // Optional VIP / Admin Key bypass or IP-based Rate Limiter for free users
+      const authHeader = request.headers.get("Authorization") || "";
+      const isAuthorizedVip = env.KRONUMOS_API_KEY && authHeader.trim() === `Bearer ${env.KRONUMOS_API_KEY.trim()}`;
+
+      let rateLimitHeaders = {};
+      if (!isAuthorizedVip) {
+        const clientIp = request.headers.get("cf-connecting-ip") ||
+                         request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+                         "anonymous";
+        const maxRequests = parseInt(env.RATE_LIMIT_PER_HOUR || "30", 10);
+        const limitStatus = checkRateLimit(clientIp, maxRequests);
+
+        rateLimitHeaders = {
+          "X-RateLimit-Limit": String(maxRequests),
+          "X-RateLimit-Remaining": String(limitStatus.remaining),
+          "X-RateLimit-Reset": String(Math.ceil(limitStatus.resetAt / 1000)),
+        };
+
+        if (!limitStatus.allowed) {
           return new Response(
-            JSON.stringify({ error: "Unauthorized: Invalid or missing Bearer token" }),
-            { status: 401, headers: { "Content-Type": "application/json", ...CORS_HEADERS } }
+            JSON.stringify({
+              error: "Rate limit exceeded (Free Cloudflare Tier)",
+              message: `Batas kuota gratis tercapai (${maxRequests} request/jam per IP). Gunakan Ollama lokal ('kronumos --backend ollama') untuk pemakaian tanpa batas, atau tunggu hingga periode berikutnya.`,
+              reset_at: new Date(limitStatus.resetAt).toISOString(),
+            }, null, 2),
+            {
+              status: 429,
+              headers: {
+                "Content-Type": "application/json",
+                "Retry-After": String(Math.max(1, Math.ceil((limitStatus.resetAt - Date.now()) / 1000))),
+                ...CORS_HEADERS,
+                ...rateLimitHeaders,
+              }
+            }
           );
         }
       }
@@ -145,6 +203,7 @@ export default {
               "Cache-Control": "no-cache",
               "Connection": "keep-alive",
               ...CORS_HEADERS,
+              ...rateLimitHeaders,
             },
           });
         } else {
@@ -175,6 +234,7 @@ export default {
             headers: {
               "Content-Type": "application/json",
               ...CORS_HEADERS,
+              ...rateLimitHeaders,
             },
           });
         }
