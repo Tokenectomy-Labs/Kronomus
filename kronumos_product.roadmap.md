@@ -2,7 +2,7 @@
 
 **Codename:** `Kronumos`  
 **Core Slogan:** *"You write the features. Kronumos heals the bugs."*  
-**Founder:** Daffa ([@daffa2555](https://github.com/daffa2555)) — Tokenectomy Labs  
+**Engineering & Maintenance:** Tokenectomy Labs  
 **Last Updated:** September 23, 2026  
 
 
@@ -53,7 +53,7 @@
   - Permanent DOI: `10.5281/zenodo.22929676`
   - Creative Commons Attribution 4.0 International (CC-BY 4.0).
 - [x] **Google Scholar Author Profile (INITIALIZED):**
-  - Author: Muhammad Naufal Daffa (M N Daffa), Tokenectomy Labs.
+  - Author / Organization: Tokenectomy Labs.
   - Preprint entry indexed and linked.
 - [ ] **TechRxiv Preprint Submission:**
   - Submit to IEEE TechRxiv (Computer Science / Software Engineering track) for IEEE Xplore indexing.
