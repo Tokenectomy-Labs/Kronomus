@@ -72,8 +72,12 @@ else
         if [ -f "$INSTALL_DIR/kronumos" ]; then
             echo "✅ Kronumos is already installed at $INSTALL_DIR/kronumos"
         else
-            echo "❌ Failed to download release binary from $BINARY_URL."
-            echo "   Please check https://github.com/Tokenectomy-Labs/Kronomus/releases for latest artifacts."
+            echo "❌ Failed to download pre-compiled release binary from $BINARY_URL."
+            if [ "$OS" = "darwin" ]; then
+                echo "💡 macOS Notice: Standalone Darwin binaries are rolling out. If you have Rust/Cargo installed, you can build from source, or run Kronumos in Linux Docker container:"
+                echo "   docker run -it --rm -v \$(pwd):/workspace ghcr.io/tokenectomy-labs/kronumos:latest"
+            fi
+            echo "   Please check https://github.com/Tokenectomy-Labs/Kronomus/releases for available platform artifacts."
             exit 1
         fi
     fi

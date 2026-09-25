@@ -29,7 +29,11 @@ def fetch_file(repo: str, base_commit: str, file_path: str) -> str | None:
         return cached_file.read_text(encoding="utf-8", errors="replace")
         
     url = f"https://raw.githubusercontent.com/{repo}/{base_commit}/{clean_path}"
-    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (Kronumos-Diff-Repair)"})
+    headers = {"User-Agent": "Mozilla/5.0 (Kronumos-Diff-Repair)"}
+    auth_token = os.getenv("GITHUB_TOKEN", "").strip()
+    if auth_token:
+        headers["Authorization"] = f"token {auth_token}"
+    req = urllib.request.Request(url, headers=headers)
     try:
         with urllib.request.urlopen(req, timeout=15) as resp:
             content = resp.read().decode("utf-8", errors="replace")

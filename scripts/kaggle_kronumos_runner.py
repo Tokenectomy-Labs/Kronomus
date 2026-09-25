@@ -199,7 +199,90 @@ def validate_patch_integrity(file_path: str, orig: str, new: str) -> Tuple[bool,
 
     return True, "Valid"
 
-def extract_suspect_context_from_issue(repo: str, base_commit: str, problem_statement: str) -> Optional[Dict[str, Any]]:
+# ---------------------------------------------------------
+# Disk Cache & Resilient GitHub Raw Fetcher
+# ---------------------------------------------------------
+SWE_CACHE_DIR = "/tmp/swe_file_cache"
+os.makedirs(SWE_CACHE_DIR, exist_ok=True)
+
+def fetch_github_file(repo: str, base_commit: str, file_path: str, token: str = "") -> Optional[str]:
+    """Fetch raw file content from GitHub with persistent local disk caching and optional token authorization."""
+    clean_path = file_path.lstrip("/").replace("//", "/")
+    cache_key = f"{repo.replace('/', '_')}_{base_commit[:10]}_{clean_path.replace('/', '_')}"
+    cache_file = os.path.join(SWE_CACHE_DIR, cache_key)
+    
+    if os.path.exists(cache_file):
+        try:
+            with open(cache_file, "r", encoding="utf-8", errors="replace") as f:
+                return f.read()
+        except Exception:
+            pass
+
+    url = f"https://raw.githubusercontent.com/{repo}/{base_commit}/{clean_path}"
+    headers = {"User-Agent": "Mozilla/5.0 (Kronumos-Kaggle-Runner)"}
+    auth_token = token or os.getenv("GITHUB_TOKEN", "").strip()
+    if auth_token:
+        headers["Authorization"] = f"token {auth_token}"
+
+    req = urllib.request.Request(url, headers=headers)
+    try:
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            content = resp.read().decode("utf-8", errors="replace")
+            try:
+                with open(cache_file, "w", encoding="utf-8") as f:
+                    f.write(content)
+            except Exception:
+                pass
+            return content
+    except Exception:
+        return None
+
+def extract_json_tool_calls(text: str) -> List[Dict[str, Any]]:
+    """
+    Robust state-machine JSON tool call extractor using brace-balance scanning.
+    Avoids regex failures on nested JSON or code snippets containing brackets and quotes.
+    """
+    calls = []
+    i = 0
+    n = len(text)
+    while i < n:
+        if text[i] == '{':
+            start = i
+            depth = 0
+            in_string = False
+            escape = False
+            for j in range(i, n):
+                char = text[j]
+                if in_string:
+                    if escape:
+                        escape = False
+                    elif char == '\\':
+                        escape = True
+                    elif char == '"':
+                        in_string = False
+                else:
+                    if char == '"':
+                        in_string = True
+                    elif char == '{':
+                        depth += 1
+                    elif char == '}':
+                        depth -= 1
+                        if depth == 0:
+                            candidate = text[start:j+1]
+                            try:
+                                obj = json.loads(candidate)
+                                if isinstance(obj, dict) and "name" in obj and ("arguments" in obj or "parameters" in obj):
+                                    if "parameters" in obj and "arguments" not in obj:
+                                        obj["arguments"] = obj["parameters"]
+                                    calls.append(obj)
+                                    i = j
+                            except Exception:
+                                pass
+                            break
+        i += 1
+    return calls
+
+def extract_suspect_context_from_issue(repo: str, base_commit: str, problem_statement: str, token: str = "") -> Optional[Dict[str, Any]]:
     """
     Sub-Cortex Fault Localization:
     Extracts traceback frames from the problem statement, locates the target repository file,
@@ -230,28 +313,23 @@ def extract_suspect_context_from_issue(repo: str, base_commit: str, problem_stat
 
     if not candidate_target or candidate_line <= 0:
         return None
-
-    try:
-        url = f"https://raw.githubusercontent.com/{repo}/{base_commit}/{candidate_target}"
-        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (Kronumos-Kaggle-Runner)"})
-        with urllib.request.urlopen(req, timeout=10) as resp:
-            content = resp.read().decode("utf-8", errors="replace")
-            lines = content.splitlines()
-            start_idx = max(0, candidate_line - 15)
-            end_idx = min(len(lines), candidate_line + 15)
-            
-            numbered_snippet = []
-            for i in range(start_idx, end_idx):
-                prefix = ">> " if (i + 1) == candidate_line else "   "
-                numbered_snippet.append(f"{prefix}{i + 1:4d} | {lines[i]}")
-                
-            return {
-                "file_path": candidate_target,
-                "suspect_line": candidate_line,
-                "snippet": "\n".join(numbered_snippet)
-            }
-    except Exception:
+    content = fetch_github_file(repo, base_commit, candidate_target, token=token)
+    if not content:
         return None
+    lines = content.splitlines()
+    start_idx = max(0, candidate_line - 15)
+    end_idx = min(len(lines), candidate_line + 15)
+    
+    numbered_snippet = []
+    for i in range(start_idx, end_idx):
+        prefix = ">> " if (i + 1) == candidate_line else "   "
+        numbered_snippet.append(f"{prefix}{i + 1:4d} | {lines[i]}")
+        
+    return {
+        "file_path": candidate_target,
+        "suspect_line": candidate_line,
+        "snippet": "\n".join(numbered_snippet)
+    }
 
 def parse_search_replace_blocks(text: str) -> List[Dict[str, str]]:
     """
@@ -275,7 +353,7 @@ def parse_search_replace_blocks(text: str) -> List[Dict[str, str]]:
         })
     return blocks
 
-def convert_patch_call_to_diff(file_path: str, orig: str, new: str, repo: str = "", base_commit: str = "") -> str:
+def convert_patch_call_to_diff(file_path: str, orig: str, new: str, repo: str = "", base_commit: str = "", token: str = "") -> str:
     """Format patch call into a valid POSIX-compliant unified git diff string with real line context."""
     # Sentinel integrity gate
     is_valid, reason = validate_patch_integrity(file_path, orig, new)
@@ -287,54 +365,49 @@ def convert_patch_call_to_diff(file_path: str, orig: str, new: str, repo: str = 
     
     # 1. Attempt to fetch real file from GitHub to compute exact unified diff with line numbers
     if repo and base_commit and clean_path:
-        try:
-            url = f"https://raw.githubusercontent.com/{repo}/{base_commit}/{clean_path}"
-            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (Kronumos-Kaggle-Runner)"})
-            with urllib.request.urlopen(req, timeout=10) as resp:
-                raw_content = resp.read().decode("utf-8", errors="replace")
-                file_lines = raw_content.splitlines(keepends=True)
-                
-                # Check exact match
-                if orig in raw_content:
-                    new_content = raw_content.replace(orig, new, 1)
+        raw_content = fetch_github_file(repo, base_commit, clean_path, token=token)
+        if raw_content is not None:
+            file_lines = raw_content.splitlines(keepends=True)
+            
+            # Check exact match
+            if orig in raw_content:
+                new_content = raw_content.replace(orig, new, 1)
+                diff = list(difflib.unified_diff(
+                    file_lines,
+                    new_content.splitlines(keepends=True),
+                    fromfile=f"a/{clean_path}",
+                    tofile=f"b/{clean_path}"
+                ))
+                if diff:
+                    return "".join(diff)
+                    
+            # Check stripped whitespace match
+            target_stripped = [l.strip() for l in orig.splitlines() if l.strip()]
+            if target_stripped:
+                window_size = len(target_stripped)
+                target_str = "\n".join(target_stripped)
+                best_ratio = 0.0
+                best_start = -1
+                for i in range(len(file_lines)):
+                    cand_slice = [file_lines[i + k].strip() for k in range(window_size) if i + k < len(file_lines)]
+                    cand_str = "\n".join(cand_slice)
+                    ratio = difflib.SequenceMatcher(None, target_str, cand_str).ratio()
+                    if ratio > best_ratio:
+                        best_ratio = ratio
+                        best_start = i
+                if best_ratio >= 0.70 and best_start >= 0:
+                    anchor_line = file_lines[best_start]
+                    indent = anchor_line[:len(anchor_line) - len(anchor_line.lstrip())]
+                    formatted_plus = [indent + p.lstrip() + "\n" if p.strip() else "\n" for p in new.splitlines()]
+                    new_lines = file_lines[:best_start] + formatted_plus + file_lines[best_start + window_size:]
                     diff = list(difflib.unified_diff(
                         file_lines,
-                        new_content.splitlines(keepends=True),
+                        new_lines,
                         fromfile=f"a/{clean_path}",
                         tofile=f"b/{clean_path}"
                     ))
                     if diff:
                         return "".join(diff)
-                        
-                # Check stripped whitespace match
-                target_stripped = [l.strip() for l in orig.splitlines() if l.strip()]
-                if target_stripped:
-                    window_size = len(target_stripped)
-                    target_str = "\n".join(target_stripped)
-                    best_ratio = 0.0
-                    best_start = -1
-                    for i in range(len(file_lines)):
-                        cand_slice = [file_lines[i + k].strip() for k in range(window_size) if i + k < len(file_lines)]
-                        cand_str = "\n".join(cand_slice)
-                        ratio = difflib.SequenceMatcher(None, target_str, cand_str).ratio()
-                        if ratio > best_ratio:
-                            best_ratio = ratio
-                            best_start = i
-                    if best_ratio >= 0.70 and best_start >= 0:
-                        anchor_line = file_lines[best_start]
-                        indent = anchor_line[:len(anchor_line) - len(anchor_line.lstrip())]
-                        formatted_plus = [indent + p.lstrip() + "\n" if p.strip() else "\n" for p in new.splitlines()]
-                        new_lines = file_lines[:best_start] + formatted_plus + file_lines[best_start + window_size:]
-                        diff = list(difflib.unified_diff(
-                            file_lines,
-                            new_lines,
-                            fromfile=f"a/{clean_path}",
-                            tofile=f"b/{clean_path}"
-                        ))
-                        if diff:
-                            return "".join(diff)
-        except Exception:
-            pass
             
     # 2. Robust fallback with syntactically valid hunk counts (never malformed @@ -1,1 +1,1 @@)
     orig_lines = orig.splitlines()
@@ -483,14 +556,15 @@ class KronumosBenchmarkRunner:
                 "response": response_text
             })
             
-            # Parse tool calls emitted by Kronumos
-            found_calls = []
-            for match in re.finditer(r'\{\s*"name"\s*:\s*"[^"]+"\s*,\s*"arguments"\s*:\s*\{.*?\}\s*\}', response_text, re.DOTALL):
-                try:
-                    call_obj = json.loads(match.group(0))
-                    found_calls.append(call_obj)
-                except json.JSONDecodeError:
-                    tool_call_errors += 1
+            # Parse tool calls emitted by Kronumos using balanced-brace scanner
+            found_calls = extract_json_tool_calls(response_text)
+            if not found_calls:
+                for match in re.finditer(r'\{\s*"name"\s*:\s*"[^"]+"\s*,\s*"arguments"\s*:\s*\{.*?\}\s*\}', response_text, re.DOTALL):
+                    try:
+                        call_obj = json.loads(match.group(0))
+                        found_calls.append(call_obj)
+                    except json.JSONDecodeError:
+                        tool_call_errors += 1
                     
             if not found_calls:
                 # 1. Fallback: Parse SEARCH/REPLACE blocks emitted by model
@@ -590,7 +664,11 @@ def main():
     parser.add_argument("--max_turns", type=int, default=6, help="Maximum reasoning turns per instance (default: 6)")
     parser.add_argument("--retry_empty", action="store_true", help="Retry instances with empty patches while preserving successful patches")
     parser.add_argument("--output_dir", type=str, default="output")
+    parser.add_argument("--github_token", type=str, default="", help="GitHub Personal Access Token for raw.githubusercontent.com API rate limits")
     args = parser.parse_args()
+    
+    if args.github_token:
+        os.environ["GITHUB_TOKEN"] = args.github_token
     
     os.makedirs(args.output_dir, exist_ok=True)
     os.makedirs(os.path.join(args.output_dir, "trajectories"), exist_ok=True)
@@ -661,7 +739,7 @@ def main():
         pred_entry = {
             "instance_id": inst_id,
             "model_patch": res["model_patch"],
-            "model_name_or_path": "Kronumos-7B"
+            "model_name_or_path": args.model_id.split("/")[-1]
         }
         predictions_map[inst_id] = pred_entry
         completed_ids.add(inst_id)

@@ -1,0 +1,131 @@
+name: "Kronumos Kairos Autonomous Remediation"
+description: "Autonomous TDD bug remediation & self-healing CI/CD agent powered by Tokenectomy Sub-Cortex"
+author: "Tokenectomy Labs"
+
+branding:
+  icon: "cpu"
+  color: "cyan"
+
+inputs:
+  workspace:
+    description: "Path to project workspace directory"
+    required: false
+    default: "."
+  test-cmd:
+    description: "Custom test command to execute (e.g. 'pytest -v' or 'cargo test')"
+    required: false
+    default: ""
+  max-iterations:
+    description: "Maximum autonomous repair iterations before reporting status"
+    required: false
+    default: "8"
+  timeout:
+    description: "Timeout in seconds per test execution and tool invocation"
+    required: false
+    default: "180"
+  auto-rollback:
+    description: "Automatically revert dirty diffs if remediation cannot make tests pass"
+    required: false
+    default: "true"
+  commit:
+    description: "Automatically commit verified patch once tests pass"
+    required: false
+    default: "false"
+  branch:
+    description: "Optional git branch to create for the fix (e.g. 'kronumos/ci-remediation')"
+    required: false
+    default: ""
+  backend:
+    description: "Inference backend ('cloudflare', 'openai', or 'ollama')"
+    required: false
+    default: "cloudflare"
+  cf-url:
+    description: "Custom Cloudflare Edge Gateway URL"
+    required: false
+    default: ""
+  cf-key:
+    description: "Cloudflare Edge Gateway authentication secret"
+    required: false
+    default: ""
+  openai-key:
+    description: "API Key for OpenAI-compatible backend (or Groq/OpenRouter)"
+    required: false
+    default: ""
+  json-output:
+    description: "Output machine-readable JSON status summary"
+    required: false
+    default: "false"
+
+outputs:
+  status:
+    description: "Remediation outcome ('resolved', 'already_passing', or 'unresolved')"
+    value: ${{ steps.run-kronumos.outputs.status }}
+  tests-passed:
+    description: "Whether tests are passing after remediation ('true' or 'false')"
+    value: ${{ steps.run-kronumos.outputs.tests_passed }}
+  iterations:
+    description: "Number of autonomous iterations executed"
+    value: ${{ steps.run-kronumos.outputs.iterations }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Kronumos CLI
+      shell: bash
+      run: |
+        echo "⚡ Installing Kronumos Autonomous Remediation Agent..."
+        INSTALL_DIR="${CARGO_HOME:-$HOME/.cargo}/bin"
+        mkdir -p "$INSTALL_DIR"
+        if ! command -v kronumos >/dev/null 2>&1; then
+          curl -fsSL https://raw.githubusercontent.com/Tokenectomy-Labs/Kronomus/main/cli/install.sh | bash
+        fi
+        echo "$INSTALL_DIR" >> $GITHUB_PATH
+
+    - name: Run Kronumos Doctor Diagnostics
+      shell: bash
+      env:
+        KRONUMOS_CF_URL: ${{ inputs.cf-url }}
+        KRONUMOS_CF_KEY: ${{ inputs.cf-key }}
+        OPENAI_API_KEY: ${{ inputs.openai-key }}
+      run: |
+        kronumos --doctor --workspace "${{ inputs.workspace }}"
+
+    - name: Run Autonomous Remediation Loop
+      id: run-kronumos
+      shell: bash
+      env:
+        KRONUMOS_CF_URL: ${{ inputs.cf-url }}
+        KRONUMOS_CF_KEY: ${{ inputs.cf-key }}
+        OPENAI_API_KEY: ${{ inputs.openai-key }}
+      run: |
+        CMD=(kronumos --fix --workspace "${{ inputs.workspace }}")
+        
+        if [ -n "${{ inputs.test-cmd }}" ]; then
+          CMD+=(--test-cmd "${{ inputs.test-cmd }}")
+        fi
+
+        CMD+=(--max-iterations "${{ inputs.max-iterations }}")
+        CMD+=(--timeout "${{ inputs.timeout }}")
+
+        if [ "${{ inputs.auto-rollback }}" = "true" ]; then
+          CMD+=(--auto-rollback)
+        fi
+
+        if [ "${{ inputs.commit }}" = "true" ]; then
+          CMD+=(--commit)
+        fi
+
+        if [ -n "${{ inputs.branch }}" ]; then
+          CMD+=(--branch "${{ inputs.branch }}")
+        fi
+
+        if [ -n "${{ inputs.backend }}" ]; then
+          CMD+=(--backend "${{ inputs.backend }}")
+        fi
+
+        if [ "${{ inputs.json-output }}" = "true" ]; then
+          CMD+=(--json)
+        fi
+
+        echo "🚀 Executing: ${CMD[*]}"
+        "${CMD[@]}"
