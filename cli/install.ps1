@@ -4,8 +4,8 @@
 $ErrorActionPreference = "Stop"
 
 $Repo = "Tokenectomy-Labs/Kronomus"
-$Tag = "v1.0.0"
-$DebUrl = "https://github.com/$Repo/releases/download/$Tag/kronumos_1.0.0_amd64.deb"
+$Tag = "v1.1.0"
+$DebUrl = "https://github.com/$Repo/releases/download/$Tag/kronumos_1.1.0_amd64.deb"
 $TarUrl = "https://github.com/$Repo/releases/download/$Tag/kronumos-linux-amd64.tar.gz"
 
 Write-Host ""
