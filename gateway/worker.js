@@ -228,9 +228,11 @@ export default {
         if (!limitStatus.allowed) {
           return new Response(
             JSON.stringify({
-              error: "Rate limit exceeded (Free Cloudflare Tier)",
-              message_en: `Free tier limit reached (${maxRequests} requests/hour per IP). Use local Ollama ('kronumos --backend ollama') for unlimited requests, or wait until the next hour.`,
-              message_id: `Batas kuota gratis tercapai (${maxRequests} request/jam per IP). Gunakan Ollama lokal ('kronumos --backend ollama') untuk pemakaian tanpa batas, atau tunggu hingga periode berikutnya.`,
+              error: "Rate limit exceeded (Free Community Tier)",
+              message_en: `Free community tier limit reached (${maxRequests} requests/hour per IP). Upgrade to Kronumos VIP for unlimited Cloudflare edge inference, or run unlimited offline via Ollama ('kronumos --backend ollama').`,
+              message_id: `Batas kuota komunitas gratis tercapai (${maxRequests} request/jam per IP). Upgrade ke Kronumos VIP untuk pemakaian Cloudflare tanpa batas kuota, atau jalankan offline tanpa batas dengan Ollama ('kronumos --backend ollama').`,
+              upgrade_url: "https://tokenectomy-labs.github.io/Kronomus/#pricing",
+              vip_instructions: "Export your VIP key: export KRONUMOS_CF_KEY='your_vip_key' or pass --cf-key",
               reset_at: new Date(limitStatus.resetAt).toISOString(),
             }, null, 2),
             {
