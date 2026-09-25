@@ -127,6 +127,7 @@ kronumos --fix
 kronumos --fix -t "pytest tests/test_auth.py"  # Custom test command override
 kronumos --fix --auto-rollback                  # Auto-revert broken patches on failure (0 dirty diff)
 kronumos --fix --branch fix/auth --commit      # Auto Git branch & commit on pass
+kronumos --fix --pr                            # End-to-end Git delivery: auto-branch, commit, & open Pull Request
 kronumos --fix --json                          # Machine-to-machine JSON output for CI/CD
 
 # 2. Diagnostic environment & edge connectivity check:
