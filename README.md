@@ -33,7 +33,7 @@ Kronumos is scoped narrower and deeper. It handles a single, closed-loop enginee
 Read the formal preprint paper on Zenodo: **[DOI: 10.5281/zenodo.22929676](https://doi.org/10.5281/zenodo.22929676)**, read the [Technical Report](paper/KRONUMOS_TECHNICAL_REPORT.md), or view the publication-ready LaTeX source in [paper/main.tex](paper/main.tex):
 
 > **"Kronumos: Cost-Bounded Automated Program Repair via Context Surgery and POSIX Diff Re-Anchoring on SWE-bench Verified"**  
-> *Author: Muhammad Naufal Daffa ([@daffa2555](https://github.com/daffa2555)), Tokenectomy Labs*  
+> *Author: Tokenectomy Labs*  
 > *Permanent DOI: [10.5281/zenodo.22929676](https://doi.org/10.5281/zenodo.22929676)*
 
 
@@ -98,7 +98,10 @@ Interactive Agent Commands:
   Any text     chat with Kronumos or explain code/errors
   /fix         autonomous diagnostics & repair loop
   /diff        inspect git diff in workspace
-  /test        run test suite with Sub-Cortex scrubbing
+  /test        run test suite on physical hardware
+  /doctor      run diagnostic environment & gateway health check
+  /stats       display FinOps token savings & telemetry
+  /undo        revert uncommitted patches (zero dirty diff)
   /clear       clear conversation memory buffer
   /help        display help and shortcuts
   /exit        exit Kronumos cleanly
@@ -120,25 +123,51 @@ curl -fsSL https://raw.githubusercontent.com/Tokenectomy-Labs/Kronomus/main/cli/
 
 ```bash
 # 1. Autonomous TDD self-healing loop (runs test suite, patches, verifies on hardware):
-kronumos --loop
-kronumos --loop --auto-rollback      # Auto-revert broken patches on failure (0 dirty diff)
-kronumos --loop --branch fix/auth --commit  # Auto Git branch & commit on pass
-kronumos --loop --json               # Machine-to-machine JSON output for CI/CD
+kronumos --fix
+kronumos --fix -t "pytest tests/test_auth.py"  # Custom test command override
+kronumos --fix --auto-rollback                  # Auto-revert broken patches on failure (0 dirty diff)
+kronumos --fix --branch fix/auth --commit      # Auto Git branch & commit on pass
+kronumos --fix --json                          # Machine-to-machine JSON output for CI/CD
 
-# 2. One-shot terminal command execution (headless):
+# 2. Diagnostic environment & edge connectivity check:
+kronumos --doctor
+kronumos --doctor --json                       # Structured diagnostic output for CI/CD
+
+# 3. One-shot terminal command execution (headless):
 kronumos "Explain the blast radius of refactoring auth module"
 
-# 3. Unix piping (clean quiet mode for CI/CD or log diagnosis):
+# 4. Unix piping (clean quiet mode for CI/CD or log diagnosis):
 cat error.log | kronumos -q
 pytest 2>&1 | kronumos -q "Diagnose and fix assertions"
 
-# 4. Interactive ambient terminal REPL:
+# 5. Interactive ambient terminal REPL:
 kronumos
 
-# 5. Multi-Backend inference (Cloudflare Edge, Local Ollama, OpenAI/Groq):
-kronumos --backend cloudflare --cf-url https://kronumos-gateway.<account>.workers.dev
+# 6. Multi-Backend inference (Cloudflare Edge, Local Ollama, OpenAI/Groq):
+kronumos --backend cloudflare                 # Hosted edge gateway (zero-config, free tier)
 kronumos --backend ollama --ollama-model hf.co/NadevA23/Kronumos-GGUF:Q4_K_M
-kronumos --backend openai --openai-key $GROQ_API_KEY --openai-model qwen-2.5-coder-32b
+kronumos --backend openai --openai-key $GROQ_API_KEY --openai-model llama-3.3-70b-versatile
+```
+
+### GitHub Actions CI/CD Integration
+
+Automate bug remediation directly inside your repository pipelines with the official GitHub Action:
+
+```yaml
+name: "Autonomous Remediation"
+on: [pull_request, workflow_dispatch]
+
+jobs:
+  self-heal:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Auto-Remediate Test Failures
+        uses: Tokenectomy-Labs/Kronomus@main
+        with:
+          test-cmd: "pytest tests/"
+          auto-rollback: "true"
+          commit: "true"
 ```
 
 
@@ -197,8 +226,8 @@ model = AutoModelForCausalLM.from_pretrained(
 If you use Kronumos in your research or benchmarks, please cite our preprint:
 
 ```bibtex
-@article{daffa2026kronumos,
-  author    = {Daffa, Muhammad Naufal},
+@article{tokenectomy2026kronumos,
+  author    = {Tokenectomy Labs},
   title     = {Kronumos: Cost-Bounded Automated Program Repair via Context Surgery and POSIX Diff Re-Anchoring on SWE-bench Verified},
   journal   = {Zenodo},
   year      = {2026},
