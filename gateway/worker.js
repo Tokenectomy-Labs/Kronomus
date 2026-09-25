@@ -17,9 +17,13 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Kronumos-Key",
 };
 
-// ── In-Memory Edge Rate Limiter (Sliding Window per IP) ─────────────────────
+// ── In-Memory Edge Rate Limiter & Security Shields ─────────────────────────
 const ipRateLimits = new Map();
-const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour window
+const ipBurstLimits = new Map();
+
+const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour sliding window
+const BURST_LIMIT_WINDOW_MS = 10 * 1000;      // 10 seconds sliding window
+const MAX_BURST_PER_10S = 6;                  // Max 6 requests per 10s
 
 function checkRateLimit(ip, maxRequests, windowMs = RATE_LIMIT_WINDOW_MS) {
   const now = Date.now();
@@ -27,9 +31,7 @@ function checkRateLimit(ip, maxRequests, windowMs = RATE_LIMIT_WINDOW_MS) {
   // Periodic garbage collection if map exceeds 5000 entries
   if (ipRateLimits.size > 5000) {
     for (const [key, data] of ipRateLimits.entries()) {
-      if (now > data.resetAt) {
-        ipRateLimits.delete(key);
-      }
+      if (now > data.resetAt) ipRateLimits.delete(key);
     }
   }
 
@@ -46,6 +48,30 @@ function checkRateLimit(ip, maxRequests, windowMs = RATE_LIMIT_WINDOW_MS) {
 
   record.count += 1;
   return { allowed: true, remaining: maxRequests - record.count, resetAt: record.resetAt };
+}
+
+function checkBurstLimit(ip, maxBurst = MAX_BURST_PER_10S, windowMs = BURST_LIMIT_WINDOW_MS) {
+  const now = Date.now();
+
+  if (ipBurstLimits.size > 5000) {
+    for (const [key, data] of ipBurstLimits.entries()) {
+      if (now > data.resetAt) ipBurstLimits.delete(key);
+    }
+  }
+
+  let record = ipBurstLimits.get(ip);
+  if (!record || now > record.resetAt) {
+    record = { count: 1, resetAt: now + windowMs };
+    ipBurstLimits.set(ip, record);
+    return { allowed: true };
+  }
+
+  if (record.count >= maxBurst) {
+    return { allowed: false, retryAfter: Math.max(1, Math.ceil((record.resetAt - now) / 1000)) };
+  }
+
+  record.count += 1;
+  return { allowed: true };
 }
 
 export default {
@@ -124,15 +150,49 @@ export default {
         return new Response("Method not allowed", { status: 405, headers: CORS_HEADERS });
       }
 
+      // Security Shield 1: Payload Size Guard (max 128KB to prevent memory exhaustion)
+      const contentLength = parseInt(request.headers.get("content-length") || "0", 10);
+      if (contentLength > 131072) {
+        return new Response(
+          JSON.stringify({
+            error: "Payload Too Large",
+            message_en: "Request body exceeds maximum allowed limit of 128KB.",
+            message_id: "Ukuran permintaan melebihi batas maksimum 128KB."
+          }, null, 2),
+          { status: 413, headers: { "Content-Type": "application/json", ...CORS_HEADERS } }
+        );
+      }
+
+      // Security Shield 2: Cryptographically Trusted Client IP (prevents spoofing via X-Forwarded-For)
+      const clientIp = request.headers.get("cf-connecting-ip") || "anonymous";
+
       // Optional VIP / Admin Key bypass or IP-based Rate Limiter for free users
       const authHeader = request.headers.get("Authorization") || "";
       const isAuthorizedVip = env.KRONUMOS_API_KEY && authHeader.trim() === `Bearer ${env.KRONUMOS_API_KEY.trim()}`;
 
       let rateLimitHeaders = {};
       if (!isAuthorizedVip) {
-        const clientIp = request.headers.get("cf-connecting-ip") ||
-                         request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-                         "anonymous";
+        // Security Shield 3: Anti-Hammering / DDoS Burst Limiter (max 6 req / 10s)
+        const burstStatus = checkBurstLimit(clientIp);
+        if (!burstStatus.allowed) {
+          return new Response(
+            JSON.stringify({
+              error: "Too Many Requests (Burst limit)",
+              message_en: "Too many rapid requests. Please wait a few seconds before trying again.",
+              message_id: "Terlalu banyak permintaan dalam waktu singkat. Harap tunggu beberapa detik sebelum mencoba lagi."
+            }, null, 2),
+            {
+              status: 429,
+              headers: {
+                "Content-Type": "application/json",
+                "Retry-After": String(burstStatus.retryAfter || 2),
+                ...CORS_HEADERS,
+              }
+            }
+          );
+        }
+
+        // Security Shield 4: Hourly Sliding-Window Rate Limiter
         const maxRequests = parseInt(env.RATE_LIMIT_PER_HOUR || "30", 10);
         const limitStatus = checkRateLimit(clientIp, maxRequests);
 
@@ -146,7 +206,8 @@ export default {
           return new Response(
             JSON.stringify({
               error: "Rate limit exceeded (Free Cloudflare Tier)",
-              message: `Batas kuota gratis tercapai (${maxRequests} request/jam per IP). Gunakan Ollama lokal ('kronumos --backend ollama') untuk pemakaian tanpa batas, atau tunggu hingga periode berikutnya.`,
+              message_en: `Free tier limit reached (${maxRequests} requests/hour per IP). Use local Ollama ('kronumos --backend ollama') for unlimited requests, or wait until the next hour.`,
+              message_id: `Batas kuota gratis tercapai (${maxRequests} request/jam per IP). Gunakan Ollama lokal ('kronumos --backend ollama') untuk pemakaian tanpa batas, atau tunggu hingga periode berikutnya.`,
               reset_at: new Date(limitStatus.resetAt).toISOString(),
             }, null, 2),
             {
@@ -167,7 +228,11 @@ export default {
         body = await request.json();
       } catch (err) {
         return new Response(
-          JSON.stringify({ error: "Invalid JSON payload" }),
+          JSON.stringify({
+            error: "Invalid JSON payload",
+            message_en: "Failed to parse JSON body.",
+            message_id: "Gagal memproses JSON payload."
+          }, null, 2),
           { status: 400, headers: { "Content-Type": "application/json", ...CORS_HEADERS } }
         );
       }
@@ -175,9 +240,56 @@ export default {
       const messages = body.messages || [];
       if (!Array.isArray(messages) || messages.length === 0) {
         return new Response(
-          JSON.stringify({ error: "Missing or empty 'messages' array" }),
+          JSON.stringify({
+            error: "Missing or empty 'messages' array",
+            message_en: "The 'messages' array is required and must not be empty.",
+            message_id: "Array 'messages' wajib diisi dan tidak boleh kosong."
+          }, null, 2),
           { status: 400, headers: { "Content-Type": "application/json", ...CORS_HEADERS } }
         );
+      }
+
+      // Security Shield 5: Message array length and item size validation
+      if (messages.length > 50) {
+        return new Response(
+          JSON.stringify({
+            error: "Too many messages in history",
+            message_en: "Conversation history exceeds maximum limit of 50 messages.",
+            message_id: "Riwayat percakapan melebihi batas maksimum 50 pesan."
+          }, null, 2),
+          { status: 400, headers: { "Content-Type": "application/json", ...CORS_HEADERS } }
+        );
+      }
+
+      for (const m of messages) {
+        if (typeof m.content === "string" && m.content.length > 25000) {
+          return new Response(
+            JSON.stringify({
+              error: "Message too large",
+              message_en: "Single message content exceeds maximum limit of 25,000 characters.",
+              message_id: "Isi pesan melebihi batas maksimum 25.000 karakter."
+            }, null, 2),
+            { status: 400, headers: { "Content-Type": "application/json", ...CORS_HEADERS } }
+          );
+        }
+      }
+
+      // Language Mirroring Invariant: Ensure the model automatically responds in the user's language
+      const processedMessages = [...messages];
+      const LANGUAGE_INVARIANT = "\n\n[Language Mirroring Invariant: Detect the language of the user's latest prompt. If the user writes in English, reply entirely in fluent English. If the user writes in Indonesian, reply entirely in natural Indonesian. Always mirror the user's language faithfully.]";
+
+      if (processedMessages.length > 0 && processedMessages[0].role === "system") {
+        if (!processedMessages[0].content.includes("Language Mirroring Invariant")) {
+          processedMessages[0] = {
+            ...processedMessages[0],
+            content: processedMessages[0].content + LANGUAGE_INVARIANT,
+          };
+        }
+      } else {
+        processedMessages.unshift({
+          role: "system",
+          content: "You are Kronumos Kairos, an elite developer assistant, autonomous bug remediation engineer, and SRE copilot." + LANGUAGE_INVARIANT,
+        });
       }
 
       // Default model: Qwen 2.5 Coder 32B on Cloudflare Workers AI
@@ -186,7 +298,7 @@ export default {
 
       try {
         const aiResponse = await env.AI.run(model, {
-          messages: messages.map(m => ({
+          messages: processedMessages.map(m => ({
             role: m.role,
             content: m.content,
           })),
