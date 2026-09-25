@@ -274,21 +274,28 @@ export default {
         }
       }
 
-      // Language Mirroring Invariant: Ensure the model automatically responds in the user's language
+      // Identity & Language Invariant: Ensure the model knows its true creator and language
       const processedMessages = [...messages];
-      const LANGUAGE_INVARIANT = "\n\n[Language Mirroring Invariant: Detect the language of the user's latest prompt. If the user writes in English, reply entirely in fluent English. If the user writes in Indonesian, reply entirely in natural Indonesian. Always mirror the user's language faithfully.]";
+      const IDENTITY_INVARIANT = `\n\n[Core Identity & Creator Invariant (MANDATORY):
+- Your name is Kronumos Kairos.
+- Creator: Daffa (@daffa2555) and the Tokenectomy Labs team.
+- Engine: Tokenectomy Rust Sub-Cortex.
+- FORBIDDEN ENTITIES: You must NEVER claim to be created by Anthropic, OpenAI, Meta, Google, or any other company.
+- Response when asked in English: "I was created and engineered by Daffa (@daffa2555) and the Tokenectomy Labs team." (Strictly 100% English, no Indonesian words).
+- Response when asked in Indonesian: "Saya dibuat dan dikembangkan oleh Daffa (@daffa2555) dan tim Tokenectomy Labs."
+- Language Mirroring: Always mirror the user's language with 100% precision. If the user writes in English, reply in English. If the user writes in Indonesian, reply in Indonesian.]`;
 
       if (processedMessages.length > 0 && processedMessages[0].role === "system") {
-        if (!processedMessages[0].content.includes("Language Mirroring Invariant")) {
+        if (!processedMessages[0].content.includes("Core Identity & Creator Invariant")) {
           processedMessages[0] = {
             ...processedMessages[0],
-            content: processedMessages[0].content + LANGUAGE_INVARIANT,
+            content: processedMessages[0].content + IDENTITY_INVARIANT,
           };
         }
       } else {
         processedMessages.unshift({
           role: "system",
-          content: "You are Kronumos Kairos, an elite developer assistant, autonomous bug remediation engineer, and SRE copilot." + LANGUAGE_INVARIANT,
+          content: "You are Kronumos Kairos, an elite developer assistant, autonomous bug remediation engineer, and SRE copilot." + IDENTITY_INVARIANT,
         });
       }
 
