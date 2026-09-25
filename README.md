@@ -149,6 +149,7 @@ kronumos --backend ollama --ollama-model hf.co/NadevA23/Kronumos-GGUF:Q4_K_M
 kronumos --backend openai --openai-key $GROQ_API_KEY --openai-model llama-3.3-70b-versatile
 ```
 
+
 ### GitHub Actions CI/CD Integration
 
 Automate bug remediation directly inside your repository pipelines with the official GitHub Action:
@@ -169,6 +170,17 @@ jobs:
           auto-rollback: "true"
           commit: "true"
 ```
+
+
+## 🧪 Live Bug Arenas & Reproducible Benchmarks
+
+Explore standalone, authentic bug arenas designed to test autonomous repair agents on physical hardware without mocks or simulations:
+
+* **[Linux Kernel Circular Buffer (`kfifo`) Boundary Defect](examples/linux-kfifo-bug)**:
+  Authentic off-by-one boundary defect (`>` vs `>=`) causing ring buffer silent byte corruption. Resolved by Kronumos in 18 seconds (round 4).
+* **[CVE Memory Lifecycle Defect (AddressSanitizer Heap-Use-After-Free)](examples/cve-memory-lifecycle-bug)**:
+  Authentic systems security bug under GCC `-fsanitize=address -fsanitize=undefined` modeled after network daemon CVE patterns (Redis/libcurl). Naive LLMs trigger LeakSanitizer aborts; Kronumos synthesizes a surgical memory-safe patch in round 1.
+
 
 
 ## ☁️ Zero-Cost Cloudflare Edge Gateway ($0 Serverless)
