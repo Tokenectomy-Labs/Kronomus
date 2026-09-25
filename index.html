@@ -12,7 +12,6 @@
   <style>
     :root {
       --bg: #0b0c0e;
-      --bg-radial: #13151a;
       --metal-surface: #14161b;
       --metal-surface-raised: #1c1e26;
       --metal-surface-sunken: #08090b;
@@ -26,7 +25,6 @@
       
       --chrome-bright: #ffffff;
       --chrome-mid: #d4d4d8;
-      --chrome-dark: #71717a;
       
       --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       --font-mono: 'Fira Code', monospace;
@@ -71,7 +69,7 @@
       position: sticky;
       top: 0;
       z-index: 50;
-      background: rgba(11, 12, 14, 0.82);
+      background: rgba(11, 12, 14, 0.85);
     }
 
     .nav-inner {
@@ -130,34 +128,6 @@
 
     .nav-link:hover {
       color: var(--chrome-bright);
-    }
-
-    /* Brushed Chrome Button */
-    .btn-chrome {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 7px 14px;
-      background: linear-gradient(180deg, #ffffff 0%, #d4d4d8 50%, #a1a1aa 100%);
-      color: #0c0d10;
-      border: 1px solid rgba(255, 255, 255, 0.8);
-      border-radius: var(--radius-sm);
-      font-size: 0.82rem;
-      font-weight: 700;
-      text-decoration: none;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.9);
-      transition: all 0.12s ease;
-      cursor: pointer;
-    }
-
-    .btn-chrome:hover {
-      filter: brightness(1.08);
-      transform: translateY(-1px);
-    }
-
-    .btn-chrome:active {
-      transform: translateY(1px);
-      box-shadow: 0 0 1px rgba(0, 0, 0, 0.8), inset 0 1px 2px rgba(0, 0, 0, 0.3);
     }
 
     .btn-metal-ghost {
@@ -419,14 +389,14 @@
       margin-right: 8px;
     }
 
-    /* Industrial Live Remediation Rack */
-    .rack-section {
-      padding: 72px 0;
+    /* Precision Terminal Deck Demo (Non-Interactive, High Desire to Download) */
+    .demo-section {
+      padding: 64px 0;
     }
 
     .section-headline-group {
       text-align: center;
-      margin-bottom: 36px;
+      margin-bottom: 32px;
     }
 
     .section-eyebrow-metal {
@@ -446,124 +416,71 @@
       color: var(--chrome-bright);
     }
 
-    .instrument-rack {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      background: var(--metal-surface);
+    .terminal-deck {
+      background: #07080a;
       border: 1px solid var(--metal-edge);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--metal-chamfer), 0 20px 40px rgba(0, 0, 0, 0.6);
+      border-radius: var(--radius-md);
+      box-shadow: var(--metal-chamfer), 0 20px 48px -12px rgba(0, 0, 0, 0.8);
       overflow: hidden;
+      max-width: 860px;
+      margin: 0 auto;
     }
 
-    @media (max-width: 860px) {
-      .instrument-rack {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .rack-faceplate {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .faceplate-header {
-      padding: 12px 18px;
-      background: var(--metal-surface-sunken);
+    .terminal-deck-header {
+      background: #111317;
+      padding: 11px 16px;
       border-bottom: 1px solid var(--metal-edge);
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      font-size: 0.78rem;
+      justify-content: space-between;
+    }
+
+    .terminal-deck-controls {
+      display: flex;
+      gap: 7px;
+    }
+
+    .control-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #2a2e39;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .terminal-deck-title {
       font-family: var(--font-mono);
-      font-weight: 600;
+      font-size: 0.76rem;
       color: var(--text-muted);
     }
 
-    .metal-select {
-      background: var(--metal-surface-raised);
-      color: var(--chrome-bright);
-      border: 1px solid var(--metal-edge-highlight);
-      box-shadow: var(--metal-chamfer);
+    .terminal-deck-badge {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 6px;
       border-radius: 4px;
-      padding: 4px 8px;
-      font-family: var(--font-sans);
-      font-size: 0.76rem;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--chrome-bright);
     }
 
-    .faceplate-body {
-      padding: 18px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-
-    textarea.code-terminal-input {
-      width: 100%;
-      height: 230px;
-      background: var(--metal-surface-sunken);
-      border: 1px solid var(--metal-edge);
-      border-radius: var(--radius-sm);
-      color: #f1f5f9;
+    .terminal-deck-body {
+      padding: 20px;
       font-family: var(--font-mono);
       font-size: 0.82rem;
-      padding: 14px;
-      resize: vertical;
-      line-height: 1.5;
-    }
-
-    textarea.code-terminal-input:focus {
-      outline: none;
-      border-color: var(--metal-edge-highlight);
-    }
-
-    .btn-engage-heal {
-      margin-top: 14px;
-      padding: 11px 18px;
-      background: linear-gradient(180deg, #ffffff 0%, #d4d4d8 50%, #a1a1aa 100%);
-      color: #090a0d;
-      border: 1px solid rgba(255, 255, 255, 0.8);
-      border-radius: var(--radius-sm);
-      font-family: var(--font-sans);
-      font-weight: 700;
-      font-size: 0.88rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5), inset 0 1px 0 #ffffff;
-      transition: all 0.12s ease;
-    }
-
-    .btn-engage-heal:hover {
-      filter: brightness(1.08);
-      transform: translateY(-1px);
-    }
-
-    .btn-engage-heal:active {
-      transform: translateY(1px);
-    }
-
-    .terminal-readout {
-      background: var(--metal-surface-sunken);
-      border: 1px solid var(--metal-edge);
-      border-radius: var(--radius-sm);
-      padding: 14px;
-      flex: 1;
-      min-height: 230px;
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      white-space: pre-wrap;
-      overflow-y: auto;
       line-height: 1.55;
+      overflow-x: auto;
+      color: #d1d5db;
     }
 
-    .terminal-readout.active-stream {
-      color: var(--chrome-bright);
-    }
+    .term-cyan { color: #38bdf8; }
+    .term-green { color: #34d399; }
+    .term-red { color: #f87171; }
+    .term-blue { color: #60a5fa; }
+    .term-gray { color: #9ca3af; }
+    .term-dim { color: #4b5563; }
+    .term-white { color: #f9fafb; font-weight: 600; }
 
     /* Milled Spec Cards */
     .specs-section {
@@ -666,7 +583,7 @@
         <span class="brand-pill">v1.0.0</span>
       </a>
       <div class="nav-links">
-        <a href="#playground" class="nav-link">Live Terminal</a>
+        <a href="#demo" class="nav-link">Terminal Demo</a>
         <a href="#architecture" class="nav-link">Architecture</a>
         <a href="https://doi.org/10.5281/zenodo.22929676" target="_blank" rel="noopener" class="nav-link">Paper (DOI)</a>
         <a href="https://github.com/Tokenectomy-Labs/Kronomus" target="_blank" rel="noopener" class="btn-metal-ghost">
@@ -775,41 +692,50 @@
       </div>
     </section>
 
-    <!-- Industrial Live Remediation Rack -->
-    <section id="playground" class="rack-section">
+    <!-- Precision Terminal Deck Demo -->
+    <section id="demo" class="demo-section">
       <div class="container">
         <div class="section-headline-group">
-          <div class="section-eyebrow-metal">Edge Sub-Cortex Sandbox</div>
-          <h2 class="section-main-title">Live Remediation Telemetry</h2>
+          <div class="section-eyebrow-metal">Autonomous Closed-Loop TDD Telemetry</div>
+          <h2 class="section-main-title">Sub-Cortex Failure Pinpointing in Action</h2>
         </div>
 
-        <div class="instrument-rack">
-          <div class="rack-faceplate">
-            <div class="faceplate-header">
-              <span>CRASH TRACE / CODE CONTEXT</span>
-              <select id="preset-picker" class="metal-select" onchange="loadPreset()">
-                <option value="python">Python: Assertion Bug</option>
-                <option value="rust">Rust: Logic Inversion</option>
-                <option value="js">JavaScript: Undefined Property</option>
-              </select>
+        <div class="terminal-deck">
+          <div class="terminal-deck-header">
+            <div class="terminal-deck-controls">
+              <span class="control-dot"></span>
+              <span class="control-dot"></span>
+              <span class="control-dot"></span>
             </div>
-            <div class="faceplate-body">
-              <textarea id="code-input" class="code-terminal-input" spellcheck="false"></textarea>
-              <button id="btn-heal" class="btn-engage-heal" onclick="runWebHeal()">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
-                Synthesize Patch via Sub-Cortex
-              </button>
-            </div>
+            <div class="terminal-deck-title">kronumos --fix -t "pytest tests/test_auth.py"</div>
+            <div class="terminal-deck-badge">HARDWARE VERIFIED</div>
           </div>
+          <div class="terminal-deck-body">
+            <pre><code><span class="term-cyan">╭─ 🔄 Autonomous TDD Healing Loop Engaged ───────────────</span>
+  <span class="term-gray">📦 Project Type:</span> Python Workspace
+  <span class="term-gray">🧪 Test Runner:</span>  `pytest tests/test_auth.py`
+  <span class="term-gray">⏱️ Max Rounds:</span>   10
+<span class="term-cyan">╰──────────────────────────────────────────────────────────</span>
 
-          <div class="rack-faceplate">
-            <div class="faceplate-header">
-              <span>PATCH & VERIFICATION STREAM</span>
-              <span id="status-badge" style="font-family: var(--font-mono); font-size: 0.74rem; color: var(--chrome-bright);">ONLINE</span>
-            </div>
-            <div class="faceplate-body">
-              <div id="output-box" class="terminal-readout">Click "Synthesize Patch" to run autonomous diagnostics and AST patch synthesis via Cloudflare Edge Gateway...</div>
-            </div>
+  <span class="term-blue">▶ Probing workspace test baseline...</span>
+  <span class="term-red">✗ Tests failing. Engaging closed-loop remediation...</span>
+  <span class="term-white">🎯 Sub-Cortex pinpointed failure in:</span> <span class="term-green">src/auth/service.py:42</span>
+
+<span class="term-dim">─── [Healing Loop Round 1/10] Synthesizing Fix ───</span>
+<span class="term-gray">◈ Token Surgery excised 1,480 framework frames (91.3% token reduction).</span>
+<span class="term-gray">◈ Synthesizing atomic search-and-replace AST patch for expired token assertion...</span>
+
+<span class="term-cyan">╭─ 🩹 apply_patch: src/auth/service.py ─────────────────────────</span>
+<span class="term-red">│ - return token.is_expired()</span>
+<span class="term-green">│ + return token.is_expired() and not token.has_grace_period()</span>
+<span class="term-cyan">╰─ ✓ patch applied (+1 lines, -1 lines) ──────────────────────────</span>
+
+  <span class="term-blue">🧪 Verifying patch with `pytest tests/test_auth.py` on physical hardware...</span>
+  <span class="term-green">✓ All 18 tests passed in 410ms. (Exit code 0)</span>
+
+<span class="term-green">🎉 ────────────────────────────────────────────────────────────</span>
+<span class="term-green">✓ Fix Verified! All tests passed in round 2. Clean diff preserved.</span>
+<span class="term-green">──────────────────────────────────────────────────────────────</span></code></pre>
           </div>
         </div>
       </div>
@@ -903,93 +829,8 @@
       });
     }
 
-    const PRESETS = {
-      python: `def calculate_discount(price: float, discount_percent: float) -> float:
-    # BUG: subtracting raw percent instead of ratio
-    return price - discount_percent
-
-# Offending Assertion:
-# assert calculate_discount(50.0, 10.0) == 45.0
-# AssertionError: 40.0 != 45.0`,
-      rust: `pub fn is_authorized(role: &str) -> bool {
-    // BUG: inverted boolean logic
-    if role == "admin" {
-        false
-    } else {
-        true
-    }
-}
-// Test Failure:
-// assert!(is_authorized("admin")) failed!`,
-      js: `function getUserSettings(user) {
-    // BUG: missing optional chaining, causes TypeError
-    return user.settings.theme;
-}
-// TypeError: Cannot read properties of undefined (reading 'theme')`
-    };
-
-    function loadPreset() {
-      const picker = document.getElementById('preset-picker');
-      const input = document.getElementById('code-input');
-      input.value = PRESETS[picker.value] || PRESETS.python;
-    }
-
-    async function runWebHeal() {
-      const codeInput = document.getElementById('code-input').value;
-      const outputBox = document.getElementById('output-box');
-      const statusBadge = document.getElementById('status-badge');
-      const btnHeal = document.getElementById('btn-heal');
-
-      if (!codeInput.trim()) return;
-
-      btnHeal.disabled = true;
-      btnHeal.style.opacity = '0.6';
-      statusBadge.innerText = 'ENGAGED';
-      statusBadge.style.color = '#ffffff';
-      outputBox.innerText = 'Connecting to Kronumos Cloudflare Edge Gateway...\n';
-      outputBox.classList.add('active-stream');
-
-      try {
-        const response = await fetch('https://kronumos-gateway.tokenectomysupport.workers.dev/v1/chat/completions', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            messages: [
-              {
-                role: 'system',
-                content: 'You are Kronumos Kairos. Diagnose the provided code failure, extract the root cause, and synthesize an atomic patch using search and replace format. Keep explanations concise and terminal-clean.'
-              },
-              {
-                role: 'user',
-                content: 'Please diagnose and fix this bug:\n\n' + codeInput
-              }
-            ],
-            stream: false,
-            temperature: 0.1
-          })
-        });
-
-        if (!response.ok) {
-          throw new Error('Gateway returned HTTP ' + response.status);
-        }
-
-        const data = await response.json();
-        const resultText = data.response || (data.choices && data.choices[0] && data.choices[0].message.content) || JSON.stringify(data, null, 2);
-
-        outputBox.innerText = '✓ Sub-Cortex Diagnosis & Atomic Remediation Complete:\n\n' + resultText;
-        statusBadge.innerText = 'ONLINE';
-      } catch (err) {
-        outputBox.innerText = 'Connection error: ' + err.message + '\n\nPlease check your network connection or gateway status.';
-        statusBadge.innerText = 'ERROR';
-      } finally {
-        btnHeal.disabled = false;
-        btnHeal.style.opacity = '1';
-      }
-    }
-
     window.addEventListener('DOMContentLoaded', () => {
       detectAndSelectOS();
-      loadPreset();
     });
   </script>
 </body>
