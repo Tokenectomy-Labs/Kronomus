@@ -63,7 +63,7 @@ fi
 
 echo ""
 echo "🚀 Quickstart:"
-echo "  1. Run with local Ollama:    kronumos --backend ollama"
-echo "  2. Run with Cloudflare Edge: kronumos --backend cloudflare --cf-url <your-worker-url>"
-echo "  3. Autonomous fix mode:      kronumos --fix"
+echo "  1. Start interactive REPL:   kronumos"
+echo "  2. Autonomous fix mode:      kronumos --fix"
+echo "  3. Run with local Ollama:    kronumos --backend ollama"
 echo ""
