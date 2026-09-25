@@ -40,9 +40,9 @@ function redactEdgeSecrets(text) {
 const ipRateLimits = new Map();
 const ipBurstLimits = new Map();
 
-const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour sliding window
-const BURST_LIMIT_WINDOW_MS = 10 * 1000;      // 10 seconds sliding window
-const MAX_BURST_PER_10S = 6;                  // Max 6 requests per 10s
+const RATE_LIMIT_WINDOW_MS = 2 * 60 * 60 * 1000; // 2 hours sliding window
+const BURST_LIMIT_WINDOW_MS = 10 * 1000;          // 10 seconds sliding window
+const MAX_BURST_PER_10S = 6;                      // Max 6 requests per 10s
 
 function checkRateLimit(ip, maxRequests, windowMs = RATE_LIMIT_WINDOW_MS) {
   const now = Date.now();
@@ -111,7 +111,7 @@ export default {
           version: "1.0.0",
           runtime: "Cloudflare Workers AI",
           default_model: "@cf/qwen/qwen2.5-coder-32b-instruct",
-          rate_limit_per_hour: env.RATE_LIMIT_PER_HOUR || "30",
+          rate_limit_per_window: env.RATE_LIMIT_PER_WINDOW || "20 requests per 2 hours",
           timestamp: new Date().toISOString(),
         }, null, 2),
         {
@@ -215,8 +215,8 @@ export default {
           );
         }
 
-        // Security Shield 4: Hourly Sliding-Window Rate Limiter
-        const maxRequests = parseInt(env.RATE_LIMIT_PER_HOUR || "30", 10);
+        // Security Shield 4: Sliding-Window Rate Limiter (20 requests per 2 hours)
+        const maxRequests = parseInt(env.RATE_LIMIT_PER_WINDOW || env.RATE_LIMIT_PER_HOUR || "20", 10);
         const limitStatus = checkRateLimit(clientIp, maxRequests);
 
         rateLimitHeaders = {
@@ -229,8 +229,8 @@ export default {
           return new Response(
             JSON.stringify({
               error: "Rate limit exceeded (Free Community Tier)",
-              message_en: `Free community tier limit reached (${maxRequests} requests/hour per IP). Upgrade to Kronumos VIP for unlimited Cloudflare edge inference, or run unlimited offline via Ollama ('kronumos --backend ollama').`,
-              message_id: `Batas kuota komunitas gratis tercapai (${maxRequests} request/jam per IP). Upgrade ke Kronumos VIP untuk pemakaian Cloudflare tanpa batas kuota, atau jalankan offline tanpa batas dengan Ollama ('kronumos --backend ollama').`,
+              message_en: `Free community tier limit reached (${maxRequests} requests per 2 hours per IP). Upgrade to Kronumos VIP for unlimited Cloudflare edge inference, or run unlimited offline via Ollama ('kronumos --backend ollama').`,
+              message_id: `Batas kuota komunitas gratis tercapai (${maxRequests} request per 2 jam per IP). Upgrade ke Kronumos VIP untuk pemakaian Cloudflare tanpa batas kuota, atau jalankan offline tanpa batas dengan Ollama ('kronumos --backend ollama').`,
               upgrade_url: "https://tokenectomy-labs.github.io/Kronomus/#pricing",
               vip_instructions: "Export your VIP key: export KRONUMOS_CF_KEY='your_vip_key' or pass --cf-key",
               reset_at: new Date(limitStatus.resetAt).toISOString(),
