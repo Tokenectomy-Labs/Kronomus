@@ -1,0 +1,18 @@
+{
+  "total_instances": 500,
+  "submitted_instances": 500,
+  "completed_instances": 80,
+  "resolved_instances": [
+    "django__django-11066",
+    "django__django-15104",
+    "django__django-15368",
+    "django__django-15814",
+    "django__django-16569",
+    "pydata__xarray-4629",
+    "pytest-dev__pytest-6202",
+    "scikit-learn__scikit-learn-10844",
+    "scikit-learn__scikit-learn-14496",
+    "sympy__sympy-22714"
+  ],
+  "unresolved_instances": []
+}
