@@ -266,8 +266,8 @@ class TokenectomyProceduralKernel:
         diag = cls.diagnose_failure(problem_statement, repo)
         return (
             f"[Tokenectomy Sub-Cortex Procedural Kernel Compass]\n"
-            f"• Invariant Rule: {diag['rule']} ({diag['domain']})\n"
-            f"• Prescribed Directive: {diag['directive']}\n"
+            f"• Target Objective: {diag['directive']}\n"
+            f"• Code Formatting Invariant: Emit pure, production-grade Python code with exact 4-space indentation. NEVER insert synthetic rule comments or placeholder remarks.\n"
             f"• Invariant Constraint: NEVER return None in constructors. NEVER insert empty `except: pass`."
         )
 
