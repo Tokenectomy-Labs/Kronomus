@@ -1,8 +1,33 @@
-/target
-
-__pycache__/
-*.pyc
-
+# Build & Compiled Binaries
+/target/
 node_modules/
 .wrangler/
 dist/
+*.zip
+
+# Python Bytecode & Caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+.ipynb_checkpoints/
+
+# Virtual Environments & IDE
+venv/
+env/
+ENV/
+.env
+.idea/
+.vscode/
+
+# Intermediate Evaluation Outputs
+eval_output_*/
+output/
+
+# Temporary / Local Coursework
+tugas_ci4_biodata/
+
+dataset/

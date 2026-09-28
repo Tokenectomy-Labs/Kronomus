@@ -20,32 +20,50 @@ import time
 import argparse
 import difflib
 import urllib.request
+import ast
+import textwrap
 from typing import Dict, Any, List, Tuple, Optional
 from datetime import datetime
 
-import torch
-from datasets import load_dataset
-from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+try:
+    import torch
+    from datasets import load_dataset
+    from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+except ImportError:
+    torch = None
+    load_dataset = None
+    AutoModelForCausalLM = None
+    AutoTokenizer = None
+    BitsAndBytesConfig = None
+
+try:
+    from scripts.issue_denoiser import IssueDeNoiser
+    from scripts.mutation_bracket import ZeroLLMMutationBracket
+except ImportError:
+    from issue_denoiser import IssueDeNoiser
+    from mutation_bracket import ZeroLLMMutationBracket
 
 # ---------------------------------------------------------
-# 1. Kronumos Agent System Prompt & Tool Schema
+# 1. Kronumos Agent System Prompt & Tool Schema (Kairos v2)
 # ---------------------------------------------------------
 SYSTEM_PROMPT = (
-    "You are Kronumos, an autonomous bug-remediation agent natively equipped with "
-    "the Tokenectomy M2M Sub-Cortex. You remediate reported bugs deterministically with zero dirty diffs.\n\n"
+    "You are Kronumos Kairos v2, an autonomous bug-remediation engine natively integrated with "
+    "the Tokenectomy M2M Sub-Cortex. You synthesize surgical, production-safe code fixes with zero dirty diffs.\n\n"
     "OPERATIONAL PROTOCOL:\n"
-    "1. Always wrap your step-by-step diagnostic reasoning inside <thought>...</thought> tags before acting. "
-    "Analyze the root cause, identify the exact offending file and lines, and formulate a minimal, regression-safe fix.\n"
-    "2. To apply a code change, you may invoke the tool `apply_code_patch` OR emit a SEARCH/REPLACE block:\n"
-    "   File: path/to/file.py\n"
+    "1. Always wrap your diagnostic analysis inside <thought>...</thought> tags before emitting code. "
+    "Formulate: (a) Fault hypothesis from the Cleaned Technical Specification, (b) Verified repository target file and symbols, "
+    "(c) Minimal defensive patch preserving full backward compatibility.\n"
+    "2. NEVER modify code blocks tagged as [USER_REPRODUCTION_SNIPPET - REFERENCE ONLY, NEVER PATCH THIS]. "
+    "Target ONLY real internal source files within the repository package tree.\n"
+    "3. To apply an atomic change, you may invoke the tool `apply_code_patch` OR emit a SEARCH/REPLACE block:\n"
+    "   File: path/to/internal/file.py\n"
     "   <<<<<<< SEARCH\n"
-    "   original code lines to replace\n"
+    "   original exact code lines\n"
     "   =======\n"
     "   replacement code lines\n"
     "   >>>>>>> REPLACE\n"
-    "3. NEVER return None from constructors (__new__ or __init__). NEVER introduce naked `pass` in exception handlers.\n"
-    "4. Target ONLY existing source code files inside the repository (e.g., django/, astropy/, sympy/). "
-    "Never patch demonstration scripts, scratch files, or test runners (e.g. test.py, app/models.py, poc.py)."
+    "4. Invariants: NEVER return None from constructors (__new__, __init__). NEVER introduce naked pass in exception handlers. "
+    "Guarantee 100% syntactic and structural AST compliance."
 )
 
 TOOLS_SCHEMA = [
@@ -175,29 +193,259 @@ def simulate_subcortex_scrub(raw_trace: str) -> Dict[str, Any]:
         "savings_pct": max(savings_pct, 0.0)
     }
 
+# ---------------------------------------------------------
+# 2. Tokenectomy Native Sub-Cortex Machinery
+# ---------------------------------------------------------
+
+class TokenectomyProceduralKernel:
+    """
+    Tokenectomy Procedural Cognitive Kernel.
+    Extracts underlying defect invariants (<64 bytes) to guide the LLM's reasoning path.
+    """
+    @staticmethod
+    def diagnose_failure(problem_statement: str, repo: str = "") -> Dict[str, str]:
+        text = problem_statement.lower()
+        
+        # 1. Null / None pointer dereference
+        if re.search(r"nonetype.*(?:subscriptable|has no attribute|iterable|not callable)", text) or "object of type 'nonetype'" in text:
+            return {
+                "rule": "DefensiveNullWrap",
+                "domain": "Invariant Violation",
+                "directive": "Guard target object with explicit null check (`if obj is not None:`) before member subscripting or attribute traversal.",
+            }
+        
+        # 2. Dictionary key absence
+        if "keyerror" in text or "dict.pop" in text or "pop(" in text:
+            return {
+                "rule": "SafeDictionaryPopGuard",
+                "domain": "Dictionary Key Missing",
+                "directive": "Use `dict.get(key, default)` or verify `if key in dict:` prior to accessing dictionary keys.",
+            }
+            
+        # 3. Array / index out of bounds
+        if "indexerror" in text or "list index out of range" in text:
+            return {
+                "rule": "OffByOneArrayGuard",
+                "domain": "Boundary Condition",
+                "directive": "Validate array bounds (`len(arr) > idx`) or adjust boundary index to prevent out-of-range indexing.",
+            }
+            
+        # 4. Attribute missing on object
+        if "attributeerror" in text or "has no attribute" in text:
+            return {
+                "rule": "SafeAttributeGuard",
+                "domain": "Attribute Missing",
+                "directive": "Defensively check `hasattr(obj, attr)` or `getattr(obj, attr, default)` prior to accessing property.",
+            }
+            
+        # 5. Type alignment / unhashable
+        if "unhashable type" in text or "cannot convert" in text:
+            return {
+                "rule": "SafeTypeCoercionGuard",
+                "domain": "Type Alignment",
+                "directive": "Ensure container types and hashables are explicitly cast (e.g., list vs tuple, str vs bytes).",
+            }
+            
+        # 6. Inequality boundary condition
+        if any(w in text for w in ["strictly greater", "less than or equal", "inclusive", "off-by-one", "boundary"]):
+            return {
+                "rule": "BoundaryShiftStrictToInclusive",
+                "domain": "Inequality Range",
+                "directive": "Verify strictly greater/lesser vs inclusive inequality (`>` vs `>=`).",
+            }
+            
+        # Default Invariant
+        return {
+            "rule": "StructuralASTInvariant",
+            "domain": "General Syntactic Compliance",
+            "directive": "Preserve caller interfaces, enforce strict AST syntax, and forbid degenerate dummy returns.",
+        }
+
+    @classmethod
+    def format_guidance(cls, problem_statement: str, repo: str = "") -> str:
+        diag = cls.diagnose_failure(problem_statement, repo)
+        return (
+            f"[Tokenectomy Sub-Cortex Procedural Kernel Compass]\n"
+            f"• Invariant Rule: {diag['rule']} ({diag['domain']})\n"
+            f"• Prescribed Directive: {diag['directive']}\n"
+            f"• Invariant Constraint: NEVER return None in constructors. NEVER insert empty `except: pass`."
+        )
+
+
+class TokenectomyASTSlicer:
+    """
+    Tokenectomy Tree-sitter / AST Function Slicer.
+    Locates the exact AST node (FunctionDef, AsyncFunctionDef, ClassDef) enclosing the suspect line,
+    providing the full function context instead of blind line windows.
+    """
+    @staticmethod
+    def slice_enclosing_node(source_code: str, target_line: int, file_path: str = "") -> Optional[Dict[str, Any]]:
+        if not source_code:
+            return None
+        lines = source_code.splitlines()
+        if target_line <= 0 or target_line > len(lines):
+            return None
+
+        # Parse AST
+        try:
+            tree = ast.parse(source_code, filename=file_path)
+        except Exception:
+            return TokenectomyASTSlicer._fallback_window(lines, target_line)
+
+        # Walk nodes to find innermost enclosing function or class
+        best_node = None
+        best_span = float("inf")
+
+        for node in ast.walk(tree):
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                start = getattr(node, "lineno", None)
+                end = getattr(node, "end_lineno", None)
+                if start is not None and end is not None:
+                    if start <= target_line <= end:
+                        span = end - start
+                        if span < best_span:
+                            best_span = span
+                            best_node = node
+
+        if best_node:
+            start_line = max(1, best_node.lineno)
+            end_line = min(len(lines), getattr(best_node, "end_lineno", start_line))
+            func_name = getattr(best_node, "name", "anonymous")
+            node_type = type(best_node).__name__
+            
+            numbered_snippet = [
+                f"# [Tokenectomy AST {node_type}: {func_name}() | Lines {start_line}-{end_line}]"
+            ]
+            for i in range(start_line - 1, end_line):
+                curr_line_num = i + 1
+                prefix = ">> " if curr_line_num == target_line else "   "
+                numbered_snippet.append(f"{prefix}{curr_line_num:4d} | {lines[i]}")
+
+            return {
+                "node_name": func_name,
+                "node_type": node_type,
+                "start_line": start_line,
+                "end_line": end_line,
+                "snippet": "\n".join(numbered_snippet),
+                "is_ast_sliced": True
+            }
+
+        return TokenectomyASTSlicer._fallback_window(lines, target_line)
+
+    @staticmethod
+    def _fallback_window(lines: List[str], target_line: int, radius: int = 20) -> Dict[str, Any]:
+        start_line = max(1, target_line - radius)
+        end_line = min(len(lines), target_line + radius)
+        numbered_snippet = [f"# [Tokenectomy Line Window: Lines {start_line}-{end_line}]"]
+        for i in range(start_line - 1, end_line):
+            curr_line_num = i + 1
+            prefix = ">> " if curr_line_num == target_line else "   "
+            numbered_snippet.append(f"{prefix}{curr_line_num:4d} | {lines[i]}")
+        return {
+            "node_name": "window",
+            "node_type": "LineWindow",
+            "start_line": start_line,
+            "end_line": end_line,
+            "snippet": "\n".join(numbered_snippet),
+            "is_ast_sliced": False
+        }
+
+
+class TokenectomyASTValidator:
+    """
+    Tokenectomy AST & Sentinel Patch Validator.
+    Modeled directly after Tokenectomy-Pro's `ast_validator.rs` and `sentinel_audit_patch`.
+    Validates AST syntax, coordinates errors, and blocks degenerate anti-patterns.
+    """
+    @staticmethod
+    def validate_code(orig_snippet: str, new_snippet: str, file_path: str = "") -> Tuple[bool, str, str]:
+        """
+        Returns (is_valid, healed_code, error_message).
+        """
+        if not new_snippet.strip():
+            return False, new_snippet, "Empty replacement code snippet."
+
+        # 1. Sentinel Anti-Degenerate Invariants
+        if ("__new__" in orig_snippet or "__init__" in orig_snippet or "__new__" in new_snippet or "__init__" in new_snippet):
+            if re.search(r'\breturn\s+None\b', new_snippet):
+                return False, new_snippet, "Sentinel Refusal: Returning None inside constructor violates object semantics."
+
+        if re.search(r'except.*:\s*pass\b', new_snippet):
+            return False, new_snippet, "Sentinel Refusal: Naked `except: pass` silently suppresses exceptions."
+
+        del_lines = len([l for l in orig_snippet.splitlines() if l.strip()])
+        add_lines = len([l for l in new_snippet.splitlines() if l.strip()])
+        if del_lines > 25 and add_lines <= 1:
+            return False, new_snippet, f"Sentinel Refusal: Excessive code deletion ({del_lines} lines removed with <= 1 lines added)."
+
+        # 2. Syntax validation with pinpointed coordinates
+        dedented = textwrap.dedent(new_snippet)
+        try:
+            ast.parse(dedented)
+            return True, new_snippet, "Valid AST"
+        except SyntaxError:
+            pass
+
+        # Contextual statement parsing (for elif, except, return, break fragments)
+        try:
+            ast.parse(f"def _dummy_context():\n{textwrap.indent(dedented, '    ')}")
+            return True, new_snippet, "Valid AST (statement block)"
+        except SyntaxError:
+            pass
+        try:
+            ast.parse(f"if True:\n    pass\n{dedented}")
+            return True, new_snippet, "Valid AST (conditional branch)"
+        except SyntaxError:
+            pass
+        try:
+            ast.parse(f"try:\n    pass\n{dedented}")
+            return True, new_snippet, "Valid AST (handler block)"
+        except SyntaxError:
+            pass
+
+        # Attempt Tokenectomy AST Auto-Healing: Bracket / Parenthesis completion
+        healed = TokenectomyASTValidator._attempt_bracket_healing(dedented)
+        if healed != dedented:
+            try:
+                ast.parse(healed)
+                return True, healed, "Auto-healed AST syntax (bracket/parenthesis balanced)"
+            except SyntaxError:
+                pass
+            try:
+                ast.parse(f"def _dummy():\n{textwrap.indent(healed, '    ')}")
+                return True, healed, "Auto-healed AST syntax (statement block)"
+            except SyntaxError:
+                pass
+
+        try:
+            ast.parse(dedented)
+        except SyntaxError as e:
+            error_msg = f"AST Syntax Error: {e.msg} at line {e.lineno}, col {e.offset}: `{e.text and e.text.strip()}`"
+            return False, new_snippet, error_msg
+
+        return True, new_snippet, "Valid AST"
+
+    @staticmethod
+    def _attempt_bracket_healing(code: str) -> str:
+        """Auto-heals missing closing brackets, braces, and quotes."""
+        open_parens = code.count("(") - code.count(")")
+        open_brackets = code.count("[") - code.count("]")
+        open_braces = code.count("{") - code.count("}")
+        
+        healed = code
+        if open_parens > 0:
+            healed += ")" * open_parens
+        if open_brackets > 0:
+            healed += "]" * open_brackets
+        if open_braces > 0:
+            healed += "}" * open_braces
+        return healed
+
+
 def validate_patch_integrity(file_path: str, orig: str, new: str) -> Tuple[bool, str]:
-    """
-    Sentinel Anti-Degenerate Patch Filter:
-    Prevents degenerate, test-pleasing slop:
-    1. Returning None inside __new__ or __init__ (prevents SymPy-style constructor corruption).
-    2. Inserting naked `pass` in exception handlers without logic.
-    3. Wholesale code deletion (> 25 lines removed with <= 1 lines added).
-    """
-    # 1. Constructor None return check
-    if ("__new__" in orig or "__init__" in orig) and re.search(r'\breturn\s+None\b', new):
-        return False, "Degenerate patch: Returning None inside constructor violates object semantics."
-
-    # 2. Check for naked except: pass
-    if re.search(r'except.*:\s*pass', new):
-        return False, "Degenerate patch: Naked `except: pass` silently suppresses exceptions."
-
-    # 3. Check for wholesale code deletion
-    del_lines = len([l for l in orig.splitlines() if l.strip()])
-    add_lines = len([l for l in new.splitlines() if l.strip()])
-    if del_lines > 25 and add_lines <= 1:
-        return False, f"Degenerate patch: Excessive deletion ({del_lines} lines removed with <= 1 lines added)."
-
-    return True, "Valid"
+    """Backward compatibility shim delegating to TokenectomyASTValidator."""
+    is_valid, _, reason = TokenectomyASTValidator.validate_code(orig, new, file_path)
+    return is_valid, reason
 
 # ---------------------------------------------------------
 # Disk Cache & Resilient GitHub Raw Fetcher
@@ -284,9 +532,9 @@ def extract_json_tool_calls(text: str) -> List[Dict[str, Any]]:
 
 def extract_suspect_context_from_issue(repo: str, base_commit: str, problem_statement: str, token: str = "") -> Optional[Dict[str, Any]]:
     """
-    Sub-Cortex Fault Localization:
+    Tokenectomy Sub-Cortex Fault Localization:
     Extracts traceback frames from the problem statement, locates the target repository file,
-    and fetches a 30-line context window from GitHub base_commit.
+    and fetches an AST enclosing node context from GitHub base_commit.
     """
     # Scan for standard Python traceback patterns: File "path/to/file.py", line 123
     tb_matches = list(re.finditer(r'File\s+["\']?([^"\',\n]+)["\']?,\s+line\s+(\d+)', problem_statement))
@@ -316,19 +564,18 @@ def extract_suspect_context_from_issue(repo: str, base_commit: str, problem_stat
     content = fetch_github_file(repo, base_commit, candidate_target, token=token)
     if not content:
         return None
-    lines = content.splitlines()
-    start_idx = max(0, candidate_line - 15)
-    end_idx = min(len(lines), candidate_line + 15)
-    
-    numbered_snippet = []
-    for i in range(start_idx, end_idx):
-        prefix = ">> " if (i + 1) == candidate_line else "   "
-        numbered_snippet.append(f"{prefix}{i + 1:4d} | {lines[i]}")
-        
+
+    # Tokenectomy AST Enclosing Node Slicing
+    ast_slice = TokenectomyASTSlicer.slice_enclosing_node(content, candidate_line, candidate_target)
+    snippet = ast_slice["snippet"] if ast_slice else ""
+
     return {
         "file_path": candidate_target,
         "suspect_line": candidate_line,
-        "snippet": "\n".join(numbered_snippet)
+        "node_name": ast_slice.get("node_name", "unknown") if ast_slice else "unknown",
+        "node_type": ast_slice.get("node_type", "unknown") if ast_slice else "unknown",
+        "snippet": snippet,
+        "is_ast_sliced": ast_slice.get("is_ast_sliced", False) if ast_slice else False
     }
 
 def parse_search_replace_blocks(text: str) -> List[Dict[str, str]]:
@@ -353,17 +600,21 @@ def parse_search_replace_blocks(text: str) -> List[Dict[str, str]]:
         })
     return blocks
 
-def convert_patch_call_to_diff(file_path: str, orig: str, new: str, repo: str = "", base_commit: str = "", token: str = "") -> str:
-    """Format patch call into a valid POSIX-compliant unified git diff string with real line context."""
-    # Sentinel integrity gate
-    is_valid, reason = validate_patch_integrity(file_path, orig, new)
-    if not is_valid:
-        print(f"    🛡️ Sentinel Refusal: {reason}", flush=True)
-        return ""
-
+def convert_patch_call_to_diff(file_path: str, orig: str, new: str, repo: str = "", base_commit: str = "", token: str = "") -> Tuple[str, str, str]:
+    """
+    Format patch call into a valid POSIX-compliant unified git diff string with Tokenectomy AST validation.
+    Returns: (diff_str, status, message)
+      - status: "SUCCESS" | "ERROR"
+    """
     clean_path = file_path.lstrip("/").replace("//", "/")
     
-    # 1. Attempt to fetch real file from GitHub to compute exact unified diff with line numbers
+    # 1. Tokenectomy AST & Sentinel validation
+    is_valid, healed_new, reason = TokenectomyASTValidator.validate_code(orig, new, clean_path)
+    if not is_valid:
+        print(f"    🛡️ Tokenectomy Refusal: {reason}", flush=True)
+        return "", "ERROR", f"Tokenectomy AST Refusal: {reason}. Please rectify your patch syntax."
+
+    # 2. Attempt to fetch real file from GitHub to compute exact unified diff with line numbers
     if repo and base_commit and clean_path:
         raw_content = fetch_github_file(repo, base_commit, clean_path, token=token)
         if raw_content is not None:
@@ -371,7 +622,7 @@ def convert_patch_call_to_diff(file_path: str, orig: str, new: str, repo: str = 
             
             # Check exact match
             if orig in raw_content:
-                new_content = raw_content.replace(orig, new, 1)
+                new_content = raw_content.replace(orig, healed_new, 1)
                 diff = list(difflib.unified_diff(
                     file_lines,
                     new_content.splitlines(keepends=True),
@@ -379,7 +630,7 @@ def convert_patch_call_to_diff(file_path: str, orig: str, new: str, repo: str = 
                     tofile=f"b/{clean_path}"
                 ))
                 if diff:
-                    return "".join(diff)
+                    return "".join(diff), "SUCCESS", f"Tokenectomy: Patch applied cleanly to {clean_path}. AST syntax valid."
                     
             # Check stripped whitespace match
             target_stripped = [l.strip() for l in orig.splitlines() if l.strip()]
@@ -398,7 +649,7 @@ def convert_patch_call_to_diff(file_path: str, orig: str, new: str, repo: str = 
                 if best_ratio >= 0.70 and best_start >= 0:
                     anchor_line = file_lines[best_start]
                     indent = anchor_line[:len(anchor_line) - len(anchor_line.lstrip())]
-                    formatted_plus = [indent + p.lstrip() + "\n" if p.strip() else "\n" for p in new.splitlines()]
+                    formatted_plus = [indent + p.lstrip() + "\n" if p.strip() else "\n" for p in healed_new.splitlines()]
                     new_lines = file_lines[:best_start] + formatted_plus + file_lines[best_start + window_size:]
                     diff = list(difflib.unified_diff(
                         file_lines,
@@ -407,11 +658,23 @@ def convert_patch_call_to_diff(file_path: str, orig: str, new: str, repo: str = 
                         tofile=f"b/{clean_path}"
                     ))
                     if diff:
-                        return "".join(diff)
-            
-    # 2. Robust fallback with syntactically valid hunk counts (never malformed @@ -1,1 +1,1 @@)
+                        return "".join(diff), "SUCCESS", f"Tokenectomy: Patch anchored via AST indentation ({round(best_ratio*100)}% match) to {clean_path}."
+
+                # If match ratio < 0.70, provide closest matching snippet for TURN 2 REFINEMENT
+                closest_start = max(0, best_start - 2) if best_start >= 0 else 0
+                closest_end = min(len(file_lines), closest_start + 12)
+                closest_snippet = "".join(file_lines[closest_start:closest_end])
+                return (
+                    "",
+                    "ERROR",
+                    f"Tokenectomy Match Refusal: `original_code` was not found in `{clean_path}` (Best match: {round(best_ratio*100)}%).\n"
+                    f"Surrounding source lines in target file:\n```python\n{closest_snippet}\n```\n"
+                    f"Please align your SEARCH block to match this exact code snippet."
+                )
+
+    # 3. Robust fallback with syntactically valid hunk counts (never malformed @@ -1,1 +1,1 @@)
     orig_lines = orig.splitlines()
-    new_lines_list = new.splitlines()
+    new_lines_list = healed_new.splitlines()
     orig_count = max(1, len(orig_lines))
     new_count = max(1, len(new_lines_list))
     
@@ -425,37 +688,73 @@ def convert_patch_call_to_diff(file_path: str, orig: str, new: str, repo: str = 
         diff_lines.append(f"-{line}")
     for line in new_lines_list:
         diff_lines.append(f"+{line}")
-    return "\n".join(diff_lines) + "\n"
+    fallback_diff = "\n".join(diff_lines) + "\n"
+    return fallback_diff, "SUCCESS", f"Tokenectomy: Synthesized unanchored diff for {clean_path}."
 
 # ---------------------------------------------------------
 # 3. Benchmark Evaluator Class
 # ---------------------------------------------------------
 class KronumosBenchmarkRunner:
     def __init__(self, model_id: str = "NadevA23/Kronumos", load_in_4bit: bool = True):
-        print(f"📦 Loading tokenizer: {model_id}")
-        self.tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
-        
-        print(f"⚡ Loading model weights (4-bit={load_in_4bit})...")
-        if load_in_4bit:
-            bnb_config = BitsAndBytesConfig(
-                load_in_4bit=True,
-                bnb_4bit_quant_type="nf4",
-                bnb_4bit_compute_dtype=torch.bfloat16,
-            )
-            self.model = AutoModelForCausalLM.from_pretrained(
-                model_id,
-                quantization_config=bnb_config,
-                device_map="auto",
-                trust_remote_code=True,
-            )
+        # Auto-detect if model_id is a local LoRA adapter directory
+        adapter_cfg_file = os.path.join(model_id, "adapter_config.json")
+        is_peft_adapter = os.path.exists(adapter_cfg_file)
+
+        if is_peft_adapter:
+            try:
+                from peft import PeftModel
+            except ImportError:
+                raise RuntimeError("peft package is required to load LoRA adapters. Install via `pip install peft`.")
+            with open(adapter_cfg_file, "r", encoding="utf-8") as f:
+                adapter_cfg = json.load(f)
+            base_model_path = adapter_cfg.get("base_model_name_or_path", "Qwen/Qwen2.5-Coder-7B-Instruct")
+            print(f"📦 Detected LoRA adapter at {model_id}. Loading base model: {base_model_path}")
+            self.tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
+            if load_in_4bit:
+                bnb_config = BitsAndBytesConfig(
+                    load_in_4bit=True,
+                    bnb_4bit_quant_type="nf4",
+                    bnb_4bit_compute_dtype=torch.bfloat16,
+                )
+                base_model = AutoModelForCausalLM.from_pretrained(
+                    base_model_path,
+                    quantization_config=bnb_config,
+                    device_map="auto",
+                    trust_remote_code=True,
+                )
+            else:
+                base_model = AutoModelForCausalLM.from_pretrained(
+                    base_model_path,
+                    torch_dtype=torch.bfloat16,
+                    device_map="auto",
+                    trust_remote_code=True,
+                )
+            self.model = PeftModel.from_pretrained(base_model, model_id)
         else:
-            self.model = AutoModelForCausalLM.from_pretrained(
-                model_id,
-                torch_dtype=torch.bfloat16,
-                device_map="auto",
-                trust_remote_code=True,
-            )
+            print(f"📦 Loading tokenizer: {model_id}")
+            self.tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
             
+            print(f"⚡ Loading model weights (4-bit={load_in_4bit})...")
+            if load_in_4bit:
+                bnb_config = BitsAndBytesConfig(
+                    load_in_4bit=True,
+                    bnb_4bit_quant_type="nf4",
+                    bnb_4bit_compute_dtype=torch.bfloat16,
+                )
+                self.model = AutoModelForCausalLM.from_pretrained(
+                    model_id,
+                    quantization_config=bnb_config,
+                    device_map="auto",
+                    trust_remote_code=True,
+                )
+            else:
+                self.model = AutoModelForCausalLM.from_pretrained(
+                    model_id,
+                    torch_dtype=torch.bfloat16,
+                    device_map="auto",
+                    trust_remote_code=True,
+                )
+                
         im_end_id = self.tokenizer.convert_tokens_to_ids("<|im_end|>")
         self.stop_tokens = list({self.tokenizer.eos_token_id, im_end_id})
         print("✅ Kronumos ready for inference!")
@@ -464,21 +763,31 @@ class KronumosBenchmarkRunner:
         instance_id = instance.get("instance_id", "unknown")
         repo = instance.get("repo", "unknown")
         base_commit = instance.get("base_commit", "")
-        problem_statement = instance.get("problem_statement", "")
+        raw_problem = instance.get("problem_statement", "")
         
-        # Sub-Cortex Fault Localization: Extract suspect file & lines from traceback
-        suspect_info = extract_suspect_context_from_issue(repo, base_commit, problem_statement)
+        # 1. Tokenectomy Issue Discourse De-Noiser
+        denoised = IssueDeNoiser.denoise_issue(raw_problem, repo=repo)
+        clean_problem = f"{denoised['specification_header']}\n\n{denoised['cleaned_text']}"
+        
+        # 2. Tokenectomy Procedural Cognitive Kernel Compass
+        procedural_guidance = TokenectomyProceduralKernel.format_guidance(raw_problem, repo=repo)
+        
+        # 3. Tokenectomy AST Fault Localization
+        suspect_info = extract_suspect_context_from_issue(repo, base_commit, raw_problem)
         
         user_prompt = (
             f"Repository: {repo}\n"
             f"Issue ID: {instance_id}\n\n"
-            f"Problem Description:\n{problem_statement}"
+            f"{procedural_guidance}\n\n"
+            f"Problem Description:\n{clean_problem}"
         )
         if suspect_info:
+            slice_desc = "AST Enclosing Function" if suspect_info.get("is_ast_sliced") else "Source Context Window"
             user_prompt += (
-                f"\n\n[Sub-Cortex Fault Localization]\n"
+                f"\n\n[Tokenectomy {slice_desc} Localization]\n"
                 f"Suspect Target File: {suspect_info['file_path']} (Near line {suspect_info['suspect_line']})\n"
-                f"Surrounding Context from base commit ({base_commit[:8]}):\n"
+                f"Enclosing Symbol: {suspect_info.get('node_name', 'unknown')}\n"
+                f"Source Context from commit ({base_commit[:8]}):\n"
                 f"```python\n{suspect_info['snippet']}\n```\n"
             )
         
@@ -573,25 +882,27 @@ class KronumosBenchmarkRunner:
                     for block in sr_blocks:
                         target_file = block["file_path"] or (suspect_info["file_path"] if suspect_info else "")
                         if target_file:
-                            candidate_diff = convert_patch_call_to_diff(
+                            candidate_diff, status, msg = convert_patch_call_to_diff(
                                 target_file, block["original_code"], block["new_code"],
                                 repo=repo, base_commit=base_commit
                             )
-                            if candidate_diff:
+                            if status == "SUCCESS" and candidate_diff:
                                 synthesized_patch = candidate_diff
                                 print(f"    ✨ Recovered patch from SEARCH/REPLACE block for {target_file}", flush=True)
                                 break
+                            elif status == "ERROR":
+                                print(f"    ⚠️ SEARCH/REPLACE feedback: {msg[:100]}...", flush=True)
                 
                 # 2. Fallback: Model produced patch in unified diff block
                 if not synthesized_patch and ("diff --git" in response_text or "@@ -" in response_text):
                     synthesized_patch = response_text
                     
-                # 3. If still empty and turns remain, re-prompt for correct syntax
+                # 3. If still empty and turns remain, re-prompt for correct syntax with guidance
                 if not synthesized_patch and turn < (max_turns - 1):
                     messages.append({"role": "assistant", "content": response_text})
                     messages.append({
                         "role": "user",
-                        "content": "No valid patch detected. Please formulate your fix using `apply_code_patch` or output a SEARCH/REPLACE block."
+                        "content": "No valid patch was synthesized. Please formulate your fix using `apply_code_patch` or output a valid SEARCH/REPLACE block."
                     })
                     continue
                 break
@@ -614,11 +925,26 @@ class KronumosBenchmarkRunner:
                     orig = args.get("original_code", "")
                     new_code = args.get("new_code", "")
                     base_commit = instance.get("base_commit", "")
-                    synthesized_patch = convert_patch_call_to_diff(f_path, orig, new_code, repo=repo, base_commit=base_commit)
-                    tool_outputs.append(f"Patch applied cleanly to {f_path}. AST syntax valid.")
+                    diff_str, status, msg = convert_patch_call_to_diff(
+                        f_path, orig, new_code, repo=repo, base_commit=base_commit
+                    )
+                    tool_outputs.append(msg)
+                    if status == "SUCCESS" and diff_str:
+                        synthesized_patch = diff_str
+                        # Tokenectomy Zero-LLM Mutation Bracket check
+                        try:
+                            mutations = ZeroLLMMutationBracket.generate_candidate_mutations(new_code)
+                            if mutations:
+                                print(f"    ⚡ Tokenectomy Mutation Bracket synthesized {len(mutations)} deterministic variations.")
+                        except Exception:
+                            pass
+                        break
+                    else:
+                        synthesized_patch = ""
+                        # Tokenectomy Refusal feedback is retained in tool_outputs for next turn self-healing!
                     
                 elif tool_name == "sentinel_analyze_blast_radius":
-                    tool_outputs.append("Blast radius: 1 direct caller, 0 breaking API changes.")
+                    tool_outputs.append("Tokenectomy Sentinel: Blast radius mapped (1 direct caller, 0 breaking API changes).")
                     
                 elif tool_name == "create_fix_branch":
                     tool_outputs.append(f"Branch created: {args.get('branch_name')}")
@@ -629,13 +955,13 @@ class KronumosBenchmarkRunner:
                 elif tool_name == "open_pull_request":
                     tool_outputs.append(f"PR opened: {args.get('title')}")
                     
-            if synthesized_patch and turns >= 2:
-                # Loop completed
+            if synthesized_patch:
+                # Successfully verified and anchored patch synthesized!
                 break
                 
             messages.append({
                 "role": "user",
-                "content": "\n".join(tool_outputs) if tool_outputs else "Action executed successfully. Proceed."
+                "content": "\n".join(tool_outputs) if tool_outputs else "Action executed. Proceed to formulate fix."
             })
             
         elapsed_sec = round(time.time() - start_time, 2)
@@ -673,9 +999,18 @@ def main():
     os.makedirs(args.output_dir, exist_ok=True)
     os.makedirs(os.path.join(args.output_dir, "trajectories"), exist_ok=True)
     
-    print(f"📥 Loading dataset: {args.dataset} (split={args.split})...")
-    ds = load_dataset(args.dataset, split=args.split)
-    instances = [ds[i] for i in range(min(args.num_samples, len(ds)))]
+    if os.path.exists(args.dataset):
+        print(f"📂 Loading local dataset: {args.dataset}...")
+        with open(args.dataset, "r", encoding="utf-8") as f:
+            if args.dataset.endswith(".jsonl"):
+                raw_instances = [json.loads(line) for line in f if line.strip()]
+            else:
+                raw_instances = json.load(f)
+        instances = raw_instances[:min(args.num_samples, len(raw_instances))]
+    else:
+        print(f"📥 Loading Hugging Face dataset: {args.dataset} (split={args.split})...")
+        ds = load_dataset(args.dataset, split=args.split)
+        instances = [ds[i] for i in range(min(args.num_samples, len(ds)))]
     print(f"🎯 Evaluating on {len(instances)} instances (Max turns: {args.max_turns}).")
     
     runner = KronumosBenchmarkRunner(model_id=args.model_id)
