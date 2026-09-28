@@ -27,7 +27,16 @@ permissions:
 jobs:
   docker-swebench-eval:
     runs-on: ubuntu-latest
-    timeout-minutes: 360 # 6 hours max for deep test suite runs
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        group:
+          - django
+          - sympy
+          - viz-docs
+          - core-libs
+          - utils-web
 
     steps:
       - name: 📥 Check out repository
@@ -38,10 +47,32 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: 🧹 Free Runner Disk Space for Docker Images
+      - name: 🧹 Deep Free Runner Disk Space
         run: |
-          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc || true
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache /usr/local/share/boost /opt/az /usr/local/share/powershell /usr/local/lib/node_modules || true
+          sudo swapoff -a || true
+          sudo rm -f /swapfile || true
+          docker builder prune -a -f || true
+          docker image prune -a -f || true
           df -h
+
+      - name: 🛡️ Launch Background Docker Pruner Daemon
+        run: |
+          cat << 'EOF' > /tmp/docker_pruner.sh
+          #!/usr/bin/env bash
+          while true; do
+            USAGE=$(df / | awk 'NR==2 {gsub("%",""); print $5}')
+            if [ "$USAGE" -gt 60 ]; then
+              echo "⚠️ Disk usage at ${USAGE}%. Auto-pruning finished docker containers & unused images..."
+              docker container prune -f || true
+              docker image prune -a -f --filter "until=3m" || docker image prune -a -f || true
+            fi
+            sleep 30
+          done
+          EOF
+          chmod +x /tmp/docker_pruner.sh
+          nohup /tmp/docker_pruner.sh > /tmp/pruner.log 2>&1 &
+          echo "Pruner daemon started in background (PID: $!)."
 
       - name: 🐳 Verify Docker Daemon
         run: |
@@ -53,56 +84,168 @@ jobs:
           python -m pip install --upgrade pip
           pip install swebench datasets
 
-      - name: 🔍 Locate Predictions File
-        id: locate_pred
+      - name: 🔍 Partition Predictions for ${{ matrix.group }}
+        id: partition
         run: |
-          PRED_PATH="${{ github.event.inputs.predictions_file || 'predictions.jsonl' }}"
-          if [ ! -f "$PRED_PATH" ] && [ -f "output/predictions.jsonl" ]; then
-            PRED_PATH="output/predictions.jsonl"
-          fi
-          if [ ! -f "$PRED_PATH" ]; then
-            echo "❌ Error: predictions file not found at $PRED_PATH or output/predictions.jsonl"
-            exit 1
-          fi
-          echo "Found predictions file at: $PRED_PATH"
-          echo "pred_path=$PRED_PATH" >> $GITHUB_OUTPUT
+          python3 -c "
+          import json, os
+
+          groups = {
+              'django': ['django'],
+              'sympy': ['sympy'],
+              'viz-docs': ['matplotlib', 'sphinx-doc'],
+              'core-libs': ['scikit-learn', 'astropy', 'pytest-dev'],
+              'utils-web': ['pydata', 'pylint-dev', 'psf', 'mwaskom', 'pallets']
+          }
+          current_group = '${{ matrix.group }}'
+          target_repos = groups[current_group]
+
+          input_file = '${{ github.event.inputs.predictions_file || 'predictions.jsonl' }}'
+          output_file = f'predictions_${current_group}.jsonl'
+
+          matched = 0
+          with open(input_file) as f_in, open(output_file, 'w') as f_out:
+              for line in f_in:
+                  d = json.loads(line)
+                  repo = d['instance_id'].split('__')[0]
+                  if any(repo.startswith(r) for r in target_repos):
+                      f_out.write(json.dumps(d) + '\n')
+                      matched += 1
+
+          print(f'Group {current_group}: Partitioned {matched} tasks into {output_file}')
+          "
+          echo "pred_file=predictions_${{ matrix.group }}.jsonl" >> $GITHUB_OUTPUT
 
       - name: 🚀 Run Official Docker SWE-bench Evaluation
         run: |
           DATASET="${{ github.event.inputs.dataset_name || 'SWE-bench/SWE-bench_Verified' }}"
-          PRED_FILE="${{ steps.locate_pred.outputs.pred_path }}"
-          echo "Running SWE-bench official evaluation harness on $DATASET..."
+          PRED_FILE="${{ steps.partition.outputs.pred_file }}"
+          GROUP="${{ matrix.group }}"
+          echo "Running SWE-bench official evaluation harness on $DATASET for group $GROUP..."
           
+          mkdir -p "reports_${GROUP}"
           python -m swebench.harness.run_evaluation \
             --dataset_name "$DATASET" \
             --predictions_path "$PRED_FILE" \
             --max_workers 2 \
-            --run_id kronumos_kairos_v2
+            --run_id "kronumos_${GROUP}" \
+            --report_dir "reports_${GROUP}"
 
-      - name: 📊 Generate Scorecard & Step Summary
-        if: always()
-        run: |
-          echo "### 🥊 Kronumos SWE-bench Evaluation Results" >> $GITHUB_STEP_SUMMARY
-          echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
-          echo "| :--- | :--- |" >> $GITHUB_STEP_SUMMARY
-          
-          REPORT_FILE=$(find . -name "*.json" -path "*/kronumos_kairos_v2/*.json" | head -n 1)
-          if [ -f "$REPORT_FILE" ]; then
-            RESOLVED=$(jq -r '.resolved_instances // 0' "$REPORT_FILE" 2>/dev/null || echo "N/A")
-            TOTAL=$(jq -r '.total_instances // 0' "$REPORT_FILE" 2>/dev/null || echo "N/A")
-            echo "| **Resolved Tasks** | **$RESOLVED / $TOTAL** |" >> $GITHUB_STEP_SUMMARY
-            echo "| **Status** | ✅ Verified by Docker Test Harness |" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "| **Status** | Evaluated (Check raw artifacts) |" >> $GITHUB_STEP_SUMMARY
-          fi
-
-      - name: 📦 Upload Benchmark Logs & Scorecard Artifacts
+      - name: 📦 Upload Group Results & Logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: kronumos-swebench-results
+          name: results-${{ matrix.group }}
           path: |
-            *.log
+            reports_${{ matrix.group }}/
             *.json
+            *.log
             logs/
-            output/
+            predictions_${{ matrix.group }}.jsonl
+
+  aggregate-and-report:
+    needs: docker-swebench-eval
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Check out repository
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: 📥 Download all matrix artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: downloaded_artifacts
+
+      - name: 📊 Aggregate Final Scorecard Across All 500 Instances
+        run: |
+          python3 -c "
+          import json, glob, os
+
+          print('Aggregating benchmark results across all 5 groups...')
+          report_files = glob.glob('downloaded_artifacts/**/*.json', recursive=True)
+          
+          all_resolved = set()
+          all_unresolved = set()
+          all_errors = set()
+          group_stats = {}
+
+          for rf in report_files:
+              if 'predictions' in rf:
+                  continue
+              try:
+                  with open(rf) as f:
+                      data = json.load(f)
+                  if isinstance(data, dict) and ('resolved_instances' in data or 'resolved' in data):
+                      res = data.get('resolved_instances', [])
+                      unres = data.get('unresolved_instances', [])
+                      errs = data.get('error_instances', [])
+                      if isinstance(res, list): all_resolved.update(res)
+                      elif isinstance(res, dict): all_resolved.update(res.keys())
+                      if isinstance(unres, list): all_unresolved.update(unres)
+                      elif isinstance(unres, dict): all_unresolved.update(unres.keys())
+                      if isinstance(errs, list): all_errors.update(errs)
+                      elif isinstance(errs, dict): all_errors.update(errs.keys())
+              except Exception as e:
+                  pass
+
+          resolved_list = sorted(list(all_resolved))
+          unresolved_list = sorted(list(all_unresolved - all_resolved))
+          error_list = sorted(list(all_errors - all_resolved - all_unresolved))
+          total_tested = len(resolved_list) + len(unresolved_list) + len(error_list)
+
+          # Repo breakdown
+          repo_counts = {}
+          for inst in resolved_list:
+              r = inst.split('__')[0]
+              repo_counts[r] = repo_counts.get(r, 0) + 1
+
+          rate_tested = (len(resolved_list) / total_tested * 100) if total_tested > 0 else 0
+          rate_500 = (len(resolved_list) / 500.0 * 100)
+
+          summary_md = f'''### 🥊 Kronumos 2 Kairos — SWE-bench Verified Official Scorecard
+
+| Metric | Empirical Count |
+| :--- | :--- |
+| **Total Benchmark Tasks** | 500 |
+| **Evaluated Tasks** | {total_tested} |
+| **Resolved Tasks (PASSED)** | **{len(resolved_list)}** |
+| **Unresolved Tasks** | {len(unresolved_list)} |
+| **Errors / Timeouts** | {len(error_list)} |
+| **Verified Resolve Rate (on 500)** | **{rate_500:.2f}%** |
+
+#### 📂 Per-Repository Resolved Breakdown
+'''
+          for r, c in sorted(repo_counts.items(), key=lambda x: -x[1]):
+              summary_md += f'- **{r}**: {c} tasks resolved\n'
+
+          print(summary_md)
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as f:
+              f.write(summary_md)
+
+          final_report = {
+              'system': 'Kronumos 2 Kairos (Tokenectomy Labs)',
+              'dataset': 'SWE-bench/SWE-bench_Verified',
+              'total_instances': 500,
+              'evaluated_instances': total_tested,
+              'resolved_count': len(resolved_list),
+              'resolve_rate_total_500': rate_500,
+              'resolved_instances': resolved_list,
+              'unresolved_instances': unresolved_list,
+              'error_instances': error_list,
+              'repo_breakdown': repo_counts
+          }
+          with open('kronumos_verified_500_final_report.json', 'w') as f:
+              json.dump(final_report, f, indent=2)
+          "
+
+      - name: 📦 Upload Final Unified Scorecard Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kronumos-verified-500-final-scorecard
+          path: |
+            kronumos_verified_500_final_report.json
