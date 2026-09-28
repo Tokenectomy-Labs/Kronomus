@@ -11,12 +11,11 @@ on:
       dataset_name:
         description: 'SWE-bench dataset split to evaluate'
         required: true
-        default: 'princeton-nlp/SWE-bench_Verified'
+        default: 'SWE-bench/SWE-bench_Verified'
         type: choice
         options:
-          - 'princeton-nlp/SWE-bench_Verified'
           - 'SWE-bench/SWE-bench_Verified'
-          - 'princeton-nlp/SWE-bench_Lite'
+          - 'SWE-bench/SWE-bench_Lite'
       predictions_file:
         description: 'Path to predictions.jsonl'
         required: true
@@ -70,7 +69,7 @@ jobs:
 
       - name: 🚀 Run Official Docker SWE-bench Evaluation
         run: |
-          DATASET="${{ github.event.inputs.dataset_name || 'princeton-nlp/SWE-bench_Verified' }}"
+          DATASET="${{ github.event.inputs.dataset_name || 'SWE-bench/SWE-bench_Verified' }}"
           PRED_FILE="${{ steps.locate_pred.outputs.pred_path }}"
           echo "Running SWE-bench official evaluation harness on $DATASET..."
           
@@ -78,7 +77,8 @@ jobs:
             --dataset_name "$DATASET" \
             --predictions_path "$PRED_FILE" \
             --max_workers 2 \
-            --run_id kronumos_run
+            --run_id kronumos_kairos_v2 \
+            --clean True
 
       - name: 📊 Generate Scorecard & Step Summary
         if: always()
@@ -87,7 +87,7 @@ jobs:
           echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
           echo "| :--- | :--- |" >> $GITHUB_STEP_SUMMARY
           
-          REPORT_FILE=$(find . -name "*.json" -path "*/kronumos_run/*.json" | head -n 1)
+          REPORT_FILE=$(find . -name "*.json" -path "*/kronumos_kairos_v2/*.json" | head -n 1)
           if [ -f "$REPORT_FILE" ]; then
             RESOLVED=$(jq -r '.resolved_instances // 0' "$REPORT_FILE" 2>/dev/null || echo "N/A")
             TOTAL=$(jq -r '.total_instances // 0' "$REPORT_FILE" 2>/dev/null || echo "N/A")
