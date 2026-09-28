@@ -6,6 +6,7 @@ on:
       - 'predictions.jsonl'
       - 'output/predictions.jsonl'
       - '.github/workflows/eval_docker.yml'
+      - 'scripts/**'
   workflow_dispatch:
     inputs:
       dataset_name:
@@ -58,20 +59,7 @@ jobs:
 
       - name: 🛡️ Launch Background Docker Pruner Daemon
         run: |
-          cat << 'EOF' > /tmp/docker_pruner.sh
-          #!/usr/bin/env bash
-          while true; do
-            USAGE=$(df / | awk 'NR==2 {gsub("%",""); print $5}')
-            if [ "$USAGE" -gt 60 ]; then
-              echo "⚠️ Disk usage at ${USAGE}%. Auto-pruning finished docker containers & unused images..."
-              docker container prune -f || true
-              docker image prune -a -f --filter "until=3m" || docker image prune -a -f || true
-            fi
-            sleep 30
-          done
-          EOF
-          chmod +x /tmp/docker_pruner.sh
-          nohup /tmp/docker_pruner.sh > /tmp/pruner.log 2>&1 &
+          nohup bash scripts/docker_pruner.sh > /tmp/pruner.log 2>&1 &
           echo "Pruner daemon started in background (PID: $!)."
 
       - name: 🐳 Verify Docker Daemon
@@ -84,43 +72,19 @@ jobs:
           python -m pip install --upgrade pip
           pip install swebench datasets
 
-      - name: 🔍 Partition Predictions for ${{ matrix.group }}
-        id: partition
+      - name: 🔍 Partition Predictions for Group ${{ matrix.group }}
         run: |
-          python3 -c "
-          import json, os
-
-          groups = {
-              'django': ['django'],
-              'sympy': ['sympy'],
-              'viz-docs': ['matplotlib', 'sphinx-doc'],
-              'core-libs': ['scikit-learn', 'astropy', 'pytest-dev'],
-              'utils-web': ['pydata', 'pylint-dev', 'psf', 'mwaskom', 'pallets']
-          }
-          current_group = '${{ matrix.group }}'
-          target_repos = groups[current_group]
-
-          input_file = '${{ github.event.inputs.predictions_file || 'predictions.jsonl' }}'
-          output_file = f'predictions_${current_group}.jsonl'
-
-          matched = 0
-          with open(input_file) as f_in, open(output_file, 'w') as f_out:
-              for line in f_in:
-                  d = json.loads(line)
-                  repo = d['instance_id'].split('__')[0]
-                  if any(repo.startswith(r) for r in target_repos):
-                      f_out.write(json.dumps(d) + '\n')
-                      matched += 1
-
-          print(f'Group {current_group}: Partitioned {matched} tasks into {output_file}')
-          "
-          echo "pred_file=predictions_${{ matrix.group }}.jsonl" >> $GITHUB_OUTPUT
+          PRED_INPUT="${{ github.event.inputs.predictions_file || 'predictions.jsonl' }}"
+          python3 scripts/partition_predictions.py \
+            --input "$PRED_INPUT" \
+            --group "${{ matrix.group }}" \
+            --output "predictions_${{ matrix.group }}.jsonl"
 
       - name: 🚀 Run Official Docker SWE-bench Evaluation
         run: |
           DATASET="${{ github.event.inputs.dataset_name || 'SWE-bench/SWE-bench_Verified' }}"
-          PRED_FILE="${{ steps.partition.outputs.pred_file }}"
           GROUP="${{ matrix.group }}"
+          PRED_FILE="predictions_${GROUP}.jsonl"
           echo "Running SWE-bench official evaluation harness on $DATASET for group $GROUP..."
           
           mkdir -p "reports_${GROUP}"
@@ -159,89 +123,14 @@ jobs:
       - name: 📥 Download all matrix artifacts
         uses: actions/download-artifact@v4
         with:
+          pattern: 'results-*'
           path: downloaded_artifacts
 
       - name: 📊 Aggregate Final Scorecard Across All 500 Instances
         run: |
-          python3 -c "
-          import json, glob, os
-
-          print('Aggregating benchmark results across all 5 groups...')
-          report_files = glob.glob('downloaded_artifacts/**/*.json', recursive=True)
-          
-          all_resolved = set()
-          all_unresolved = set()
-          all_errors = set()
-          group_stats = {}
-
-          for rf in report_files:
-              if 'predictions' in rf:
-                  continue
-              try:
-                  with open(rf) as f:
-                      data = json.load(f)
-                  if isinstance(data, dict) and ('resolved_instances' in data or 'resolved' in data):
-                      res = data.get('resolved_instances', [])
-                      unres = data.get('unresolved_instances', [])
-                      errs = data.get('error_instances', [])
-                      if isinstance(res, list): all_resolved.update(res)
-                      elif isinstance(res, dict): all_resolved.update(res.keys())
-                      if isinstance(unres, list): all_unresolved.update(unres)
-                      elif isinstance(unres, dict): all_unresolved.update(unres.keys())
-                      if isinstance(errs, list): all_errors.update(errs)
-                      elif isinstance(errs, dict): all_errors.update(errs.keys())
-              except Exception as e:
-                  pass
-
-          resolved_list = sorted(list(all_resolved))
-          unresolved_list = sorted(list(all_unresolved - all_resolved))
-          error_list = sorted(list(all_errors - all_resolved - all_unresolved))
-          total_tested = len(resolved_list) + len(unresolved_list) + len(error_list)
-
-          # Repo breakdown
-          repo_counts = {}
-          for inst in resolved_list:
-              r = inst.split('__')[0]
-              repo_counts[r] = repo_counts.get(r, 0) + 1
-
-          rate_tested = (len(resolved_list) / total_tested * 100) if total_tested > 0 else 0
-          rate_500 = (len(resolved_list) / 500.0 * 100)
-
-          summary_md = f'''### 🥊 Kronumos 2 Kairos — SWE-bench Verified Official Scorecard
-
-| Metric | Empirical Count |
-| :--- | :--- |
-| **Total Benchmark Tasks** | 500 |
-| **Evaluated Tasks** | {total_tested} |
-| **Resolved Tasks (PASSED)** | **{len(resolved_list)}** |
-| **Unresolved Tasks** | {len(unresolved_list)} |
-| **Errors / Timeouts** | {len(error_list)} |
-| **Verified Resolve Rate (on 500)** | **{rate_500:.2f}%** |
-
-#### 📂 Per-Repository Resolved Breakdown
-'''
-          for r, c in sorted(repo_counts.items(), key=lambda x: -x[1]):
-              summary_md += f'- **{r}**: {c} tasks resolved\n'
-
-          print(summary_md)
-          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as f:
-              f.write(summary_md)
-
-          final_report = {
-              'system': 'Kronumos 2 Kairos (Tokenectomy Labs)',
-              'dataset': 'SWE-bench/SWE-bench_Verified',
-              'total_instances': 500,
-              'evaluated_instances': total_tested,
-              'resolved_count': len(resolved_list),
-              'resolve_rate_total_500': rate_500,
-              'resolved_instances': resolved_list,
-              'unresolved_instances': unresolved_list,
-              'error_instances': error_list,
-              'repo_breakdown': repo_counts
-          }
-          with open('kronumos_verified_500_final_report.json', 'w') as f:
-              json.dump(final_report, f, indent=2)
-          "
+          python3 scripts/aggregate_scorecard.py \
+            --input_dir downloaded_artifacts \
+            --output_json kronumos_verified_500_final_report.json
 
       - name: 📦 Upload Final Unified Scorecard Artifact
         uses: actions/upload-artifact@v4
