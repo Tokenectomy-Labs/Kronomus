@@ -27,6 +27,8 @@ import json
 import time
 import difflib
 import urllib.request
+import urllib.error
+import subprocess
 import ast
 import textwrap
 import hashlib
@@ -848,23 +850,64 @@ SWE_CACHE_DIR = "/tmp/swe_file_cache"
 os.makedirs(SWE_CACHE_DIR, exist_ok=True)
 
 def fetch_github_file(repo: str, base_commit: str, file_path: str, token: str = "") -> Optional[str]:
+    """
+    Fetch raw file content with 4-tier resilience:
+    1. Persistent local disk cache (/tmp/swe_file_cache).
+    2. Local git repository checkout if available.
+    3. raw.githubusercontent.com (authenticated/unauthenticated).
+    4. Authenticated GitHub REST API fallback (application/vnd.github.v3.raw).
+    """
     clean_path = file_path.lstrip("/").replace("//", "/")
     cache_key = f"{repo.replace('/', '_')}_{base_commit[:10]}_{clean_path.replace('/', '_')}"
     cache_file = os.path.join(SWE_CACHE_DIR, cache_key)
+    
+    # Tier 1: Local disk cache
     if os.path.exists(cache_file):
         try:
             with open(cache_file, "r", encoding="utf-8", errors="replace") as f:
                 return f.read()
         except Exception:
             pass
+
+    # Tier 2: Local git repository checkout
+    repo_short = repo.split("/")[-1] if "/" in repo else repo
+    repo_search_dirs = [
+        os.path.join(os.getenv("SWE_BENCH_REPOS_DIR", "/tmp/repos"), repo.replace("/", "__")),
+        os.path.join(os.getenv("SWE_BENCH_REPOS_DIR", "/tmp/repos"), repo_short),
+        os.path.join("/tmp/repos", repo_short),
+        os.path.join("./repos", repo_short),
+    ]
+    for rdir in repo_search_dirs:
+        if os.path.isdir(os.path.join(rdir, ".git")):
+            try:
+                proc = subprocess.run(
+                    ["git", "show", f"{base_commit}:{clean_path}"],
+                    cwd=rdir,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                    timeout=5
+                )
+                if proc.returncode == 0 and proc.stdout:
+                    try:
+                        with open(cache_file, "w", encoding="utf-8") as f:
+                            f.write(proc.stdout)
+                    except Exception:
+                        pass
+                    return proc.stdout
+            except Exception:
+                pass
+
+    auth_token = token or os.getenv("GITHUB_TOKEN", "").strip() or os.getenv("GH_TOKEN", "").strip()
+
+    # Tier 3: raw.githubusercontent.com
     url = f"https://raw.githubusercontent.com/{repo}/{base_commit}/{clean_path}"
     headers = {"User-Agent": "Mozilla/5.0 (Kronumos-Kaggle-500-Runner)"}
-    auth_token = token or os.getenv("GITHUB_TOKEN", "").strip()
     if auth_token:
         headers["Authorization"] = f"token {auth_token}"
     req = urllib.request.Request(url, headers=headers)
     try:
-        with urllib.request.urlopen(req, timeout=15) as resp:
+        with urllib.request.urlopen(req, timeout=12) as resp:
             content = resp.read().decode("utf-8", errors="replace")
             try:
                 with open(cache_file, "w", encoding="utf-8") as f:
@@ -873,6 +916,29 @@ def fetch_github_file(repo: str, base_commit: str, file_path: str, token: str = 
                 pass
             return content
     except Exception:
+        pass
+
+    # Tier 4: GitHub REST API raw endpoint fallback
+    api_url = f"https://api.github.com/repos/{repo}/contents/{clean_path}?ref={base_commit}"
+    api_headers = {
+        "User-Agent": "Kronumos-Kaggle-500-Runner",
+        "Accept": "application/vnd.github.v3.raw"
+    }
+    if auth_token:
+        api_headers["Authorization"] = f"Bearer {auth_token}"
+    req_api = urllib.request.Request(api_url, headers=api_headers)
+    try:
+        with urllib.request.urlopen(req_api, timeout=12) as resp:
+            content = resp.read().decode("utf-8", errors="replace")
+            try:
+                with open(cache_file, "w", encoding="utf-8") as f:
+                    f.write(content)
+            except Exception:
+                pass
+            return content
+    except Exception as e_api:
+        if not auth_token:
+            print(f"    ⚠️ Warning: Could not fetch {clean_path} from GitHub ({e_api}). Set GITHUB_TOKEN to prevent rate limits.", flush=True)
         return None
 
 def extract_suspect_context_from_issue(repo: str, base_commit: str, problem_statement: str, token: str = "") -> Optional[Dict[str, Any]]:
@@ -1120,24 +1186,32 @@ def convert_patch_call_to_diff(file_path: str, orig: str, new: str, repo: str = 
             except Exception:
                 pass
 
-    # 2. Resilient Fallback: Anchor near suspect line if provided, instead of hardcoded line 1
-    orig_lines = orig.splitlines()
-    new_lines_list = healed_new.splitlines()
-    orig_count = max(1, len(orig_lines))
-    new_count = max(1, len(new_lines_list))
-    start_line = max(1, suspect_line)
-    diff_lines = [
-        f"diff --git a/{clean_path} b/{clean_path}",
-        f"--- a/{clean_path}",
-        f"+++ b/{clean_path}",
-        f"@@ -{start_line},{orig_count} +{start_line},{new_count} @@",
-    ]
-    for line in orig_lines:
-        diff_lines.append(f"-{line}")
-    for line in new_lines_list:
-        diff_lines.append(f"+{line}")
-    fallback_diff = "\n".join(diff_lines) + "\n"
-    return fallback_diff, "SUCCESS", f"Tokenectomy: Synthesized diff for {clean_path} (anchored near line {start_line})."
+    # 2. Resilient Fallback: Anchor near suspect line if provided (> 1).
+    if suspect_line > 1:
+        orig_lines = orig.splitlines()
+        new_lines_list = healed_new.splitlines()
+        orig_count = max(1, len(orig_lines))
+        new_count = max(1, len(new_lines_list))
+        diff_lines = [
+            f"diff --git a/{clean_path} b/{clean_path}",
+            f"--- a/{clean_path}",
+            f"+++ b/{clean_path}",
+            f"@@ -{suspect_line},{orig_count} +{suspect_line},{new_count} @@",
+        ]
+        for line in orig_lines:
+            diff_lines.append(f"-{line}")
+        for line in new_lines_list:
+            diff_lines.append(f"+{line}")
+        fallback_diff = "\n".join(diff_lines) + "\n"
+        return fallback_diff, "SUCCESS", f"Tokenectomy: Synthesized diff for {clean_path} (anchored near line {suspect_line})."
+
+    # Enforce Tokenectomy Zero Dirty Diff Invariant: refuse invalid @@ -1 fallback
+    return (
+        "",
+        "ERROR",
+        f"Tokenectomy Anchor Refusal: Source code for {clean_path} could not be resolved from GitHub or local cache, "
+        f"and suspect line is unknown. Patch synthesis halted to prevent Docker test harness corruption."
+    )
 
 def extract_json_tool_calls(text: str) -> List[Dict[str, Any]]:
     calls = []

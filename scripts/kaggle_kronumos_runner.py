@@ -20,6 +20,8 @@ import time
 import argparse
 import difflib
 import urllib.request
+import urllib.error
+import subprocess
 import ast
 import textwrap
 from typing import Dict, Any, List, Tuple, Optional
@@ -454,11 +456,18 @@ SWE_CACHE_DIR = "/tmp/swe_file_cache"
 os.makedirs(SWE_CACHE_DIR, exist_ok=True)
 
 def fetch_github_file(repo: str, base_commit: str, file_path: str, token: str = "") -> Optional[str]:
-    """Fetch raw file content from GitHub with persistent local disk caching and optional token authorization."""
+    """
+    Fetch raw file content with 4-tier resilience:
+    1. Persistent local disk cache (/tmp/swe_file_cache).
+    2. Local git repository checkout if available (SWE_BENCH_REPOS_DIR or /tmp/repos).
+    3. raw.githubusercontent.com (authenticated/unauthenticated).
+    4. Authenticated GitHub REST API fallback (application/vnd.github.v3.raw).
+    """
     clean_path = file_path.lstrip("/").replace("//", "/")
     cache_key = f"{repo.replace('/', '_')}_{base_commit[:10]}_{clean_path.replace('/', '_')}"
     cache_file = os.path.join(SWE_CACHE_DIR, cache_key)
     
+    # Tier 1: Local disk cache
     if os.path.exists(cache_file):
         try:
             with open(cache_file, "r", encoding="utf-8", errors="replace") as f:
@@ -466,15 +475,46 @@ def fetch_github_file(repo: str, base_commit: str, file_path: str, token: str = 
         except Exception:
             pass
 
+    # Tier 2: Local git repository checkout (0 network latency, 0 rate limit)
+    repo_short = repo.split("/")[-1] if "/" in repo else repo
+    repo_search_dirs = [
+        os.path.join(os.getenv("SWE_BENCH_REPOS_DIR", "/tmp/repos"), repo.replace("/", "__")),
+        os.path.join(os.getenv("SWE_BENCH_REPOS_DIR", "/tmp/repos"), repo_short),
+        os.path.join("/tmp/repos", repo_short),
+        os.path.join("./repos", repo_short),
+    ]
+    for rdir in repo_search_dirs:
+        if os.path.isdir(os.path.join(rdir, ".git")):
+            try:
+                proc = subprocess.run(
+                    ["git", "show", f"{base_commit}:{clean_path}"],
+                    cwd=rdir,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                    timeout=5
+                )
+                if proc.returncode == 0 and proc.stdout:
+                    try:
+                        with open(cache_file, "w", encoding="utf-8") as f:
+                            f.write(proc.stdout)
+                    except Exception:
+                        pass
+                    return proc.stdout
+            except Exception:
+                pass
+
+    auth_token = token or os.getenv("GITHUB_TOKEN", "").strip() or os.getenv("GH_TOKEN", "").strip()
+
+    # Tier 3: raw.githubusercontent.com
     url = f"https://raw.githubusercontent.com/{repo}/{base_commit}/{clean_path}"
     headers = {"User-Agent": "Mozilla/5.0 (Kronumos-Kaggle-Runner)"}
-    auth_token = token or os.getenv("GITHUB_TOKEN", "").strip()
     if auth_token:
         headers["Authorization"] = f"token {auth_token}"
 
     req = urllib.request.Request(url, headers=headers)
     try:
-        with urllib.request.urlopen(req, timeout=15) as resp:
+        with urllib.request.urlopen(req, timeout=12) as resp:
             content = resp.read().decode("utf-8", errors="replace")
             try:
                 with open(cache_file, "w", encoding="utf-8") as f:
@@ -483,6 +523,29 @@ def fetch_github_file(repo: str, base_commit: str, file_path: str, token: str = 
                 pass
             return content
     except Exception:
+        pass
+
+    # Tier 4: GitHub REST API raw endpoint fallback
+    api_url = f"https://api.github.com/repos/{repo}/contents/{clean_path}?ref={base_commit}"
+    api_headers = {
+        "User-Agent": "Kronumos-Kaggle-Runner",
+        "Accept": "application/vnd.github.v3.raw"
+    }
+    if auth_token:
+        api_headers["Authorization"] = f"Bearer {auth_token}"
+    req_api = urllib.request.Request(api_url, headers=api_headers)
+    try:
+        with urllib.request.urlopen(req_api, timeout=12) as resp:
+            content = resp.read().decode("utf-8", errors="replace")
+            try:
+                with open(cache_file, "w", encoding="utf-8") as f:
+                    f.write(content)
+            except Exception:
+                pass
+            return content
+    except Exception as e_api:
+        if not auth_token:
+            print(f"    ⚠️ Warning: Could not fetch {clean_path} from GitHub ({e_api}). Set GITHUB_TOKEN to prevent rate limits.", flush=True)
         return None
 
 def extract_json_tool_calls(text: str) -> List[Dict[str, Any]]:
@@ -600,7 +663,15 @@ def parse_search_replace_blocks(text: str) -> List[Dict[str, str]]:
         })
     return blocks
 
-def convert_patch_call_to_diff(file_path: str, orig: str, new: str, repo: str = "", base_commit: str = "", token: str = "") -> Tuple[str, str, str]:
+def convert_patch_call_to_diff(
+    file_path: str,
+    orig: str,
+    new: str,
+    repo: str = "",
+    base_commit: str = "",
+    token: str = "",
+    suspect_line: int = 0
+) -> Tuple[str, str, str]:
     """
     Format patch call into a valid POSIX-compliant unified git diff string with Tokenectomy AST validation.
     Returns: (diff_str, status, message)
@@ -614,7 +685,7 @@ def convert_patch_call_to_diff(file_path: str, orig: str, new: str, repo: str = 
         print(f"    🛡️ Tokenectomy Refusal: {reason}", flush=True)
         return "", "ERROR", f"Tokenectomy AST Refusal: {reason}. Please rectify your patch syntax."
 
-    # 2. Attempt to fetch real file from GitHub to compute exact unified diff with line numbers
+    # 2. Attempt to fetch real file from GitHub or local cache to compute exact unified diff with line numbers
     if repo and base_commit and clean_path:
         raw_content = fetch_github_file(repo, base_commit, clean_path, token=token)
         if raw_content is not None:
@@ -631,7 +702,19 @@ def convert_patch_call_to_diff(file_path: str, orig: str, new: str, repo: str = 
                 ))
                 if diff:
                     return "".join(diff), "SUCCESS", f"Tokenectomy: Patch applied cleanly to {clean_path}. AST syntax valid."
-                    
+
+            # Check trimmed match
+            if orig.strip() and orig.strip() in raw_content:
+                new_content = raw_content.replace(orig.strip(), healed_new.strip(), 1)
+                diff = list(difflib.unified_diff(
+                    file_lines,
+                    new_content.splitlines(keepends=True),
+                    fromfile=f"a/{clean_path}",
+                    tofile=f"b/{clean_path}"
+                ))
+                if diff:
+                    return "".join(diff), "SUCCESS", f"Tokenectomy: Patch applied cleanly via trimmed match to {clean_path}."
+
             # Check stripped whitespace match
             target_stripped = [l.strip() for l in orig.splitlines() if l.strip()]
             if target_stripped:
@@ -646,7 +729,7 @@ def convert_patch_call_to_diff(file_path: str, orig: str, new: str, repo: str = 
                     if ratio > best_ratio:
                         best_ratio = ratio
                         best_start = i
-                if best_ratio >= 0.70 and best_start >= 0:
+                if best_ratio >= 0.50 and best_start >= 0:
                     anchor_line = file_lines[best_start]
                     indent = anchor_line[:len(anchor_line) - len(anchor_line.lstrip())]
                     formatted_plus = [indent + p.lstrip() + "\n" if p.strip() else "\n" for p in healed_new.splitlines()]
@@ -660,36 +743,71 @@ def convert_patch_call_to_diff(file_path: str, orig: str, new: str, repo: str = 
                     if diff:
                         return "".join(diff), "SUCCESS", f"Tokenectomy: Patch anchored via AST indentation ({round(best_ratio*100)}% match) to {clean_path}."
 
-                # If match ratio < 0.70, provide closest matching snippet for TURN 2 REFINEMENT
-                closest_start = max(0, best_start - 2) if best_start >= 0 else 0
-                closest_end = min(len(file_lines), closest_start + 12)
-                closest_snippet = "".join(file_lines[closest_start:closest_end])
-                return (
-                    "",
-                    "ERROR",
-                    f"Tokenectomy Match Refusal: `original_code` was not found in `{clean_path}` (Best match: {round(best_ratio*100)}%).\n"
-                    f"Surrounding source lines in target file:\n```python\n{closest_snippet}\n```\n"
-                    f"Please align your SEARCH block to match this exact code snippet."
-                )
+            # AST function replacement: if new_code is a full function, locate and replace it by name
+            try:
+                cand_tree = ast.parse(textwrap.dedent(healed_new))
+                cand_funcs = [n for n in ast.walk(cand_tree) if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))]
+                if cand_funcs:
+                    main_func = cand_funcs[0].name
+                    file_tree = ast.parse(raw_content)
+                    for node in ast.walk(file_tree):
+                        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name == main_func:
+                            start_l = node.lineno - 1
+                            end_l = getattr(node, "end_lineno", start_l + len(healed_new.splitlines()))
+                            anchor_line = file_lines[start_l]
+                            indent = anchor_line[:len(anchor_line) - len(anchor_line.lstrip())]
+                            formatted_plus = [indent + p.lstrip() + "\n" if p.strip() else "\n" for p in healed_new.splitlines()]
+                            new_lines = file_lines[:start_l] + formatted_plus + file_lines[end_l:]
+                            diff = list(difflib.unified_diff(
+                                file_lines,
+                                new_lines,
+                                fromfile=f"a/{clean_path}",
+                                tofile=f"b/{clean_path}"
+                            ))
+                            if diff:
+                                return "".join(diff), "SUCCESS", f"Tokenectomy: Function `{main_func}` AST-replaced in {clean_path}."
+            except Exception:
+                pass
 
-    # 3. Robust fallback with syntactically valid hunk counts (never malformed @@ -1,1 +1,1 @@)
-    orig_lines = orig.splitlines()
-    new_lines_list = healed_new.splitlines()
-    orig_count = max(1, len(orig_lines))
-    new_count = max(1, len(new_lines_list))
-    
-    diff_lines = [
-        f"diff --git a/{clean_path} b/{clean_path}",
-        f"--- a/{clean_path}",
-        f"+++ b/{clean_path}",
-        f"@@ -1,{orig_count} +1,{new_count} @@",
-    ]
-    for line in orig_lines:
-        diff_lines.append(f"-{line}")
-    for line in new_lines_list:
-        diff_lines.append(f"+{line}")
-    fallback_diff = "\n".join(diff_lines) + "\n"
-    return fallback_diff, "SUCCESS", f"Tokenectomy: Synthesized unanchored diff for {clean_path}."
+            # If match ratio < 0.50, provide closest matching snippet for TURN 2 REFINEMENT
+            closest_start = max(0, best_start - 2) if best_start >= 0 else 0
+            closest_end = min(len(file_lines), closest_start + 12)
+            closest_snippet = "".join(file_lines[closest_start:closest_end])
+            return (
+                "",
+                "ERROR",
+                f"Tokenectomy Match Refusal: `original_code` was not found in `{clean_path}` (Best match: {round(best_ratio*100)}%).\n"
+                f"Surrounding source lines in target file:\n```python\n{closest_snippet}\n```\n"
+                f"Please align your SEARCH block to match this exact code snippet."
+            )
+
+    # 3. Fallback when raw file content is unavailable:
+    # Anchor to suspect_line if known (> 1). NEVER emit @@ -1,x for code deep inside repository files.
+    if suspect_line > 1:
+        orig_lines = orig.splitlines()
+        new_lines_list = healed_new.splitlines()
+        orig_count = max(1, len(orig_lines))
+        new_count = max(1, len(new_lines_list))
+        diff_lines = [
+            f"diff --git a/{clean_path} b/{clean_path}",
+            f"--- a/{clean_path}",
+            f"+++ b/{clean_path}",
+            f"@@ -{suspect_line},{orig_count} +{suspect_line},{new_count} @@",
+        ]
+        for line in orig_lines:
+            diff_lines.append(f"-{line}")
+        for line in new_lines_list:
+            diff_lines.append(f"+{line}")
+        fallback_diff = "\n".join(diff_lines) + "\n"
+        return fallback_diff, "SUCCESS", f"Tokenectomy: Synthesized diff anchored near line {suspect_line} for {clean_path}."
+
+    # Enforce Tokenectomy Zero Dirty Diff Invariant: refuse invalid @@ -1 fallback
+    return (
+        "",
+        "ERROR",
+        f"Tokenectomy Anchor Refusal: Source code for {clean_path} could not be resolved from GitHub or local cache, "
+        f"and suspect line is unknown. Patch synthesis halted to prevent Docker test harness corruption."
+    )
 
 # ---------------------------------------------------------
 # 3. Benchmark Evaluator Class
@@ -884,7 +1002,8 @@ class KronumosBenchmarkRunner:
                         if target_file:
                             candidate_diff, status, msg = convert_patch_call_to_diff(
                                 target_file, block["original_code"], block["new_code"],
-                                repo=repo, base_commit=base_commit
+                                repo=repo, base_commit=base_commit,
+                                suspect_line=(suspect_info.get("suspect_line", 0) if suspect_info else 0)
                             )
                             if status == "SUCCESS" and candidate_diff:
                                 synthesized_patch = candidate_diff
@@ -926,7 +1045,8 @@ class KronumosBenchmarkRunner:
                     new_code = args.get("new_code", "")
                     base_commit = instance.get("base_commit", "")
                     diff_str, status, msg = convert_patch_call_to_diff(
-                        f_path, orig, new_code, repo=repo, base_commit=base_commit
+                        f_path, orig, new_code, repo=repo, base_commit=base_commit,
+                        suspect_line=(suspect_info.get("suspect_line", 0) if suspect_info else 0)
                     )
                     tool_outputs.append(msg)
                     if status == "SUCCESS" and diff_str:

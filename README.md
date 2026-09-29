@@ -7,10 +7,11 @@
 </p>
 
 <p align="center">
-  <a href="https://doi.org/10.5281/zenodo.22929676"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.22929676.svg" alt="DOI: 10.5281/zenodo.22929676" /></a>
+  <a href="https://doi.org/10.5281/zenodo.23013104"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.23013104.svg" alt="DOI: 10.5281/zenodo.23013104" /></a>
+  <a href="https://ollama.com/kronumos/Kronumos-2-kairos"><img src="https://img.shields.io/badge/Ollama-kronumos%2FKronumos--2--kairos-black?logo=ollama" alt="Ollama Model" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-AGPLv3_%2F_Commercial-blue.svg" alt="License: AGPLv3 / Commercial" /></a>
-  <a href="https://huggingface.co/NadevA23/Kronumos"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-NadevA23%2FKronumos-yellow" alt="Hugging Face Model" /></a>
-  <a href="https://huggingface.co/NadevA23/Kronumos-GGUF"><img src="https://img.shields.io/badge/GGUF-Quantized-green" alt="GGUF Quantized" /></a>
+  <a href="https://huggingface.co/NadevA23/Kronumos-2-Kairos"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Kronumos--2--Kairos-yellow" alt="Hugging Face Model" /></a>
+  <a href="https://huggingface.co/mradermacher/Kronumos-i1-GGUF"><img src="https://img.shields.io/badge/GGUF-imatrix_Q4__K__M-green" alt="GGUF Quantized" /></a>
 </p>
 
 
@@ -146,7 +147,7 @@ kronumos
 
 # 6. Multi-Backend inference (Cloudflare Edge, Local Ollama, OpenAI/Groq):
 kronumos --backend cloudflare                 # Hosted edge gateway (zero-config, free tier)
-kronumos --backend ollama --ollama-model hf.co/NadevA23/Kronumos-GGUF:Q4_K_M
+kronumos --backend ollama --ollama-model kronumos/Kronumos-2-kairos
 kronumos --backend openai --openai-key $GROQ_API_KEY --openai-model llama-3.3-70b-versatile
 ```
 
@@ -206,7 +207,7 @@ npm run deploy
 Run Kronumos 100% locally and offline with GGUF quantization:
 
 ```bash
-ollama run hf.co/NadevA23/Kronumos-GGUF:Q4_K_M
+ollama run kronumos/Kronumos-2-kairos
 ```
 
 
@@ -216,7 +217,7 @@ ollama run hf.co/NadevA23/Kronumos-GGUF:Q4_K_M
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-model_id = "NadevA23/Kronumos"
+model_id = "NadevA23/Kronumos-2-Kairos"
 tokenizer = AutoTokenizer.from_pretrained(model_id)
 model = AutoModelForCausalLM.from_pretrained(
     model_id,
@@ -226,8 +227,11 @@ model = AutoModelForCausalLM.from_pretrained(
 ```
 
 
-## 🏢 Organization & Compliance
-- **Engineering & Maintenance:** Tokenectomy Labs
+## 🏢 Organization, Inquiries & Community
+- **Author & Research Lead:** Muhammad Naufal Daffa ([ORCID: 0009-0004-9548-5221](https://orcid.org/0009-0004-9548-5221))
+- **Official Inquiries:** kronumos@proton.me
+- **Research Publication & Substack:** https://kronumos.substack.com
+- **Ollama Hub Registry:** https://ollama.com/kronumos/Kronumos-2-kairos
 - **License:** Dual License (GNU Affero General Public License v3 / Commercial Enterprise) — see [`LICENSE`](LICENSE)
 - **Terms of Service:** [`TERMS.md`](TERMS.md)
 - **Privacy & Zero-Retention Policy:** [`PRIVACY.md`](PRIVACY.md)
@@ -236,17 +240,16 @@ model = AutoModelForCausalLM.from_pretrained(
 
 ## 📖 Citation
 
-If you use Kronumos in your research or benchmarks, please cite our preprint:
+If you use Kronumos in your research or benchmarks, please cite our latest preprint:
 
 ```bibtex
-@article{tokenectomy2026kronumos,
-  author    = {Tokenectomy Labs},
-  title     = {Kronumos: Cost-Bounded Automated Program Repair via Context Surgery and POSIX Diff Re-Anchoring on SWE-bench Verified},
-  journal   = {Zenodo},
+@misc{daffa2026kronumos2,
+  author    = {Muhammad Naufal Daffa},
+  title     = {Kronumos 2 Kairos: Cost-Bounded Automated Program Repair via Dual-Brain Cybernetic Sub-Cortex on SWE-bench Verified},
   year      = {2026},
-  month     = sep,
-  doi       = {10.5281/zenodo.22929676},
-  url       = {https://doi.org/10.5281/zenodo.22929676}
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.23013104},
+  url       = {https://doi.org/10.5281/zenodo.23013104}
 }
 ```
 
