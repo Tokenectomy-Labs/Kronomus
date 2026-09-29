@@ -738,37 +738,42 @@ def convert_patch_call_to_diff(
                 if diff:
                     return "".join(diff), "SUCCESS", f"Tokenectomy: Patch applied cleanly via trimmed match to {clean_path}."
 
-            # Check stripped whitespace match
+            # Check stripped whitespace match with dynamic sliding window
             target_stripped = [l.strip() for l in orig.splitlines() if l.strip()]
             if target_stripped:
                 window_size = len(target_stripped)
                 target_str = "\n".join(target_stripped)
                 best_ratio = 0.0
                 best_start = -1
-                for i in range(len(file_lines)):
-                    cand_slice = [file_lines[i + k].strip() for k in range(window_size) if i + k < len(file_lines)]
-                    cand_str = "\n".join(cand_slice)
-                    ratio = difflib.SequenceMatcher(None, target_str, cand_str).ratio()
-                    if ratio > best_ratio:
-                        best_ratio = ratio
-                        best_start = i
-                if best_ratio >= 0.50 and best_start >= 0:
+                best_window = window_size
+                min_w = max(1, window_size - 3)
+                max_w = min(len(file_lines), window_size + 4)
+                for w in range(min_w, max_w + 1):
+                    for i in range(len(file_lines) - w + 1):
+                        cand_slice = [file_lines[i + k].strip() for k in range(w)]
+                        cand_str = "\n".join(cand_slice)
+                        ratio = difflib.SequenceMatcher(None, target_str, cand_str).ratio()
+                        if ratio > best_ratio:
+                            best_ratio = ratio
+                            best_start = i
+                            best_window = w
+
+                if best_ratio >= 0.25 and best_start >= 0:
                     anchor_line = file_lines[best_start]
                     indent = anchor_line[:len(anchor_line) - len(anchor_line.lstrip())]
                     formatted_plus = [indent + p.lstrip() + "\n" if p.strip() else "\n" for p in healed_new.splitlines()]
-                    new_lines = file_lines[:best_start] + formatted_plus + file_lines[best_start + window_size:]
+                    new_lines = file_lines[:best_start] + formatted_plus + file_lines[best_start + best_window:]
                     new_content = "".join(new_lines)
                     ast_err = _validate_full_file_ast(new_content)
-                    if ast_err:
-                        return "", "ERROR", ast_err
-                    diff = list(difflib.unified_diff(
-                        file_lines,
-                        new_lines,
-                        fromfile=f"a/{clean_path}",
-                        tofile=f"b/{clean_path}"
-                    ))
-                    if diff:
-                        return "".join(diff), "SUCCESS", f"Tokenectomy: Patch anchored via AST indentation ({round(best_ratio*100)}% match) to {clean_path}."
+                    if not ast_err:
+                        diff = list(difflib.unified_diff(
+                            file_lines,
+                            new_lines,
+                            fromfile=f"a/{clean_path}",
+                            tofile=f"b/{clean_path}"
+                        ))
+                        if diff:
+                            return "".join(diff), "SUCCESS", f"Tokenectomy: Patch anchored near line {best_start + 1} ({round(best_ratio*100)}% match) to {clean_path}."
 
             # AST function replacement: if new_code is a full function, locate and replace it by name
             try:
@@ -1042,6 +1047,7 @@ class KronumosBenchmarkRunner:
             if not found_calls:
                 # 1. Fallback: Parse SEARCH/REPLACE blocks emitted by model
                 sr_blocks = parse_search_replace_blocks(response_text)
+                last_sr_error = ""
                 if sr_blocks:
                     for block in sr_blocks:
                         target_file = block["file_path"] or (suspect_info["file_path"] if suspect_info else "")
@@ -1057,6 +1063,7 @@ class KronumosBenchmarkRunner:
                                 break
                             elif status == "ERROR":
                                 print(f"    ⚠️ SEARCH/REPLACE feedback: {msg[:100]}...", flush=True)
+                                last_sr_error = msg
                 
                 # 2. Fallback: Model produced patch in unified diff block
                 if not synthesized_patch and ("diff --git" in response_text or "@@ -" in response_text):
@@ -1065,9 +1072,14 @@ class KronumosBenchmarkRunner:
                 # 3. If still empty and turns remain, re-prompt for correct syntax with guidance
                 if not synthesized_patch and turn < (max_turns - 1):
                     messages.append({"role": "assistant", "content": response_text})
+                    content_feedback = (
+                        f"[Tokenectomy Feedback]\n{last_sr_error}"
+                        if last_sr_error
+                        else "No valid patch was synthesized. Please formulate your fix using `apply_code_patch` or output a valid SEARCH/REPLACE block."
+                    )
                     messages.append({
                         "role": "user",
-                        "content": "No valid patch was synthesized. Please formulate your fix using `apply_code_patch` or output a valid SEARCH/REPLACE block."
+                        "content": content_feedback
                     })
                     continue
                 break
