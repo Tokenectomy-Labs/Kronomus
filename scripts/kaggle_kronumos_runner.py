@@ -840,7 +840,20 @@ def convert_patch_call_to_diff(
 # 3. Benchmark Evaluator Class
 # ---------------------------------------------------------
 class KronumosBenchmarkRunner:
-    def __init__(self, model_id: str = "NadevA23/Kronumos", load_in_4bit: bool = True):
+    def __init__(self, model_id: str = "NadevA23/Kronumos", load_in_4bit: Optional[bool] = None):
+        # Auto-detect hardware capacity if load_in_4bit is not explicitly specified
+        if load_in_4bit is None:
+            if torch and torch.cuda.is_available():
+                total_mem_gb = torch.cuda.get_device_properties(0).total_memory / (1024**3)
+                if total_mem_gb >= 35:
+                    load_in_4bit = False
+                    print(f"🚀 Detected {total_mem_gb:.1f} GB VRAM (A100/H100). Enabling native bfloat16 + SDPA for 3x-4x faster inference!", flush=True)
+                else:
+                    load_in_4bit = True
+                    print(f"📦 Detected {total_mem_gb:.1f} GB VRAM (T4/V100). Using 4-bit NF4 quantization to fit memory.", flush=True)
+            else:
+                load_in_4bit = False
+
         # Auto-detect if model_id is a local LoRA adapter directory
         adapter_cfg_file = os.path.join(model_id, "adapter_config.json")
         is_peft_adapter = os.path.exists(adapter_cfg_file)
@@ -871,6 +884,7 @@ class KronumosBenchmarkRunner:
                 base_model = AutoModelForCausalLM.from_pretrained(
                     base_model_path,
                     torch_dtype=torch.bfloat16,
+                    attn_implementation="sdpa",
                     device_map="auto",
                     trust_remote_code=True,
                 )
@@ -896,6 +910,7 @@ class KronumosBenchmarkRunner:
                 self.model = AutoModelForCausalLM.from_pretrained(
                     model_id,
                     torch_dtype=torch.bfloat16,
+                    attn_implementation="sdpa",
                     device_map="auto",
                     trust_remote_code=True,
                 )
@@ -1142,6 +1157,8 @@ def main():
     parser.add_argument("--retry_empty", action="store_true", help="Retry instances with empty patches while preserving successful patches")
     parser.add_argument("--output_dir", type=str, default="output")
     parser.add_argument("--github_token", type=str, default="", help="GitHub Personal Access Token for raw.githubusercontent.com API rate limits")
+    parser.add_argument("--bfloat16", action="store_true", help="Force native bfloat16 precision (recommended on A100/H100 for 4x speed)")
+    parser.add_argument("--load_in_4bit", action="store_true", help="Force 4-bit quantization (recommended on T4/V100 with <= 16GB VRAM)")
     args = parser.parse_args()
     
     if args.github_token:
@@ -1164,7 +1181,13 @@ def main():
         instances = [ds[i] for i in range(min(args.num_samples, len(ds)))]
     print(f"🎯 Evaluating on {len(instances)} instances (Max turns: {args.max_turns}).")
     
-    runner = KronumosBenchmarkRunner(model_id=args.model_id)
+    selected_4bit = None
+    if args.bfloat16:
+        selected_4bit = False
+    elif args.load_in_4bit:
+        selected_4bit = True
+
+    runner = KronumosBenchmarkRunner(model_id=args.model_id, load_in_4bit=selected_4bit)
     
     predictions_map = {}
     completed_ids = set()
