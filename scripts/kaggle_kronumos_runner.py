@@ -602,14 +602,16 @@ def extract_suspect_context_from_issue(repo: str, base_commit: str, problem_stat
     Tokenectomy Sub-Cortex Fault Localization:
     Extracts traceback frames from the problem statement, locates the target repository file,
     and fetches an AST enclosing node context from GitHub base_commit.
+    Falls back to file path mentions when no traceback is present.
     """
     # Scan for standard Python traceback patterns: File "path/to/file.py", line 123
-    tb_matches = list(re.finditer(r'File\s+["\']?([^"\',\n]+)["\']?,\s+line\s+(\d+)', problem_statement))
+    tb_matches = list(re.finditer(r'File\s+["\'`]?([^"\'`,\n]+\.py)["\'`]?,\s+line\s+(\d+)', problem_statement))
     if not tb_matches:
         tb_matches = list(re.finditer(r'([a-zA-Z0-9_\-\./]+\.py)[,:\s]+line\s+(\d+)', problem_statement))
 
     candidate_target = None
     candidate_line = -1
+    repo_short = repo.split("/")[-1] if "/" in repo else repo
 
     for m in reversed(tb_matches):
         f_path = m.group(1).strip()
@@ -618,22 +620,63 @@ def extract_suspect_context_from_issue(repo: str, base_commit: str, problem_stat
             continue
         clean_path = f_path.lstrip("/").replace("//", "/")
         parts = clean_path.split("/")
-        repo_short = repo.split("/")[-1] if "/" in repo else repo
         if repo_short in parts:
             idx = parts.index(repo_short)
-            clean_path = "/".join(parts[idx:])
+            clean_path = "/".join(parts[idx + 1:])
         candidate_target = clean_path
         candidate_line = l_num
         break
 
-    if not candidate_target or candidate_line <= 0:
+    # Fallback: extract file paths mentioned in issue text (e.g. `astropy/modeling/separable.py`)
+    if not candidate_target:
+        file_mentions = re.findall(
+            r'(?:^|[\s`\'\"(])' + '(' + re.escape(repo_short) + r'/[a-zA-Z0-9_/\-]+\.py)\b',
+            problem_statement
+        )
+        if not file_mentions:
+            file_mentions = re.findall(
+                r'(?:^|[\s`\'\"(])([a-zA-Z0-9_]+/[a-zA-Z0-9_/\-]+\.py)\b',
+                problem_statement
+            )
+        for fpath in file_mentions:
+            clean_path = fpath.strip().lstrip("/")
+            parts = clean_path.split("/")
+            if repo_short in parts:
+                idx = parts.index(repo_short)
+                clean_path = "/".join(parts[idx + 1:])
+            if any(noise in clean_path for noise in ["site-packages", "/lib/python", "test"]):
+                continue
+            content = fetch_github_file(repo, base_commit, clean_path, token=token)
+            if content:
+                candidate_target = clean_path
+                candidate_line = 1
+                break
+
+    if not candidate_target:
         return None
+
     content = fetch_github_file(repo, base_commit, candidate_target, token=token)
     if not content:
         return None
 
     # Tokenectomy AST Enclosing Node Slicing
-    ast_slice = TokenectomyASTSlicer.slice_enclosing_node(content, candidate_line, candidate_target)
+    if candidate_line > 1:
+        ast_slice = TokenectomyASTSlicer.slice_enclosing_node(content, candidate_line, candidate_target)
+    else:
+        lines = content.splitlines()
+        snippet_lines = lines[:min(60, len(lines))]
+        numbered = [f"# [Tokenectomy Full File Preview: {candidate_target} | Lines 1-{len(snippet_lines)}]"]
+        for i, l in enumerate(snippet_lines):
+            numbered.append(f"   {i+1:4d} | {l}")
+        ast_slice = {
+            "node_name": "file_preview",
+            "node_type": "FilePreview",
+            "start_line": 1,
+            "end_line": len(snippet_lines),
+            "snippet": "\n".join(numbered),
+            "is_ast_sliced": False
+        }
+
     snippet = ast_slice["snippet"] if ast_slice else ""
 
     return {
@@ -801,16 +844,16 @@ def convert_patch_call_to_diff(
             except Exception:
                 pass
 
-            # If match ratio < 0.50, provide closest matching snippet for TURN 2 REFINEMENT
-            closest_start = max(0, best_start - 2) if best_start >= 0 else 0
-            closest_end = min(len(file_lines), closest_start + 12)
+            # Provide substantial context around best match for TURN 2 REFINEMENT
+            closest_start = max(0, best_start - 5) if best_start >= 0 else 0
+            closest_end = min(len(file_lines), closest_start + 30)
             closest_snippet = "".join(file_lines[closest_start:closest_end])
             return (
                 "",
                 "ERROR",
-                f"Tokenectomy Match Refusal: `original_code` was not found in `{clean_path}` (Best match: {round(best_ratio*100)}%).\n"
-                f"Surrounding source lines in target file:\n```python\n{closest_snippet}\n```\n"
-                f"Please align your SEARCH block to match this exact code snippet."
+                f"Tokenectomy Match Refusal: `original_code` was not found in `{clean_path}` (Best match: {round(best_ratio*100)}% near line {best_start + 1}).\n"
+                f"Here are the ACTUAL source lines from the file at commit {base_commit[:8]}:\n```python\n{closest_snippet}\n```\n"
+                f"IMPORTANT: Copy these exact lines as your SEARCH block, then make minimal changes in the REPLACE block."
             )
 
     # 3. Fallback when raw file content is unavailable:
@@ -1000,11 +1043,12 @@ class KronumosBenchmarkRunner:
                 attention_mask = torch.ones_like(input_ids)
             
             # Context Window Clamping: Prevent CUDA OOM on massive issue descriptions
-            MAX_CONTEXT = 5120
+            # A100-40GB in bfloat16 can safely handle 16K input + 2K output
+            MAX_CONTEXT = 16384
             if input_ids.shape[1] > MAX_CONTEXT:
-                # Keep system prompt & instructions (first 512 tokens) and the tail of the error (last 4608 tokens)
-                input_ids = torch.cat([input_ids[:, :512], input_ids[:, -(MAX_CONTEXT - 512):]], dim=1)
-                attention_mask = torch.cat([attention_mask[:, :512], attention_mask[:, -(MAX_CONTEXT - 512):]], dim=1)
+                # Keep system prompt & instructions (first 1024 tokens) and the tail with code context
+                input_ids = torch.cat([input_ids[:, :1024], input_ids[:, -(MAX_CONTEXT - 1024):]], dim=1)
+                attention_mask = torch.cat([attention_mask[:, :1024], attention_mask[:, -(MAX_CONTEXT - 1024):]], dim=1)
 
             prompt_len = input_ids.shape[1]
             total_prompt_tokens += prompt_len
@@ -1014,7 +1058,7 @@ class KronumosBenchmarkRunner:
                     outputs = self.model.generate(
                         input_ids=input_ids,
                         attention_mask=attention_mask,
-                        max_new_tokens=768,
+                        max_new_tokens=2048,
                         do_sample=False,
                         eos_token_id=self.stop_tokens,
                     )
