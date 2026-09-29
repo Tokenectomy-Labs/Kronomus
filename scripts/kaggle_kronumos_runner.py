@@ -380,52 +380,56 @@ class TokenectomyASTValidator:
         if del_lines > 25 and add_lines <= 1:
             return False, new_snippet, f"Sentinel Refusal: Excessive code deletion ({del_lines} lines removed with <= 1 lines added)."
 
-        # 2. Syntax validation with pinpointed coordinates
-        dedented = textwrap.dedent(new_snippet)
-        try:
-            ast.parse(dedented)
-            return True, new_snippet, "Valid AST"
-        except SyntaxError:
-            pass
+        # 2. Bracket and quotation auto-healing
+        healed = TokenectomyASTValidator._attempt_bracket_healing(new_snippet)
 
-        # Contextual statement parsing (for elif, except, return, break fragments)
-        try:
-            ast.parse(f"def _dummy_context():\n{textwrap.indent(dedented, '    ')}")
-            return True, new_snippet, "Valid AST (statement block)"
-        except SyntaxError:
-            pass
-        try:
-            ast.parse(f"if True:\n    pass\n{dedented}")
-            return True, new_snippet, "Valid AST (conditional branch)"
-        except SyntaxError:
-            pass
-        try:
-            ast.parse(f"try:\n    pass\n{dedented}")
-            return True, new_snippet, "Valid AST (handler block)"
-        except SyntaxError:
-            pass
+        # 3. If target file is not Python, skip AST parse
+        if file_path and not file_path.endswith(".py"):
+            return True, healed, "Non-Python file"
 
-        # Attempt Tokenectomy AST Auto-Healing: Bracket / Parenthesis completion
-        healed = TokenectomyASTValidator._attempt_bracket_healing(dedented)
-        if healed != dedented:
+        # 4. AST Fragment heuristic validation:
+        # Code hunks/fragments cannot be strictly parsed in isolation because relative unindents
+        # and branch clauses (elif/else/except/finally) require outer scopes.
+        # We only reject if there are blatant fatal errors (e.g. unclosed string literal, unbalanced tokens).
+        dedented = textwrap.dedent(healed)
+        contexts = [
+            dedented,
+            f"def _dummy_context():\n{textwrap.indent(dedented, '    ')}",
+            f"if True:\n    pass\n{dedented}",
+            f"try:\n    pass\n{dedented}",
+            f"class _Dummy:\n    def _m(self):\n{textwrap.indent(dedented, '        ')}",
+        ]
+        
+        parsed = False
+        last_error = None
+        for ctx in contexts:
             try:
-                ast.parse(healed)
-                return True, healed, "Auto-healed AST syntax (bracket/parenthesis balanced)"
-            except SyntaxError:
-                pass
-            try:
-                ast.parse(f"def _dummy():\n{textwrap.indent(healed, '    ')}")
-                return True, healed, "Auto-healed AST syntax (statement block)"
-            except SyntaxError:
-                pass
+                ast.parse(ctx)
+                parsed = True
+                break
+            except SyntaxError as e:
+                last_error = e
 
-        try:
-            ast.parse(dedented)
-        except SyntaxError as e:
-            error_msg = f"AST Syntax Error: {e.msg} at line {e.lineno}, col {e.offset}: `{e.text and e.text.strip()}`"
-            return False, new_snippet, error_msg
+        if parsed:
+            return True, healed, "Valid AST"
 
-        return True, new_snippet, "Valid AST"
+        if last_error:
+            err_msg = str(last_error.msg).lower()
+            first_word = healed.strip().split()[0] if healed.strip() else ""
+            is_clause = first_word in ["elif", "else:", "except", "except:", "finally:", "return", "yield", "break", "continue"]
+            is_indent_artifact = any(term in err_msg for term in [
+                "unindent does not match",
+                "unexpected indent",
+                "expected an indented block",
+            ])
+            if is_clause or is_indent_artifact:
+                # Permissive fragment AST: indentation is verified on full-file integration
+                return True, healed, f"Permissive fragment AST ({last_error.msg})"
+
+            error_msg = f"AST Syntax Error: {last_error.msg} at line {last_error.lineno}, col {last_error.offset}: `{last_error.text and last_error.text.strip()}`"
+            return False, healed, error_msg
+
+        return True, healed, "Valid AST"
 
     @staticmethod
     def _attempt_bracket_healing(code: str) -> str:
@@ -685,15 +689,31 @@ def convert_patch_call_to_diff(
         print(f"    🛡️ Tokenectomy Refusal: {reason}", flush=True)
         return "", "ERROR", f"Tokenectomy AST Refusal: {reason}. Please rectify your patch syntax."
 
+    # Normalize CRLF line endings
+    orig = orig.replace("\r\n", "\n")
+    healed_new = healed_new.replace("\r\n", "\n")
+
     # 2. Attempt to fetch real file from GitHub or local cache to compute exact unified diff with line numbers
     if repo and base_commit and clean_path:
         raw_content = fetch_github_file(repo, base_commit, clean_path, token=token)
         if raw_content is not None:
+            raw_content = raw_content.replace("\r\n", "\n")
             file_lines = raw_content.splitlines(keepends=True)
+
+            def _validate_full_file_ast(content_str: str) -> Optional[str]:
+                if clean_path.endswith(".py"):
+                    try:
+                        ast.parse(content_str)
+                    except SyntaxError as e:
+                        return f"Tokenectomy Full-File AST Error: {e.msg} at line {e.lineno}. Please check syntax and indentation."
+                return None
             
             # Check exact match
             if orig in raw_content:
                 new_content = raw_content.replace(orig, healed_new, 1)
+                ast_err = _validate_full_file_ast(new_content)
+                if ast_err:
+                    return "", "ERROR", ast_err
                 diff = list(difflib.unified_diff(
                     file_lines,
                     new_content.splitlines(keepends=True),
@@ -706,6 +726,9 @@ def convert_patch_call_to_diff(
             # Check trimmed match
             if orig.strip() and orig.strip() in raw_content:
                 new_content = raw_content.replace(orig.strip(), healed_new.strip(), 1)
+                ast_err = _validate_full_file_ast(new_content)
+                if ast_err:
+                    return "", "ERROR", ast_err
                 diff = list(difflib.unified_diff(
                     file_lines,
                     new_content.splitlines(keepends=True),
@@ -734,6 +757,10 @@ def convert_patch_call_to_diff(
                     indent = anchor_line[:len(anchor_line) - len(anchor_line.lstrip())]
                     formatted_plus = [indent + p.lstrip() + "\n" if p.strip() else "\n" for p in healed_new.splitlines()]
                     new_lines = file_lines[:best_start] + formatted_plus + file_lines[best_start + window_size:]
+                    new_content = "".join(new_lines)
+                    ast_err = _validate_full_file_ast(new_content)
+                    if ast_err:
+                        return "", "ERROR", ast_err
                     diff = list(difflib.unified_diff(
                         file_lines,
                         new_lines,
@@ -873,6 +900,10 @@ class KronumosBenchmarkRunner:
                     trust_remote_code=True,
                 )
                 
+        if hasattr(self.model, "generation_config") and self.model.generation_config is not None:
+            self.model.generation_config.temperature = None
+            self.model.generation_config.top_p = None
+            self.model.generation_config.top_k = None
         im_end_id = self.tokenizer.convert_tokens_to_ids("<|im_end|>")
         self.stop_tokens = list({self.tokenizer.eos_token_id, im_end_id})
         print("✅ Kronumos ready for inference!")

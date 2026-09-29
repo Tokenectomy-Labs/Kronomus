@@ -733,10 +733,11 @@ class TokenectomyASTValidator:
             except Exception as e:
                 return False, new_snippet, f"JSON Syntax Error: {e}"
 
-        dedented = textwrap.dedent(new_snippet)
+        healed = TokenectomyASTValidator._attempt_bracket_healing(new_snippet)
+        dedented = textwrap.dedent(healed)
         try:
             ast.parse(dedented)
-            return True, new_snippet, "Valid AST"
+            return True, healed, "Valid AST"
         except SyntaxError:
             pass
 
@@ -749,48 +750,46 @@ class TokenectomyASTValidator:
                     cand = "\n".join([lines[0]] + [l[min_sub:] if len(l) - len(l.lstrip()) >= min_sub else l for l in lines[1:]])
                     try:
                         ast.parse(cand)
-                        return True, new_snippet, "Valid AST"
+                        return True, healed, "Valid AST"
                     except SyntaxError:
                         pass
 
         # Contextual statement parsing (for elif, except, return, break fragments)
-        try:
-            ast.parse(f"def _dummy_context():\n{textwrap.indent(dedented, '    ')}")
-            return True, new_snippet, "Valid AST (statement block)"
-        except SyntaxError:
-            pass
-        try:
-            ast.parse(f"if True:\n    pass\n{dedented}")
-            return True, new_snippet, "Valid AST (conditional branch)"
-        except SyntaxError:
-            pass
-        try:
-            ast.parse(f"try:\n    pass\n{dedented}")
-            return True, new_snippet, "Valid AST (handler block)"
-        except SyntaxError:
-            pass
-
-        # Auto-healing bracket completion
-        healed = TokenectomyASTValidator._attempt_bracket_healing(dedented)
-        if healed != dedented:
+        contexts = [
+            f"def _dummy_context():\n{textwrap.indent(dedented, '    ')}",
+            f"if True:\n    pass\n{dedented}",
+            f"try:\n    pass\n{dedented}",
+            f"class _Dummy:\n    def _m(self):\n{textwrap.indent(dedented, '        ')}",
+        ]
+        parsed = False
+        last_error = None
+        for ctx in contexts:
             try:
-                ast.parse(healed)
-                return True, healed, "Auto-healed AST syntax (bracket/parenthesis balanced)"
-            except SyntaxError:
-                pass
-            try:
-                ast.parse(f"def _dummy():\n{textwrap.indent(healed, '    ')}")
-                return True, healed, "Auto-healed AST syntax (statement block)"
-            except SyntaxError:
-                pass
+                ast.parse(ctx)
+                parsed = True
+                break
+            except SyntaxError as e:
+                last_error = e
 
-        try:
-            ast.parse(dedented)
-        except SyntaxError as e:
-            error_msg = f"AST Syntax Error: {e.msg} at line {e.lineno}, col {e.offset}: `{e.text and e.text.strip()}`"
-            return False, new_snippet, error_msg
+        if parsed:
+            return True, healed, "Valid AST"
 
-        return True, new_snippet, "Valid AST"
+        if last_error:
+            err_msg = str(last_error.msg).lower()
+            first_word = healed.strip().split()[0] if healed.strip() else ""
+            is_clause = first_word in ["elif", "else:", "except", "except:", "finally:", "return", "yield", "break", "continue"]
+            is_indent_artifact = any(term in err_msg for term in [
+                "unindent does not match",
+                "unexpected indent",
+                "expected an indented block",
+            ])
+            if is_clause or is_indent_artifact:
+                return True, healed, f"Permissive fragment AST ({last_error.msg})"
+
+            error_msg = f"AST Syntax Error: {last_error.msg} at line {last_error.lineno}, col {last_error.offset}: `{last_error.text and last_error.text.strip()}`"
+            return False, healed, error_msg
+
+        return True, healed, "Valid AST"
 
     @staticmethod
     def _attempt_bracket_healing(code: str) -> str:
@@ -1105,13 +1104,29 @@ def convert_patch_call_to_diff(file_path: str, orig: str, new: str, repo: str = 
     if not is_valid:
         return "", "FAILED", f"Tokenectomy AST Refusal: {reason}"
 
+    orig = orig.replace("\r\n", "\n")
+    healed_new = healed_new.replace("\r\n", "\n")
+
     # 1. Attempt exact or AST-anchored diff against real GitHub repository content
     if repo and base_commit and clean_path:
         raw_content = fetch_github_file(repo, base_commit, clean_path, token=token)
         if raw_content is not None:
+            raw_content = raw_content.replace("\r\n", "\n")
             file_lines = raw_content.splitlines(keepends=True)
+
+            def _validate_full_file_ast(content_str: str) -> Optional[str]:
+                if clean_path.endswith(".py"):
+                    try:
+                        ast.parse(content_str)
+                    except SyntaxError as e:
+                        return f"Tokenectomy Full-File AST Error: {e.msg} at line {e.lineno}. Please check syntax and indentation."
+                return None
+
             if orig in raw_content:
                 new_content = raw_content.replace(orig, healed_new, 1)
+                ast_err = _validate_full_file_ast(new_content)
+                if ast_err:
+                    return "", "FAILED", ast_err
                 diff = list(difflib.unified_diff(
                     file_lines,
                     new_content.splitlines(keepends=True),
@@ -1123,6 +1138,9 @@ def convert_patch_call_to_diff(file_path: str, orig: str, new: str, repo: str = 
 
             if orig.strip() and orig.strip() in raw_content:
                 new_content = raw_content.replace(orig.strip(), healed_new.strip(), 1)
+                ast_err = _validate_full_file_ast(new_content)
+                if ast_err:
+                    return "", "FAILED", ast_err
                 diff = list(difflib.unified_diff(
                     file_lines,
                     new_content.splitlines(keepends=True),
@@ -1151,6 +1169,10 @@ def convert_patch_call_to_diff(file_path: str, orig: str, new: str, repo: str = 
                     indent = anchor_line[:len(anchor_line) - len(anchor_line.lstrip())]
                     formatted_plus = [indent + p.lstrip() + "\n" if p.strip() else "\n" for p in healed_new.splitlines()]
                     new_lines = file_lines[:best_start] + formatted_plus + file_lines[best_start + window_size:]
+                    new_content = "".join(new_lines)
+                    ast_err = _validate_full_file_ast(new_content)
+                    if ast_err:
+                        return "", "FAILED", ast_err
                     diff = list(difflib.unified_diff(
                         file_lines,
                         new_lines,
