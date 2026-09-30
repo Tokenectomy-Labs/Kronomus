@@ -1149,7 +1149,7 @@ class KronumosBenchmarkRunner:
                 args = call.get("arguments", {})
                 
                 if tool_name == "get_error_context":
-                    raw_log = args.get("log", problem_statement)
+                    raw_log = args.get("log", raw_problem)
                     scrub = simulate_subcortex_scrub(raw_log)
                     tool_outputs.append(f"Sub-Cortex Cleaned ({scrub['savings_pct']}% tokens excised):\n{scrub['scrubbed_log']}")
                     
