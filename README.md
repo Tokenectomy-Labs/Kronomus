@@ -7,6 +7,7 @@
 </p>
 
 <p align="center">
+  <a href="https://doi.org/10.21203/rs.3.rs-11205335/v1"><img src="https://img.shields.io/badge/Research_Square-10.21203%2Frs.3.rs--11205335%2Fv1-blue.svg" alt="DOI: 10.21203/rs.3.rs-11205335/v1" /></a>
   <a href="https://doi.org/10.5281/zenodo.23013104"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.23013104.svg" alt="DOI: 10.5281/zenodo.23013104" /></a>
   <a href="https://ollama.com/kronumos/Kronumos-2-kairos"><img src="https://img.shields.io/badge/Ollama-kronumos%2FKronumos--2--kairos-black?logo=ollama" alt="Ollama Model" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-AGPLv3_%2F_Commercial-blue.svg" alt="License: AGPLv3 / Commercial" /></a>
@@ -31,11 +32,12 @@ Kronumos is scoped narrower and deeper. It handles a single, closed-loop enginee
 
 ## 📄 Academic Paper & Preprint
 
-Read the formal preprint paper on Zenodo: **[DOI: 10.5281/zenodo.22929676](https://doi.org/10.5281/zenodo.22929676)**, read the [Technical Report](paper/KRONUMOS_TECHNICAL_REPORT.md), or view the publication-ready LaTeX source in [paper/main.tex](paper/main.tex):
+Read the formal preprint paper on Research Square (Springer Nature): **[DOI: 10.21203/rs.3.rs-11205335/v1](https://doi.org/10.21203/rs.3.rs-11205335/v1)** or Zenodo: **[DOI: 10.5281/zenodo.22929676](https://doi.org/10.5281/zenodo.22929676)**, read the [Technical Report](paper/KRONUMOS_TECHNICAL_REPORT.md), or view the publication-ready LaTeX source in [paper/main.tex](paper/main.tex):
 
-> **"Kronumos: Cost-Bounded Automated Program Repair via Context Surgery and POSIX Diff Re-Anchoring on SWE-bench Verified"**  
-> *Author: Tokenectomy Labs*  
-> *Permanent DOI: [10.5281/zenodo.22929676](https://doi.org/10.5281/zenodo.22929676)*
+> **"Kronumos 2 Kairos: Cost-Bounded Automated Program Repair via Dual-Brain Cybernetic Sub-Cortex on SWE-bench Verified"**  
+> *Author: Muhammad Naufal Daffa ([ORCID: 0009-0000-7909-4916](https://orcid.org/0009-0000-7909-4916))*  
+> *Research Square (Springer Nature): [10.21203/rs.3.rs-11205335/v1](https://doi.org/10.21203/rs.3.rs-11205335/v1)*  
+> *Zenodo Archive: [10.5281/zenodo.22929676](https://doi.org/10.5281/zenodo.22929676)*
 
 
 ## 🗺️ Product & Engineering Roadmap
@@ -228,7 +230,7 @@ model = AutoModelForCausalLM.from_pretrained(
 
 
 ## 🏢 Organization, Inquiries & Community
-- **Author & Research Lead:** Muhammad Naufal Daffa ([ORCID: 0009-0004-9548-5221](https://orcid.org/0009-0004-9548-5221))
+- **Author & Research Lead:** Muhammad Naufal Daffa ([ORCID: 0009-0000-7909-4916](https://orcid.org/0009-0000-7909-4916))
 - **Official Inquiries:** kronumos@proton.me
 - **Research Publication & Substack:** https://kronumos.substack.com
 - **Ollama Hub Registry:** https://ollama.com/kronumos/Kronumos-2-kairos
@@ -243,13 +245,13 @@ model = AutoModelForCausalLM.from_pretrained(
 If you use Kronumos in your research or benchmarks, please cite our latest preprint:
 
 ```bibtex
-@misc{daffa2026kronumos2,
+@article{daffa2026kronumos2,
   author    = {Muhammad Naufal Daffa},
   title     = {Kronumos 2 Kairos: Cost-Bounded Automated Program Repair via Dual-Brain Cybernetic Sub-Cortex on SWE-bench Verified},
+  journal   = {Research Square},
   year      = {2026},
-  publisher = {Zenodo},
-  doi       = {10.5281/zenodo.23013104},
-  url       = {https://doi.org/10.5281/zenodo.23013104}
+  doi       = {10.21203/rs.3.rs-11205335/v1},
+  url       = {https://doi.org/10.21203/rs.3.rs-11205335/v1}
 }
 ```
 
