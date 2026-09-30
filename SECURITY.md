@@ -18,8 +18,7 @@ If you discover a potential security vulnerability in Kronumos, the Cloudflare E
 DO NOT file public GitHub issues for security vulnerabilities.
 
 Please report vulnerabilities directly via email to:
-- Primary Security Desk: security@tokenectomy.com
-- Security Lead: support@tokenectomy.com
+- Security Desk: kronumos@proton.me
 
 Include the following information in your report:
 1. Type of vulnerability (e.g. sandbox escape, path traversal, edge rate-limit bypass, prompt injection);

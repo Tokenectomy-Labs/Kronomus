@@ -39,5 +39,5 @@ When using the default Cloudflare Edge Gateway, network traffic traverses Cloudf
 Enterprise organizations subject to strict regulatory frameworks (including HIPAA, SOC 2, and PCI-DSS) may license self-hosted, air-gapped deployments of Kronumos and Tokenectomy-Ultra within their private VPC or Kubernetes cluster with zero external egress.
 
 For privacy questions or data protection officer inquiries:
-- Contact: privacy@tokenectomy.com / security@tokenectomy.com
+- Contact: kronumos@proton.me
 - Organization: Tokenectomy Labs
