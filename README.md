@@ -42,7 +42,7 @@ Read the formal preprint paper on Research Square (Springer Nature): **[DOI: 10.
 
 ## 🗺️ Product & Engineering Roadmap
 
-Read the complete engineering roadmap and evaluation methodology in [kronumos_product.roadmap.md](kronumos_product.roadmap.md).
+Read the complete engineering roadmap and evaluation methodology in [kronumos_product.roadmap.md](kronumos_product.roadmap.md), or explore the raw 16-hour sprint build log and incident postmortem in [JOURNEY.md](JOURNEY.md).
 
 
 ## 📊 Empirical Benchmark Results (SWE-bench Verified)
