@@ -28,18 +28,18 @@ if os.path.exists(_LIB_PATH):
         _rust_lib.tokenectomy_heal_indentation.argtypes = [
             ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p
         ]
-        _rust_lib.tokenectomy_heal_indentation.restype = ctypes.c_char_p
+        _rust_lib.tokenectomy_heal_indentation.restype = ctypes.c_void_p
 
         # tokenectomy_audit_scope
         _rust_lib.tokenectomy_audit_scope.argtypes = [ctypes.c_char_p]
-        _rust_lib.tokenectomy_audit_scope.restype = ctypes.c_char_p
+        _rust_lib.tokenectomy_audit_scope.restype = ctypes.c_void_p
 
         # tokenectomy_sentinel_audit
         _rust_lib.tokenectomy_sentinel_audit.argtypes = [ctypes.c_char_p, ctypes.c_char_p]
-        _rust_lib.tokenectomy_sentinel_audit.restype = ctypes.c_char_p
+        _rust_lib.tokenectomy_sentinel_audit.restype = ctypes.c_void_p
 
         # tokenectomy_free_string
-        _rust_lib.tokenectomy_free_string.argtypes = [ctypes.c_char_p]
+        _rust_lib.tokenectomy_free_string.argtypes = [ctypes.c_void_p]
         _rust_lib.tokenectomy_free_string.restype = None
     except Exception as e:
         _rust_lib = None
@@ -69,7 +69,7 @@ class RustSubCortex:
             return new_code
 
         try:
-            return ctypes.c_char_p(ptr).value.decode("utf-8")
+            return ctypes.string_at(ptr).decode("utf-8")
         finally:
             _rust_lib.tokenectomy_free_string(ptr)
 
@@ -84,7 +84,7 @@ class RustSubCortex:
             return []
 
         try:
-            json_str = ctypes.c_char_p(ptr).value.decode("utf-8")
+            json_str = ctypes.string_at(ptr).decode("utf-8")
             return json.loads(json_str)
         finally:
             _rust_lib.tokenectomy_free_string(ptr)
@@ -101,7 +101,7 @@ class RustSubCortex:
             return True, ""
 
         try:
-            json_str = ctypes.c_char_p(ptr).value.decode("utf-8")
+            json_str = ctypes.string_at(ptr).decode("utf-8")
             data = json.loads(json_str)
             return data.get("valid", True), data.get("reason", "")
         finally:

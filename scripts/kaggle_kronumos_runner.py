@@ -41,9 +41,14 @@ except ImportError:
 try:
     from scripts.issue_denoiser import IssueDeNoiser
     from scripts.mutation_bracket import ZeroLLMMutationBracket
+    from scripts.tokenectomy_subcortex_rust import RustSubCortex
 except ImportError:
     from issue_denoiser import IssueDeNoiser
     from mutation_bracket import ZeroLLMMutationBracket
+    try:
+        from tokenectomy_subcortex_rust import RustSubCortex
+    except ImportError:
+        RustSubCortex = None
 
 # ---------------------------------------------------------
 # 1. Kronumos Agent System Prompt & Tool Schema (Kairos v2)
@@ -710,8 +715,14 @@ def parse_search_replace_blocks(text: str) -> List[Dict[str, str]]:
         })
     return blocks
 
-def align_block_indentation(block_code: str, target_indent: str) -> List[str]:
-    """Preserve relative indentation of nested Python blocks while aligning to target indent."""
+def align_block_indentation(block_code: str, target_indent: str, orig_code: str = "") -> List[str]:
+    """Preserve relative indentation of nested Python blocks while aligning to target indent via Rust Sub-Cortex."""
+    if RustSubCortex and RustSubCortex.is_available():
+        try:
+            healed = RustSubCortex.heal_indentation(orig_code or block_code, block_code, target_indent)
+            return [line + "\n" for line in healed.splitlines()]
+        except Exception:
+            pass
     dedented = textwrap.dedent(block_code).splitlines()
     return [target_indent + line + "\n" if line.strip() else "\n" for line in dedented]
 
@@ -760,8 +771,10 @@ def convert_patch_call_to_diff(
                         return f"Tokenectomy Full-File AST Error: {e.msg} at line {e.lineno}. Please check syntax and indentation."
                 return None
             
-            # Check exact match
+            # Check exact match with Sub-Cortex Indentation alignment
             if orig in raw_content:
+                if RustSubCortex and RustSubCortex.is_available():
+                    healed_new = RustSubCortex.heal_indentation(orig, healed_new)
                 new_content = raw_content.replace(orig, healed_new, 1)
                 ast_err = _validate_full_file_ast(new_content)
                 if not ast_err:
@@ -781,7 +794,7 @@ def convert_patch_call_to_diff(
                 for idx_line, f_line in enumerate(file_lines):
                     if orig.strip() in f_line:
                         indent = f_line[:len(f_line) - len(f_line.lstrip())]
-                        formatted_plus = align_block_indentation(healed_new, indent)
+                        formatted_plus = align_block_indentation(healed_new, indent, orig)
                         new_lines = file_lines[:idx_line] + formatted_plus + file_lines[idx_line + 1:]
                         new_content = "".join(new_lines)
                         ast_err = _validate_full_file_ast(new_content)
@@ -819,7 +832,7 @@ def convert_patch_call_to_diff(
                 if best_ratio >= 0.25 and best_start >= 0:
                     anchor_line = file_lines[best_start]
                     indent = anchor_line[:len(anchor_line) - len(anchor_line.lstrip())]
-                    formatted_plus = align_block_indentation(healed_new, indent)
+                    formatted_plus = align_block_indentation(healed_new, indent, orig)
                     new_lines = file_lines[:best_start] + formatted_plus + file_lines[best_start + best_window:]
                     new_content = "".join(new_lines)
                     ast_err = _validate_full_file_ast(new_content)
