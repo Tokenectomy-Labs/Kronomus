@@ -632,7 +632,7 @@ def extract_suspect_context_from_issue(repo: str, base_commit: str, problem_stat
         candidate_line = l_num
         break
 
-    # Fallback: extract file paths mentioned in issue text (e.g. `astropy/modeling/separable.py`)
+    # Fallback 1: extract file paths mentioned in issue text (e.g. `astropy/modeling/separable.py`)
     if not candidate_target:
         file_mentions = re.findall(
             r'(?:^|[\s`\'\"(])' + '(' + re.escape(repo_short) + r'/[a-zA-Z0-9_/\-]+\.py)\b',
@@ -655,6 +655,38 @@ def extract_suspect_context_from_issue(repo: str, base_commit: str, problem_stat
             if content:
                 candidate_target = clean_path
                 candidate_line = 1
+                break
+
+    # Fallback 2: Python module import statements (e.g. `from astropy.modeling.separable import separability_matrix`)
+    if not candidate_target:
+        from_matches = list(re.finditer(r'from\s+([a-zA-Z0-9_\.]+)\s+import\s+([^\n]+)', problem_statement))
+        for fm in from_matches:
+            mod_dotted = fm.group(1).strip()
+            mod_path = mod_dotted.replace(".", "/") + ".py"
+            symbols_raw = fm.group(2).strip()
+            symbols = [s.strip().split(" as ")[0].strip() for s in symbols_raw.split(",") if s.strip()]
+            parts = mod_path.split("/")
+            if repo_short in parts:
+                idx = parts.index(repo_short)
+                mod_path = "/".join(parts[idx + 1:])
+
+            candidates_to_try = [mod_path]
+            if not mod_path.startswith(f"{repo_short}/"):
+                candidates_to_try.append(f"{repo_short}/{mod_path}")
+
+            for c_path in candidates_to_try:
+                content = fetch_github_file(repo, base_commit, c_path, token=token)
+                if content:
+                    candidate_target = c_path
+                    target_sym_line = 1
+                    for sym in symbols:
+                        sym_match = re.search(r'^[ \t]*(?:def|class)\s+' + re.escape(sym) + r'\b', content, re.MULTILINE)
+                        if sym_match:
+                            target_sym_line = content[:sym_match.start()].count("\n") + 1
+                            break
+                    candidate_line = target_sym_line
+                    break
+            if candidate_target:
                 break
 
     if not candidate_target:
@@ -916,28 +948,21 @@ def convert_patch_call_to_diff(
     except Exception:
         pass
 
-    # Last resort: raw -/+ diff with 3 pseudo-context lines if possible
-    orig_count = max(1, len(orig_lines_list))
-    new_count = max(1, len(new_lines_list))
-
-    diff_lines = [
-        f"diff --git a/{clean_path} b/{clean_path}",
-        f"--- a/{clean_path}",
-        f"+++ b/{clean_path}",
-        f"@@ -{anchor_line_num},{orig_count} +{anchor_line_num},{new_count} @@",
-    ]
-    for line in orig_lines_list:
-        diff_lines.append(f"-{line}")
-    for line in new_lines_list:
-        diff_lines.append(f"+{line}")
-    fallback_diff = "\n".join(diff_lines) + "\n"
-    return fallback_diff, "SUCCESS", f"Tokenectomy: Candidate diff anchored near line {anchor_line_num} for {clean_path}."
+    # Honest Verification: DO NOT synthesize fake line-1 diffs without real file context.
+    # Return error so the agent knows the file was not found or patch could not be anchored.
+    return (
+        "",
+        "ERROR",
+        f"Tokenectomy: Could not locate or anchor patch into '{clean_path}' (best match: {round(best_ratio*100)}%). "
+        f"Please verify that the target file exists and that `original_code` matches lines from the file."
+    )
 
 # ---------------------------------------------------------
 # 3. Benchmark Evaluator Class
 # ---------------------------------------------------------
 class KronumosBenchmarkRunner:
-    def __init__(self, model_id: str = "NadevA23/Kronumos", load_in_4bit: Optional[bool] = None):
+    def __init__(self, model_id: str = "NadevA23/Kronumos", load_in_4bit: Optional[bool] = None, github_token: str = ""):
+        self.github_token = github_token or os.environ.get("GITHUB_TOKEN", "")
         # Auto-detect hardware capacity if load_in_4bit is not explicitly specified
         if load_in_4bit is None:
             if torch and torch.cuda.is_available():
@@ -1034,7 +1059,7 @@ class KronumosBenchmarkRunner:
         procedural_guidance = TokenectomyProceduralKernel.format_guidance(raw_problem, repo=repo)
         
         # 3. Tokenectomy AST Fault Localization
-        suspect_info = extract_suspect_context_from_issue(repo, base_commit, raw_problem)
+        suspect_info = extract_suspect_context_from_issue(repo, base_commit, raw_problem, token=self.github_token)
         
         user_prompt = (
             f"Repository: {repo}\n"
@@ -1149,7 +1174,8 @@ class KronumosBenchmarkRunner:
                                 target_file, block["original_code"], block["new_code"],
                                 repo=repo, base_commit=base_commit,
                                 suspect_line=(suspect_info.get("suspect_line", 0) if suspect_info else 0),
-                                is_final_turn=(turn == (max_turns - 1))
+                                is_final_turn=(turn == (max_turns - 1)),
+                                token=self.github_token
                             )
                             if status == "SUCCESS" and candidate_diff:
                                 synthesized_patch = candidate_diff
@@ -1199,7 +1225,8 @@ class KronumosBenchmarkRunner:
                     diff_str, status, msg = convert_patch_call_to_diff(
                         f_path, orig, new_code, repo=repo, base_commit=base_commit,
                         suspect_line=(suspect_info.get("suspect_line", 0) if suspect_info else 0),
-                        is_final_turn=(turn == (max_turns - 1))
+                        is_final_turn=(turn == (max_turns - 1)),
+                        token=self.github_token
                     )
                     tool_outputs.append(msg)
                     if status == "SUCCESS" and diff_str:
@@ -1294,7 +1321,7 @@ def main():
     elif args.load_in_4bit:
         selected_4bit = True
 
-    runner = KronumosBenchmarkRunner(model_id=args.model_id, load_in_4bit=selected_4bit)
+    runner = KronumosBenchmarkRunner(model_id=args.model_id, load_in_4bit=selected_4bit, github_token=args.github_token)
     
     predictions_map = {}
     completed_ids = set()
