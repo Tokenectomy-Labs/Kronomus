@@ -372,18 +372,26 @@ class TokenectomyASTValidator:
         if not new_snippet.strip():
             return False, new_snippet, "Empty replacement code snippet."
 
-        # 1. Sentinel Anti-Degenerate Invariants
-        if ("__new__" in orig_snippet or "__init__" in orig_snippet or "__new__" in new_snippet or "__init__" in new_snippet):
-            if re.search(r'\breturn\s+None\b', new_snippet):
-                return False, new_snippet, "Sentinel Refusal: Returning None inside constructor violates object semantics."
+        # 1. Native Rust Sentinel Anti-Degenerate Audit (5µs C-ABI FFI)
+        if RustSubCortex and RustSubCortex.is_available():
+            try:
+                is_valid_sentinel, sentinel_reason = RustSubCortex.sentinel_audit(orig_snippet, new_snippet)
+                if not is_valid_sentinel:
+                    return False, new_snippet, f"Tokenectomy Rust Sentinel Refusal: {sentinel_reason}"
+            except Exception:
+                pass
+        else:
+            if ("__new__" in orig_snippet or "__init__" in orig_snippet or "__new__" in new_snippet or "__init__" in new_snippet):
+                if re.search(r'\breturn\s+None\b', new_snippet):
+                    return False, new_snippet, "Sentinel Refusal: Returning None inside constructor violates object semantics."
 
-        if re.search(r'except.*:\s*pass\b', new_snippet):
-            return False, new_snippet, "Sentinel Refusal: Naked `except: pass` silently suppresses exceptions."
+            if re.search(r'except.*:\s*pass\b', new_snippet):
+                return False, new_snippet, "Sentinel Refusal: Naked `except: pass` silently suppresses exceptions."
 
-        del_lines = len([l for l in orig_snippet.splitlines() if l.strip()])
-        add_lines = len([l for l in new_snippet.splitlines() if l.strip()])
-        if del_lines > 25 and add_lines <= 1:
-            return False, new_snippet, f"Sentinel Refusal: Excessive code deletion ({del_lines} lines removed with <= 1 lines added)."
+            del_lines = len([l for l in orig_snippet.splitlines() if l.strip()])
+            add_lines = len([l for l in new_snippet.splitlines() if l.strip()])
+            if del_lines > 25 and add_lines <= 1:
+                return False, new_snippet, f"Sentinel Refusal: Excessive code deletion ({del_lines} lines removed with <= 1 lines added)."
 
         # 2. Bracket and quotation auto-healing
         healed = TokenectomyASTValidator._attempt_bracket_healing(new_snippet)
