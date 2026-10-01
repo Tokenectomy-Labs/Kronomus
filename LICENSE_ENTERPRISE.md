@@ -1,6 +1,6 @@
 # Tokenectomy Dual License (TDL 1.0) & Enterprise Commercial Terms
 
-Copyright (c) 2026 Tokenectomy Labs & Muhammad Naufal Daffa. All rights reserved.
+Copyright (c) 2026 Tokenectomy Labs. All rights reserved.
 
 ---
 
@@ -62,6 +62,6 @@ Pursuant to the sublicensing and sale permissions granted under Section 1 of the
 To purchase a Commercial Enterprise License, request custom air-gapped on-premise deployments, or arrange SLA support:
 
 - **Organization:** Tokenectomy Labs
-- **Lead Architect:** Muhammad Naufal Daffa ([ORCID: 0009-0000-7909-4916](https://orcid.org/0009-0000-7909-4916))
+- **Research & Systems Architecture:** Tokenectomy Labs Core Engineering Group
 - **Official Preprint:** Springer Nature Research Square ([DOI: 10.21203/rs.3.rs-11205335/v1](https://doi.org/10.21203/rs.3.rs-11205335/v1))
 - **Enterprise Inquiries:** [Tokenectomy-Labs/Kronomus GitHub Enterprise](https://github.com/Tokenectomy-Labs/Kronomus)

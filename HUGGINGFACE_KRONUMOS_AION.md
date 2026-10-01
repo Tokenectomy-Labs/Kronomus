@@ -26,7 +26,6 @@ inference: false
 # 🏛️ Kronumos Aion — Flagship Dual-Brain Cybernetic Program Repair Engine
 
 [![Springer Nature DOI](https://img.shields.io/badge/Springer_Nature-10.21203%2Frs.3.rs--11205335%2Fv1-00758f?style=flat-square&logo=springer&logoColor=white)](https://doi.org/10.21203/rs.3.rs-11205335/v1)
-[![ORCID](https://img.shields.io/badge/ORCID-0009--0000--7909--4916-A6CE39?style=flat-square&logo=orcid&logoColor=white)](https://orcid.org/0009-0000-7909-4916)
 [![License: Dual Commercial / Academic](https://img.shields.io/badge/License-Dual_Commercial_%2F_Academic-d9381e?style=flat-square&logo=shield)](LICENSE_ENTERPRISE.md)
 [![Engine: 100% Native Rust C-ABI](https://img.shields.io/badge/Engine-100%25_Native_Rust_C--ABI-DEA584?style=flat-square&logo=rust)](https://github.com/Tokenectomy-Labs/Kronomus)
 
@@ -146,14 +145,14 @@ python scripts/kronumos_aion_runner.py \
 If you utilize **Kronumos Aion** or the **Tokenectomy Sub-Cortex** in your research, please cite our official Springer Nature publication:
 
 ```bibtex
-@article{daffa2026kronumos,
+@article{tokenectomy2026kronumos,
   title={Kronumos 2 Kairos: Cost-Bounded Automated Program Repair via Dual-Brain Cybernetic Sub-Cortex on SWE-bench Verified},
-  author={Daffa, Muhammad Naufal},
+  author={{Tokenectomy Labs Research Team}},
   journal={Springer Nature Research Square},
   year={2026},
   doi={10.21203/rs.3.rs-11205335/v1}
 }
 ```
 
-**ORCID Record:** [0009-0000-7909-4916](https://orcid.org/0009-0000-7909-4916)  
+**Maintained by:** Tokenectomy Labs  
 **Publisher:** *Springer Science and Business Media LLC*
