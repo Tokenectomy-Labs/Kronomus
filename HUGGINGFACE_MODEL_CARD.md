@@ -20,12 +20,21 @@ pipeline_tag: text-generation
 
 # ⚡ Kronumos 2 Kairos: The Dual-Brain Sub-Cortex Autonomous Program Repair Engine
 
-**Organization:** Tokenectomy Labs  
-**Base Model:** Qwen/Qwen2.5-Coder-7B-Instruct  
-**Research Paper:** [10.5281/zenodo.22929676](https://doi.org/10.5281/zenodo.22929676)  
-**Repository:** [Tokenectomy-Labs/Kronomus](https://github.com/Tokenectomy-Labs/Kronomus)  
+[![DOI - Springer Nature](https://img.shields.io/badge/Preprint-Springer%20Nature%20(Research%20Square)-blue)](https://doi.org/10.21203/rs.3.rs-11205335/v1)
+[![DOI - Zenodo](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.22929676-green)](https://doi.org/10.5281/zenodo.22929676)
+[![ORCID](https://img.shields.io/badge/ORCID-0009--0000--7909--4916-brightgreen)](https://orcid.org/0009-0000-7909-4916)
+[![Hugging Face Space](https://img.shields.io/badge/Interactive%20Space-Kronumos%202%20Kairos-orange)](https://huggingface.co/spaces/NadevA23/Kronumos-2-Kairos)
 
-Kronumos 2 Kairos is an open-weight 7B autonomous program repair (APR) model fine-tuned for high-precision code remediation on real-world production software bugs. It pairs parametric neural intuition with a deterministic, zero-allocation Rust Sub-Cortex (Tokenectomy Procedural Cognitive Kernel).
+**Organization:** Tokenectomy Labs  
+**Research Lead:** Muhammad Naufal Daffa ([ORCID: 0009-0000-7909-4916](https://orcid.org/0009-0000-7909-4916))  
+**Base Model:** Qwen/Qwen2.5-Coder-7B-Instruct  
+**Springer Nature Preprint:** [10.21203/rs.3.rs-11205335/v1](https://doi.org/10.21203/rs.3.rs-11205335/v1)  
+**CERN Zenodo Archive:** [10.5281/zenodo.22929676](https://doi.org/10.5281/zenodo.22929676)  
+**Live Interactive Space:** [NadevA23/Kronumos-2-Kairos](https://huggingface.co/spaces/NadevA23/Kronumos-2-Kairos)  
+**GitHub Repository:** [Tokenectomy-Labs/Kronomus](https://github.com/Tokenectomy-Labs/Kronomus)  
+
+Kronumos 2 Kairos is an open-weight autonomous program repair (APR) model fine-tuned for high-precision code remediation on real-world production software bugs. It pairs parametric neural intuition with a deterministic, zero-allocation Rust Sub-Cortex (Tokenectomy Procedural Cognitive Kernel).
+
 
 ---
 
