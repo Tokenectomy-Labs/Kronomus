@@ -30,6 +30,7 @@ inference: false
 ### Autonomous Program Repair Engine • Dual-Brain Cybernetic Architecture
 
 [![Springer Nature DOI](https://img.shields.io/badge/Springer_Nature-10.21203%2Frs.3.rs--11205335%2Fv1-00758f?style=flat-square&logo=springer&logoColor=white)](https://doi.org/10.21203/rs.3.rs-11205335/v1)
+[![ORCID](https://img.shields.io/badge/ORCID-0009--0000--7909--4916-A6CE39?style=flat-square&logo=orcid&logoColor=white)](https://orcid.org/0009-0000-7909-4916)
 [![License: Enterprise Dual-License](https://img.shields.io/badge/License-Tokenectomy_Enterprise_TDL--1.0-d9381e?style=flat-square&logo=shield)](https://github.com/Tokenectomy-Labs/Kronomus/blob/main/LICENSE_ENTERPRISE.md)
 [![Sub-Cortex: Native Rust C-ABI](https://img.shields.io/badge/Sub--Cortex-100%25_Native_Rust_(5µs)-DEA584?style=flat-square&logo=rust)](https://github.com/Tokenectomy-Labs/Kronomus)
 [![Evaluation: SWE-bench Verified](https://img.shields.io/badge/Benchmark-SWE--bench_Verified-success?style=flat-square)](https://huggingface.co/datasets/princeton-nlp/SWE-bench_Verified)
@@ -183,18 +184,22 @@ For licensing agreements, air-gapped on-premise deployments, or custom Sub-Corte
 
 ---
 
-## 📜 Citation
+## 📜 Academic Citation & Provenance
 
 ```bibtex
-@article{tokenectomy2026kronumos,
+@article{daffa2026kronumos,
   title     = {Kronumos 2 Kairos: Cost-Bounded Automated Program Repair via Dual-Brain Cybernetic Sub-Cortex on SWE-bench Verified},
-  author    = {{Tokenectomy Labs Research Team}},
+  author    = {Muhammad Naufal Daffa},
   journal   = {Springer Nature Research Square},
   year      = {2026},
   doi       = {10.21203/rs.3.rs-11205335/v1},
   url       = {https://doi.org/10.21203/rs.3.rs-11205335/v1}
 }
 ```
+
+**Author & Research Lead:** Muhammad Naufal Daffa ([ORCID: 0009-0000-7909-4916](https://orcid.org/0009-0000-7909-4916))  
+**Organization:** Tokenectomy Labs  
+**Publisher:** *Springer Science and Business Media LLC*
 
 ---
 
