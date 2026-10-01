@@ -119,7 +119,7 @@ Traditional coding agents rely on unanchored prompt loops that hallucinate inden
 
 ### Option A: Production High-Throughput Cluster (vLLM)
 ```bash
-vllm serve NadevA23/Kronumos-Aion \
+vllm serve Kronumos/Kronumos-Aion \
   --tensor-parallel-size 8 \
   --trust-remote-code \
   --max-model-len 32768 \
@@ -130,7 +130,7 @@ vllm serve NadevA23/Kronumos-Aion \
 ### Option B: SGLang Serving
 ```bash
 python3 -m sglang.launch_server \
-  --model NadevA23/Kronumos-Aion \
+  --model Kronumos/Kronumos-Aion \
   --tp 8 \
   --trust-remote-code \
   --port 30000
