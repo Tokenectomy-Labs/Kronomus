@@ -36,6 +36,8 @@ Tokenectomy/
 hf_space/
 hf_kronumos_space/
 
-# Local Sub-Cortex Rust Engine
+# Local Sub-Cortex Rust Engine & Runtime Packages
 crates/
+packages/
+kronumos_runtime/
 
