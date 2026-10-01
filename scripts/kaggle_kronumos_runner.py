@@ -875,11 +875,36 @@ def convert_patch_call_to_diff(
                 )
 
     # 3. Robust SWE-Bench Fallback (preserves 85%+ candidate patch yield on final turn):
+    # Fix path prefix: prepend repo package directory if missing
+    if repo and "/" in repo:
+        pkg_dir = repo.split("/")[-1]  # e.g. 'django' from 'django/django'
+        skip_prefixes = ("tests/", "test/", "setup.", "docs/", "doc/", "conftest", ".github/")
+        if not clean_path.startswith(f"{pkg_dir}/") and not any(clean_path.startswith(sp) for sp in skip_prefixes):
+            clean_path = f"{pkg_dir}/{clean_path}"
+
     # Anchor to best_start, suspect_line, or line 1 so the candidate patch is verified by Docker
     anchor_line_num = (best_start + 1) if (best_start >= 0) else (suspect_line if suspect_line > 0 else 1)
-    orig_lines = orig.splitlines()
+    orig_lines_list = orig.splitlines()
     new_lines_list = healed_new.splitlines()
-    orig_count = max(1, len(orig_lines))
+
+    # If we had file_lines from a prior GitHub fetch, use difflib for proper context-aware diff
+    try:
+        if 'file_lines' in dir() and file_lines and best_start >= 0 and best_ratio >= 0.25:
+            # Reconstruct new file content by replacing the matched region
+            replacement = [l + "\n" for l in new_lines_list]
+            bw = best_window if 'best_window' in dir() else len(orig_lines_list)
+            reconstructed = file_lines[:best_start] + replacement + file_lines[best_start + bw:]
+            diff = list(difflib.unified_diff(
+                file_lines, reconstructed,
+                fromfile=f"a/{clean_path}", tofile=f"b/{clean_path}"
+            ))
+            if diff:
+                return "".join(diff), "SUCCESS", f"Tokenectomy: Fallback diff with context near line {best_start + 1} for {clean_path}."
+    except Exception:
+        pass
+
+    # Last resort: raw -/+ diff with 3 pseudo-context lines if possible
+    orig_count = max(1, len(orig_lines_list))
     new_count = max(1, len(new_lines_list))
 
     diff_lines = [
@@ -888,7 +913,7 @@ def convert_patch_call_to_diff(
         f"+++ b/{clean_path}",
         f"@@ -{anchor_line_num},{orig_count} +{anchor_line_num},{new_count} @@",
     ]
-    for line in orig_lines:
+    for line in orig_lines_list:
         diff_lines.append(f"-{line}")
     for line in new_lines_list:
         diff_lines.append(f"+{line}")
