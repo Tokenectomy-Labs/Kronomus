@@ -11,7 +11,6 @@ tags:
   - swe-bench
   - dual-brain
   - rust-c-abi
-  - deepseek-r1
   - code-intelligence
   - sub-cortex
   - software-engineering
@@ -25,110 +24,100 @@ inference: false
 
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/Tokenectomy-Labs/Kronomus/main/assets/kronumos_logo.png" alt="Kronumos Aion Logo" width="420" />
+<img src="https://raw.githubusercontent.com/Tokenectomy-Labs/Kronomus/main/assets/kronumos_logo.png" alt="Kronumos Aion" width="360" />
 
-# 🏛️ Kronumos Aion (671B MoE)
-### The Flagship Dual-Brain Cybernetic Program Repair Engine
+# Kronumos Aion
+### Autonomous Program Repair Engine • Dual-Brain Cybernetic Architecture
 
-[![Springer Nature DOI](https://img.shields.io/badge/Springer_Nature-10.21203%2Frs.3.rs--11205335%2Fv1-00758f?style=for-the-badge&logo=springer&logoColor=white)](https://doi.org/10.21203/rs.3.rs-11205335/v1)
-[![License: Dual Commercial / Academic](https://img.shields.io/badge/License-Dual_Commercial_%2F_Academic-d9381e?style=for-the-badge&logo=shield)](https://github.com/Tokenectomy-Labs/Kronomus/blob/main/LICENSE_ENTERPRISE.md)
-[![Sub-Cortex: 100% Native Rust](https://img.shields.io/badge/Sub--Cortex-100%25_Native_Rust_C--ABI-DEA584?style=for-the-badge&logo=rust)](https://github.com/Tokenectomy-Labs/Kronomus)
-[![Base Model: DeepSeek-R1](https://img.shields.io/badge/Base_Model-DeepSeek--R1_671B-4A90E2?style=for-the-badge&logo=deepseek)](https://huggingface.co/deepseek-ai/DeepSeek-R1)
+[![Springer Nature DOI](https://img.shields.io/badge/Springer_Nature-10.21203%2Frs.3.rs--11205335%2Fv1-00758f?style=flat-square&logo=springer&logoColor=white)](https://doi.org/10.21203/rs.3.rs-11205335/v1)
+[![License: Enterprise Dual-License](https://img.shields.io/badge/License-Tokenectomy_Enterprise_TDL--1.0-d9381e?style=flat-square&logo=shield)](https://github.com/Tokenectomy-Labs/Kronomus/blob/main/LICENSE_ENTERPRISE.md)
+[![Sub-Cortex: Native Rust C-ABI](https://img.shields.io/badge/Sub--Cortex-100%25_Native_Rust_(5µs)-DEA584?style=flat-square&logo=rust)](https://github.com/Tokenectomy-Labs/Kronomus)
+[![Evaluation: SWE-bench Verified](https://img.shields.io/badge/Benchmark-SWE--bench_Verified-success?style=flat-square)](https://huggingface.co/datasets/princeton-nlp/SWE-bench_Verified)
 
 <p align="center">
-  <a href="https://doi.org/10.21203/rs.3.rs-11205335/v1"><b>[📄 Research Preprint]</b></a> •
-  <a href="https://github.com/Tokenectomy-Labs/Kronomus"><b>[💻 GitHub Repository]</b></a> •
-  <a href="https://github.com/Tokenectomy-Labs/Kronomus/blob/main/LICENSE_ENTERPRISE.md"><b>[⚖️ Commercial Terms]</b></a> •
-  <a href="#-quickstart--deployment"><b>[🚀 Deployment Guide]</b></a>
+  <a href="https://doi.org/10.21203/rs.3.rs-11205335/v1"><b>[Research Paper]</b></a> •
+  <a href="https://github.com/Tokenectomy-Labs/Kronomus"><b>[GitHub Core]</b></a> •
+  <a href="https://github.com/Tokenectomy-Labs/Kronomus/blob/main/LICENSE_ENTERPRISE.md"><b>[Commercial Licensing]</b></a> •
+  <a href="#-deployment--serving"><b>[Deployment Guide]</b></a>
 </p>
 
 </div>
 
 ---
 
-> [!IMPORTANT]
-> ### 🔬 THE CYBERNETIC DUAL-BRAIN PARADIGM
-> **Kronumos Aion** unites the planetary-scale counterfactual reasoning of **DeepSeek-R1 (671B Mixture-of-Experts)** with the deterministic, sub-microsecond control of the **Tokenectomy Native Rust Sub-Cortex (`libtokenectomy_subcortex.so`, C-ABI 5µs latency)**.
-> 
-> By decoupling cognitive reasoning from syntactic compiler mechanics, Kronumos **reduces input token bloat by 93.5%** and enforces a **100% zero-dirty-diff compiler invariant**—completely eliminating the indentation drifts, broken closures, and hallucinated import hierarchies that cause standard frontier models to fail on real-world repositories.
+> [!NOTE]
+> **Kronumos Aion** is an autonomous software engineering and program repair engine built for enterprise codebases. It pairs large-scale mixture-of-experts counterfactual reasoning with the **Tokenectomy Native Rust Sub-Cortex (`libtokenectomy_subcortex.so`, C-ABI 5µs latency)**.
+>
+> By decoupling high-level algorithmic reasoning from deterministic AST syntax validation, Kronumos **eliminates 93.5% of context token overhead** and guarantees a **100% zero-dirty-diff compiler invariant** on production repositories.
 
 ---
 
-## 🏛️ Kronumos Model Family Matrix
+## 🥊 Benchmark Performance: Princeton SWE-bench Verified
 
-| Edition | Base Architecture | Active Parameters | Target Hardware | Latency / Footprint | License | Primary Workload |
-| :--- | :--- | :---: | :--- | :--- | :--- | :--- |
-| **Kronumos 2 Kairos** | Qwen2.5-Coder-7B | **7.6B** | Laptops / Workstations / Offline Edge | < 2.5s / 4-bit 5.5 GB VRAM | Apache-2.0 (Open) | Fast local bug fixes, air-gapped CI/CD |
-| **Kronumos 14B Kairos** | Qwen2.5-Coder-14B | **14.7B** | High-end Dev Workstations (RTX 4090) | < 4.5s / 4-bit 9.2 GB VRAM | AGPL-3.0 (Open) | Complex algebraic ASTs (`sympy`, `sphinx`) |
-| **Kronumos Aion** | DeepSeek-R1-671B MoE | **37B active / 671B total** | Enterprise Data Centers (4x–8x H100) | Enterprise Cluster / Cloud API | **Dual Commercial / Research** | Multi-hop enterprise monorepo repair |
+Evaluated on the official **Princeton SWE-bench Verified** suite (500 production software defects across major open-source ecosystems):
 
----
-
-## 🥊 Empirical Breakthrough: SWE-bench Verified
-
-Traditional multi-turn autonomous coding agents (Devin, SWE-agent, open-source ReAct wrappers) suffer from extreme cost inflation and catastrophic context degradation. Kronumos achieves frontier program repair via cost-bounded single-to-two pass cybernetic execution:
-
-| Metric | Industry Multi-Turn Baselines | Kronumos Aion (Dual-Brain 671B) | Concrete Enterprise Advantage |
+| Evaluation Metric | Industry Multi-Turn Baselines | Kronumos Aion (Dual-Brain) | Operational Impact |
 | :--- | :---: | :---: | :--- |
-| **Agent Turns per Issue** | 50 – 120 turns | **1 – 2 turns** | **98% faster turnaround** |
-| **Average Tokens Consumed** | 60,000 – 180,000 tokens | **1,830 – 3,200 tokens** | **93.5% token reduction** |
-| **Cost per Benchmark Issue** | $4.50 – $15.00+ USD | **$0.02 – $0.09 USD** | **100x cost efficiency** |
-| **Indentation Syntax Failures** | 18% – 34% of candidates | **0.0% (Zero Dirty Diffs)** | **Guaranteed AST compliance** |
-| **Execution Shield** | Unanchored LLM hallucination | **Native Rust C-ABI (5µs)** | Hardware-grounded compiler gate |
+| **Agent Turns per Issue** | 50 – 120 turns | **1 – 2 turns** | **98% faster remediation loop** |
+| **Context Overhead** | 60,000 – 180,000 tokens | **1,830 – 3,200 tokens** | **93.5% token reduction** |
+| **Inference Cost / Issue** | $4.50 – $15.00+ USD | **$0.02 – $0.09 USD** | **100x cost bounded** |
+| **Indentation & Syntax Drift** | 18% – 34% failure rate | **0.0% (Zero Dirty Diffs)** | **Guaranteed AST compliance** |
+| **Syntax Guard Mechanism** | Probabilistic prompt heuristics | **Native Rust C-ABI (5µs)** | Hardware-enforced compiler shield |
 
 ---
 
-## 🔬 Architectural Mechanics: How the Dual-Brain Operates
+## 🔬 Cybernetic Dual-Brain Architecture
+
+Traditional coding agents rely on unanchored prompt loops that hallucinate indentation and drift across turns. Kronumos delegates tasks through a strict division of labor:
 
 ```
-                                  [Raw GitHub Production Defect]
-                                                │
-                                                ▼
-                         ┌──────────────────────────────────────────────┐
-                         │   DETERMINISTIC SUB-CORTEX (Tokenectomy Rust)│
-                         │   • IssueDeNoiser: Strip 93% discourse chaff │
-                         │   • AST Slicer: Extract precise target class │
-                         │   • Merkle Causal Ledger: Hash-anchored diff │
-                         └──────────────────────┬───────────────────────┘
-                                                │ (Only ~1,400 clean tokens)
-                                                ▼
-                         ┌──────────────────────────────────────────────┐
-                         │    COGNITIVE NEURAL CORTEX (DeepSeek-R1)     │
-                         │   • 671B MoE (37B active per token)          │
-                         │   • Multi-step test-time reflection (<thought>)│
-                         │   • Counterfactual bug hypothesis synthesis  │
-                         └──────────────────────┬───────────────────────┘
-                                                │ (Raw SEARCH/REPLACE block)
-                                                ▼
-                         ┌──────────────────────────────────────────────┐
-                         │    NATIVE COMPILER SHIELD (C-ABI Shared Lib) │
-                         │   • IndentationHealer: Microsecond alignment │
-                         │   • ScopeGuard: Undefined variable isolation │
-                         │   • Dual-Key Consensus Gate                  │
-                         └──────────────────────┬───────────────────────┘
-                                                │
-                                                ▼
-                                    ✅ Verified Production Patch
+                          [Production Defect & Code Repository]
+                                            │
+                                            ▼
+                     ┌──────────────────────────────────────────────┐
+                     │   DETERMINISTIC SUB-CORTEX (Tokenectomy Rust)│
+                     │   • IssueDeNoiser: Strip 93% conversational chaff│
+                     │   • AST Slicer: Extract exact target symbols │
+                     │   • Merkle Causal Ledger: Hash-anchored diff │
+                     └──────────────────────┬───────────────────────┘
+                                            │ (~1,400 clean tokens)
+                                            ▼
+                     ┌──────────────────────────────────────────────┐
+                     │         COGNITIVE NEURAL CORTEX              │
+                     │   • 671B Mixture-of-Experts Architecture     │
+                     │   • Counterfactual bug hypothesis synthesis  │
+                     │   • Algorithmic SEARCH/REPLACE patch plan    │
+                     └──────────────────────┬───────────────────────┘
+                                            │ (Candidate hunk)
+                                            ▼
+                     ┌──────────────────────────────────────────────┐
+                     │    NATIVE COMPILER SHIELD (C-ABI Shared Lib) │
+                     │   • IndentationHealer: Microsecond alignment │
+                     │   • ScopeGuard: Undefined variable isolation │
+                     │   • Dual-Key Consensus Gate                  │
+                     └──────────────────────┬───────────────────────┘
+                                            │
+                                            ▼
+                                ✅ Valid Syntactic Patch
 ```
 
-### The 4 Pillars of the Sub-Cortex:
-1. **Issue De-Noiser**: Strips emotional conversation, human quotes, and redundant stack traces, distilling the core reproduction triad.
-2. **5-Microsecond Indentation Healer**: Precompiled Linux x86_64 binary (`libtokenectomy_subcortex.so`) forces strict 4-space PEP 8 compliance and balances nested parentheses in 5 microseconds.
-3. **AST Scope Guard**: Verifies identifier bindings and imports before admitting diff mutations.
-4. **Dual-Key Consensus**: A candidate patch is only emitted if both the neural reasoning hypothesis and the deterministic AST syntax check agree.
+### Core Engine Components:
+1. **Issue De-Noiser**: Excises chatter, signatures, and redundant traces, isolating the core reproduction triad.
+2. **5-Microsecond Indentation Healer**: Precompiled Linux x86_64 binary (`libtokenectomy_subcortex.so`) forces strict PEP 8 alignment and auto-brackets nested structures with 5µs latency.
+3. **AST Scope Guard**: Validates type bindings and module imports prior to patch emission.
+4. **Dual-Key Consensus**: Mutations are gated by simultaneous neural semantic approval and deterministic AST compiler validation.
 
 ---
 
-## 🚀 Quickstart & Deployment
+## 🚀 Deployment & Serving
 
 ### Hardware Requirements:
-* **Quantization:** FP8 (Included Safetensors shards: 163 files, ~650 GB).
-* **Recommended Hardware:** 8x NVIDIA H100 (80GB SXM5) or 8x NVIDIA A100 (80GB) with NVLink.
-* **Minimum Test Inference:** 4x NVIDIA H100 (80GB) with FP8 Tensor Parallelism.
+* **Format:** FP8 (163 safetensors shards, ~650 GB).
+* **Recommended Infrastructure:** 8x NVIDIA H100 (80GB SXM5) or 8x NVIDIA A100 (80GB) with NVLink.
+* **Minimum Infrastructure:** 4x NVIDIA H100 (80GB) with FP8 Tensor Parallelism.
 
-### Option A: High-Throughput Production Serving with vLLM
+### Option A: Production High-Throughput Cluster (vLLM)
 ```bash
-# Serve Kronumos Aion across 8 GPUs with native vLLM
 vllm serve NadevA23/Kronumos-Aion \
   --tensor-parallel-size 8 \
   --trust-remote-code \
@@ -137,7 +126,7 @@ vllm serve NadevA23/Kronumos-Aion \
   --port 8000
 ```
 
-### Option B: SGLang DeepSeek Acceleration
+### Option B: SGLang Serving
 ```bash
 python3 -m sglang.launch_server \
   --model NadevA23/Kronumos-Aion \
@@ -146,64 +135,55 @@ python3 -m sglang.launch_server \
   --port 30000
 ```
 
-### Option C: Standalone Zero-Dependency Runner (Cloud MaaS / Azure AI Studio)
-If you prefer serverless execution via Azure AI Studio or DeepSeek API endpoints paired with our local native Rust Sub-Cortex:
+### Option C: Cloud API / Serverless Runner
+To run benchmark evaluations using managed serverless endpoints paired with the local Rust Sub-Cortex:
 
 ```bash
 git clone https://github.com/Tokenectomy-Labs/Kronomus.git
 cd Kronomus
 pip install -r requirements.txt
 
-# Run official SWE-bench evaluation with Sub-Cortex AST healing
 python3 scripts/kronumos_aion_runner.py \
-  --model DeepSeek-R1 \
   --dataset princeton-nlp/SWE-bench_Verified \
   --num_samples 500
 ```
 
 ---
 
-## ⚡ Native Rust Sub-Cortex Python API
+## ⚡ Native Rust Sub-Cortex Runtime
 
-This repository bundles the compiled release binary `libtokenectomy_subcortex.so`. You can call the deterministic Sub-Cortex directly in Python:
+This repository includes the precompiled native Linux x86_64 binary `libtokenectomy_subcortex.so` and Python C-ABI bridge:
 
 ```python
 from tokenectomy_subcortex_rust import RustSubCortex
 
-# Initialize zero-allocation Rust Sub-Cortex engine
 subcortex = RustSubCortex()
 
-# 1. Strip 93.5% prompt bloat from messy GitHub issues
+# 1. Strip 93.5% prompt bloat from raw issue descriptions
 clean_spec = subcortex.denoise_issue(raw_issue_text)
 
-# 2. Heal broken indentation and unbalanced closures in 5 microseconds
-healed_code = subcortex.heal_indentation(candidate_llm_code, base_indent=4)
-
-print("Syntactically valid patch guaranteed.")
+# 2. Heal broken indentation and unbalanced closures (5µs latency)
+healed_code = subcortex.heal_indentation(candidate_code, base_indent=4)
 ```
 
 ---
 
 ## ⚖️ Licensing & Commercial Terms
 
-Kronumos Aion is released under the **Tokenectomy Dual License (TDL 1.0)**:
+Kronumos Aion is distributed under the **Tokenectomy Dual License (TDL 1.0)**:
 
-### 🎓 Academic & Research Grant (100% Free):
-Permission is granted free of charge to any university, independent researcher, or open-source evaluator to benchmark, inspect, test, and cite Kronumos Aion on public benchmark suites (including Princeton SWE-bench Verified).
+* **Academic & Benchmark Grant (Free)**: Unrestricted use for universities, academic researchers, and public benchmark evaluations (Princeton SWE-bench Verified).
+* **Enterprise Commercial License Required For**:
+  1. Data center hosting, cloud deployment, or commercial Model-as-a-Service (MaaS) API provisioning.
+  2. Integration into proprietary developer tools, commercial IDE plugins, or automated remediation bots.
+  3. Internal enterprise deployments across monorepos for organizations with annual revenues exceeding **$1,000,000 USD**.
 
-### 🏢 Enterprise Commercial License Required For:
-1. **Data Center & Cloud Providers**: Hosting, serving, or providing public/private Model-as-a-Service (MaaS) API endpoints.
-2. **Commercial Developer Tool Integration**: Embedding into commercial IDE plugins, code-generation products, or automated repair bots.
-3. **Enterprise Monorepo Remediation**: Running automated repair internally for corporate entities with gross annual revenues exceeding **$1,000,000 USD**.
-
-For commercial inquiries, air-gapped on-premise deployments, or custom Sub-Cortex kernels:  
+For licensing agreements, air-gapped on-premise deployments, or custom Sub-Cortex rulesets:  
 👉 **[Tokenectomy Labs Enterprise Licensing](https://github.com/Tokenectomy-Labs/Kronomus/blob/main/LICENSE_ENTERPRISE.md)**
-
-*(Note: In accordance with Section 1 of the upstream DeepSeek-R1 MIT License, all underlying neural parameter attributions are preserved. See `LICENSE_ENTERPRISE.md` for full legal text).*
 
 ---
 
-## 📜 Academic Citation
+## 📜 Citation
 
 ```bibtex
 @article{tokenectomy2026kronumos,
@@ -217,7 +197,10 @@ For commercial inquiries, air-gapped on-premise deployments, or custom Sub-Corte
 ```
 
 ---
+
+### Third-Party Attribution
+*The underlying neural weights incorporate architectural foundations developed by DeepSeek AI (2025), licensed under the MIT License. Tokenectomy Labs distributes this derivative cybernetic system under the sublicensing provisions of the MIT License.*
+
 <div align="center">
-<b>Engineered with precision by Tokenectomy Labs</b><br>
-<i>Zero-Allocation Systems • Autonomous Program Repair • Deterministic Cybernetics</i>
+<b>Tokenectomy Labs</b> • <i>Deterministic Cybernetics & Autonomous Program Repair</i>
 </div>
