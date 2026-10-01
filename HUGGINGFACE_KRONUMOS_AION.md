@@ -15,6 +15,8 @@ tags:
 - software-engineering
 datasets:
 - princeton-nlp/SWE-bench_Verified
+pipeline_tag: reinforcement-learning
+inference: false
 ---
 
 # 🏛️ Kronumos Aion — Flagship Dual-Brain Cybernetic Program Repair Engine
