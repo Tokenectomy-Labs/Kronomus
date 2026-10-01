@@ -14,15 +14,22 @@ import ctypes
 import json
 from typing import List, Dict, Optional, Tuple
 
-_LIB_PATH = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-    "crates", "tokenectomy-subcortex", "target", "release", "libtokenectomy_subcortex.so"
-)
+_CANDIDATE_PATHS = [
+    os.environ.get("TOKENECTOMY_LIB_PATH", ""),
+    os.path.join(os.getcwd(), "libtokenectomy_subcortex.so"),
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "libtokenectomy_subcortex.so"),
+    os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "libtokenectomy_subcortex.so"),
+    os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "crates", "tokenectomy-subcortex", "target", "release", "libtokenectomy_subcortex.so"),
+    "/usr/local/lib/libtokenectomy_subcortex.so",
+]
+
+_LIB_PATH = next((p for p in _CANDIDATE_PATHS if p and os.path.exists(p)), None)
 
 _rust_lib = None
-if os.path.exists(_LIB_PATH):
+if _LIB_PATH:
     try:
         _rust_lib = ctypes.CDLL(_LIB_PATH)
+        print(f"⚡ [Tokenectomy Rust Engine]: ACTIVE (Loaded native C-ABI from {_LIB_PATH})", flush=True)
         
         # tokenectomy_heal_indentation
         _rust_lib.tokenectomy_heal_indentation.argtypes = [
