@@ -334,9 +334,40 @@ def reconstruct_and_diff(file_content: str, orig_lines: List[str], new_lines: Li
     if best_ratio < 0.40 or best_start < 0:
         return None
 
-    # Reconstruct new content
-    replacement = [l + "\n" for l in new_lines]
-    reconstructed = file_lines_raw[:best_start] + replacement + file_lines_raw[best_start + best_window:]
+    # Detect anchor indentation from target file location
+    anchor_line = file_lines_raw[best_start] if best_start < len(file_lines_raw) else ""
+    anchor_indent = anchor_line[:len(anchor_line) - len(anchor_line.lstrip())]
+
+    orig_code_str = "\n".join(orig_lines)
+    new_code_str = "\n".join(new_lines)
+
+    # ⚡ Zero-Token Native Rust Sub-Cortex Indentation Healing:
+    # Eliminates Python IndentationError by rebasing to target anchor indent in microseconds
+    try:
+        from scripts.tokenectomy_subcortex_rust import RustSubCortex
+        healed_new_str = RustSubCortex.heal_indentation(orig_code_str, new_code_str, anchor_indent)
+    except Exception:
+        healed_new_str = new_code_str
+
+    healed_replacement = [l + "\n" for l in healed_new_str.splitlines()]
+    reconstructed = file_lines_raw[:best_start] + healed_replacement + file_lines_raw[best_start + best_window:]
+    reconstructed_str = "".join(reconstructed)
+
+    # Verify that the reconstructed file compiles cleanly as Python AST
+    if file_path.endswith(".py"):
+        try:
+            import ast
+            ast.parse(reconstructed_str)
+        except (SyntaxError, IndentationError):
+            # If healed version had syntax issues, test original new_lines fallback
+            replacement_raw = [l + "\n" for l in new_lines]
+            reconstructed_raw = file_lines_raw[:best_start] + replacement_raw + file_lines_raw[best_start + best_window:]
+            try:
+                import ast
+                ast.parse("".join(reconstructed_raw))
+                reconstructed = reconstructed_raw
+            except Exception:
+                pass
 
     diff = list(difflib.unified_diff(
         file_lines_raw,

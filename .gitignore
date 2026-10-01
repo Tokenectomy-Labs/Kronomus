@@ -35,3 +35,7 @@ dataset/raw/
 Tokenectomy/
 hf_space/
 hf_kronumos_space/
+
+# Local Sub-Cortex Rust Engine
+crates/
+
