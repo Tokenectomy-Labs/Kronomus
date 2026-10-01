@@ -1,73 +1,69 @@
-# 🚀 Microsoft for Startups Founders Hub — Official Application Package
-**Project:** Kronumos & Tokenectomy Labs  
-**Target Program:** Microsoft for Startups Founders Hub (Azure Cloud Credits Tier: Prototype / MVP)  
-**URL Pendaftaran:** [https://foundershub.startups.microsoft.com/](https://foundershub.startups.microsoft.com/)
+# Microsoft for Startups Founders Hub — Application Dossier
+**Project:** Kronumos / Tokenectomy Labs  
+**URL:** [https://foundershub.startups.microsoft.com/](https://foundershub.startups.microsoft.com/)  
+**Stage:** Working Prototype / Pre-Seed  
 
 ---
 
-## 📋 Section 1: Startup Basics
+## 1. Startup Basics
 
-* **Company / Startup Name:** `Kronumos AI` (atau `Tokenectomy Labs`)
-* **Primary URL / Website:** `https://github.com/Tokenectomy-Labs/Kronomus`
-* **Country / Region:** Indonesia
-* **Stage:** `Working Prototype / In-Development MVP`
-* **Funding Status:** `Bootstrapped (Pre-Seed)`
-* **Team Size:** `1 - 3 People`
-
----
-
-## 🎯 Section 2: Elevator Pitch & Problem Statement
-
-### 1. Elevator Pitch (Maksimal 1-2 Kalimat)
-> **English (Copy-Paste ini):**
-> "Kronumos is an autonomous, cost-bounded software repair engine that combines small-footprint open LLMs with Tokenectomy—a sub-millisecond native Rust Sub-Cortex—to autonomously diagnose and repair production bugs on SWE-bench Verified with zero-token AST healing."
-
-### 2. What problem are you solving? (Masalah yang Dipecahkan)
-> **English (Copy-Paste ini):**
-> "Current AI coding agents rely on monolithic, billion-parameter cloud LLMs (such as GPT-4o or Claude 3.5 Sonnet) that consume hundreds of thousands of tokens per issue, costing enterprises hundreds of dollars per bug fix. Furthermore, cloud-dependent agents pose severe data privacy risks for financial and defense codebases, and frequently fail during automated patching due to whitespace, indentation, and Abstract Syntax Tree (AST) syntax rejection during git apply. There is currently no high-performance, cost-bounded, on-premise automated program repair (APR) solution."
-
-### 3. How does your product solve this problem? (Solusi Produk)
-> **English (Copy-Paste ini):**
-> "Kronumos introduces a hybrid Neurosymbolic Dual-Cortex architecture:
-> 1. **Neural Cortex (Kronumos 8B):** A fine-tuned, cost-bounded open model that reasons over defect specifications and formulates surgical code modifications.
-> 2. **Symbolic Sub-Cortex (Tokenectomy Rust Engine):** A native, zero-allocation Rust engine running via C-ABI that deterministically heals block indentation, validates AST scopes in under 30 microseconds, and eliminates token waste before LLM ingestion.
-> 
-> By offloading syntactic validation and whitespace alignment to native Rust machine code, Kronumos achieves high-accuracy candidate patch generation on Princeton's official SWE-bench Verified benchmark while slashing token consumption by over 70% compared to traditional prompt-heavy agents."
+* **Company / Project Name:** Kronumos
+* **Primary URL:** `https://github.com/Tokenectomy-Labs/Kronomus`
+* **Country:** Indonesia
+* **Stage:** Working Prototype / In-Development MVP
+* **Funding:** Bootstrapped (Pre-Seed)
+* **Team Size:** 3
 
 ---
 
-## 🏢 Section 3: Target Market & Business Model
+## 2. Elevator Pitch & Problem Statement
 
-### 1. Who is your target customer? (Target Pasar)
-> **English (Copy-Paste ini):**
-> "- **Enterprise Software Organizations & Fintech:** Teams managing proprietary on-premise codebases that require automated bug resolution without streaming proprietary IP to external cloud APIs.
-> - **Developer Tool Providers & CI/CD Platforms:** Continuous integration systems looking to auto-triage, patch, and PR pull-request regressions autonomously before human review.
-> - **Open-Source Maintainers:** High-throughput repository triage and bug healing."
+### Elevator Pitch (1-2 sentences)
+We build an automated bug-fixing engine that pairs a small, fine-tuned open model with a native Rust compiler extension. It cuts the token cost of fixing code issues by ~70% and prevents the indentation and git-apply rejections that break most LLM patches.
 
-### 2. What is your business model? (Model Monetisasi)
-> **English (Copy-Paste ini):**
-> "- **Tier 1 (Open-Weight Community):** Open-source 8B model and OSS CLI tooling for individual developers.
-> - **Tier 2 (Enterprise Sovereign / On-Premise License):** B2B annual licensing for Tokenectomy-Pro & Ultra native binary distribution with air-gapped security, private registry compliance, and high-concurrency AST healing.
-> - **Tier 3 (Managed Cloud API):** Cost-per-resolved-issue automated triage pipeline for cloud teams."
+### What problem are you solving?
+Most AI coding agents feed entire raw stack traces (often 80k to 150k tokens) into massive cloud models like Claude 3.5 Sonnet or GPT-4o. This burns $5 to $15 per issue and routinely fails on real repositories because LLMs struggle with precise whitespace, indentation, and AST syntax alignment when generating diffs. When the patch hits `git apply`, it fails before tests even run. 
+
+On top of cost and syntax brittleness, banks, defense contractors, and fintech engineering teams cannot legally send proprietary source code to external closed-model APIs. There is no reliable, low-cost bug repair tool they can run locally inside their own infrastructure.
+
+### How does your product solve this?
+We split the task between a native compiler engine and a small neural model instead of forcing an LLM to do everything:
+
+1. **Deterministic Rust Sub-Cortex:** Our native Rust library (`libtokenectomy_subcortex.so`, linked via C-ABI) parses the traceback, strips out framework noise (`node_modules`, `site-packages`), and slices the target AST function before the model runs. After generation, it heals block indentation and checks undeclared scopes in under 30 microseconds.
+2. **Fine-Tuned Neural Cortex:** A specialized 8B/14B parameter open model that only reasons over the surgical repair logic, running unquantized on a single GPU.
+
+By letting compiled Rust handle syntax and diff mechanics, we get clean, reproducible POSIX patches that actually apply cleanly in Docker test harnesses, while reducing token costs to under $0.05 per patch.
+
+---
+
+## 3. Market & Business Model
+
+### Who is your target customer?
+* **Fintech, Banking, and Defense Engineering Teams:** Teams with strict compliance constraints who need automated bug triage in CI/CD without leaking intellectual property outside their firewall.
+* **Mid-to-Large Software Engineering Orgs:** Teams spending thousands of dollars monthly on AI developer seat licenses who want automated patch verification on regression issues before human review.
+* **CI/CD Platform Integrators:** Developer tool platforms looking for a fast, headless bug-fixing engine.
+
+### What is your business model?
+* **Community Edition (Open Source):** Free open-weight 8B model and CLI for individual developers.
+* **Enterprise Self-Hosted License ($40,000 – $80,000 / year):** B2B annual license for our air-gapped Rust binary, multi-language AST healing, and priority SLA for on-premise clusters.
+* **Cloud API:** Pay-per-verified-patch endpoint for development teams running on cloud CI/CD.
 
 ---
 
-## ☁️ Section 4: Technical Architecture & Azure Alignment (KUNCI KELULUSAN!)
+## 4. How will you use Microsoft Azure compute credits?
 
-*Microsoft sangat memperhatikan bagaimana kamu akan memakai kredit Azure mereka. Bagian ini menjelaskan secara rinci kebutuhan Azure GPU.*
+We need Azure compute for three specific workloads:
 
-### How will you use Microsoft Azure & Cloud Credits?
-> **English (Copy-Paste ini):**
-> "We will utilize Microsoft Azure infrastructure for three mission-critical compute workloads:
-> 1. **High-Performance GPU Compute (Azure ND A100 / NC A100 v4 Series):** Running continuous, parallel inference benchmarks on Princeton's 500-instance SWE-bench Verified dataset, as well as distributed fine-tuning of next-generation 14B and 32B Kronumos models.
-> 2. **Containerized SWE-Bench Sandbox Validation:** Orchestrating hundreds of parallel, isolated Docker containers on Azure Kubernetes Service (AKS) / Azure Container Instances (ACI) to execute official pytest suites for patch verification.
-> 3. **Azure OpenAI & GitHub Ecosystem Integration:** Leveraging Azure OpenAI endpoints for cross-model comparative ablation studies, while integrating our autonomous fix pipelines directly into GitHub Actions and GitHub Copilot Workspace."
+1. **GPU Clusters (Azure ND A100 / NC A100 v4):** We currently benchmark on single-GPU instances. We need Azure A100 compute to train our next 14B and 32B model iterations and run 500-instance evaluation batches on Princeton's SWE-bench Verified suite.
+2. **Parallel Docker Sandboxing (Azure Container Instances / AKS):** Evaluating SWE-bench requires spinning up hundreds of isolated containers with different Python/C environments to run repository test suites (`pytest`). Running these concurrently requires dedicated container capacity.
+3. **GitHub Ecosystem Integration:** We want to deploy Kronumos as a native GitHub Action so engineering teams can automatically triage and draft pull requests for regression issues directly inside GitHub Enterprise.
 
 ---
+
+## 5. Track Record & Verification Links
 
 * **Research Lead:** Muhammad Naufal Daffa ([ORCID: 0009-0000-7909-4916](https://orcid.org/0009-0000-7909-4916))
-* **Springer Nature Preprint (Research Square):** DOI: [`10.21203/rs.3.rs-11205335/v1`](https://doi.org/10.21203/rs.3.rs-11205335/v1) (*Kronumos 2 Kairos: Cost-Bounded Automated Program Repair via Dual-Brain Cybernetic Sub-Cortex on SWE-bench Verified*)
-* **CERN Zenodo Permanent Archive:** DOI: [`10.5281/zenodo.22929676`](https://doi.org/10.5281/zenodo.22929676)
-* **Hugging Face Model Weights:** `https://huggingface.co/NadevA23/Kronumos`
-* **GitHub Repository:** `https://github.com/Tokenectomy-Labs/Kronomus`
-
+* **Preprint on Springer Nature Portfolio (Research Square):** DOI: [`10.21203/rs.3.rs-11205335/v1`](https://doi.org/10.21203/rs.3.rs-11205335/v1) (*Kronumos 2 Kairos: Cost-Bounded Automated Program Repair via Dual-Brain Cybernetic Sub-Cortex on SWE-bench Verified*)
+* **Permanent Archive on CERN Zenodo:** DOI: [`10.5281/zenodo.22929676`](https://doi.org/10.5281/zenodo.22929676)
+* **Open Weights on Hugging Face:** [`NadevA23/Kronumos`](https://huggingface.co/NadevA23/Kronumos)
+* **Open Source Repository:** [`Tokenectomy-Labs/Kronomus`](https://github.com/Tokenectomy-Labs/Kronomus)
