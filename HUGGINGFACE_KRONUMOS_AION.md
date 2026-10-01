@@ -4,17 +4,17 @@ language:
 license: mit
 library_name: transformers
 tags:
-- code
 - automated-program-repair
-- software-engineering
+- autonomous-agent
 - swe-bench
 - dual-brain
-- rust
+- rust-c-abi
 - deepseek-r1
+- code-intelligence
 - sub-cortex
+- software-engineering
 datasets:
 - princeton-nlp/SWE-bench_Verified
-pipeline_tag: text-generation
 ---
 
 # 🏛️ Kronumos Aion — Flagship Dual-Brain Cybernetic Program Repair Engine
@@ -22,7 +22,7 @@ pipeline_tag: text-generation
 [![Springer Nature DOI](https://img.shields.io/badge/Springer_Nature-10.21203%2Frs.3.rs--11205335%2Fv1-00758f?style=flat-square&logo=springer&logoColor=white)](https://doi.org/10.21203/rs.3.rs-11205335/v1)
 [![ORCID](https://img.shields.io/badge/ORCID-0009--0000--7909--4916-A6CE39?style=flat-square&logo=orcid&logoColor=white)](https://orcid.org/0009-0000-7909-4916)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Language: Rust & Python](https://img.shields.io/badge/Engine-100%25_Native_Rust_C--ABI-DEA584?style=flat-square&logo=rust)](https://github.com/Tokenectomy-Labs/Kronomus)
+[![Engine: 100% Native Rust C-ABI](https://img.shields.io/badge/Engine-100%25_Native_Rust_C--ABI-DEA584?style=flat-square&logo=rust)](https://github.com/Tokenectomy-Labs/Kronomus)
 
 **Kronumos Aion** is the flagship enterprise-scale edition of the Kronumos automated program repair (APR) ecosystem. It unites the deep test-time counterfactual reasoning of **DeepSeek-R1 (671B MoE)** with the sub-millisecond deterministic control of the **Tokenectomy Native Rust Sub-Cortex (C-ABI 5µs)**.
 
