@@ -11,10 +11,11 @@
 * **Founders:** 
   1. Lead AI & Systems Architect (CTO)
   2. Commercial & Operations Lead (CEO)
-  3. Product & Frontend Design Lead (CPO)
-* **Preprint / DOI:** Zenodo DOI Registered Research Paper (`kronumos_paper_merged_v2.md`)
+* **Preprints & Scholarly Records:** 
+  * **Springer Nature Preprint (Research Square):** DOI: [`10.21203/rs.3.rs-11205335/v1`](https://doi.org/10.21203/rs.3.rs-11205335/v1)
+  * **CERN Zenodo Permanent Archive:** DOI: [`10.5281/zenodo.22929676`](https://doi.org/10.5281/zenodo.22929676)
+  * **Research Lead ORCID:** Muhammad Naufal Daffa ([ORCID: 0009-0000-7909-4916](https://orcid.org/0009-0000-7909-4916))
 
----
 
 ### 2. What are you building? (In 1-2 plain sentences)
 > We are building **Kronumos**, a cost-bounded, neurosymbolic autonomous code repair engine that slashes software debugging costs by **95%** ($0.05 vs $10.00 per patch) by pairing fine-tuned open-weight neural models with an ultra-fast, zero-allocation native Rust compiler Sub-Cortex.

@@ -65,8 +65,9 @@
 
 ---
 
-## 🔗 Section 5: Verification Links (Lampiran Nyata)
-
-* **Hugging Face Model:** `https://huggingface.co/NadevA23/Kronumos`
+* **Research Lead:** Muhammad Naufal Daffa ([ORCID: 0009-0000-7909-4916](https://orcid.org/0009-0000-7909-4916))
+* **Springer Nature Preprint (Research Square):** DOI: [`10.21203/rs.3.rs-11205335/v1`](https://doi.org/10.21203/rs.3.rs-11205335/v1) (*Kronumos 2 Kairos: Cost-Bounded Automated Program Repair via Dual-Brain Cybernetic Sub-Cortex on SWE-bench Verified*)
+* **CERN Zenodo Permanent Archive:** DOI: [`10.5281/zenodo.22929676`](https://doi.org/10.5281/zenodo.22929676)
+* **Hugging Face Model Weights:** `https://huggingface.co/NadevA23/Kronumos`
 * **GitHub Repository:** `https://github.com/Tokenectomy-Labs/Kronomus`
-* **Zenodo Research Preprint:** DOI: `10.5281/zenodo.17245799` ("Kronumos: Cost-Bounded Automated Program Repair via Context Surgery and POSIX Diff Re-Anchoring on SWE-bench Verified")
+
