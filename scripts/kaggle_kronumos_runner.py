@@ -1016,7 +1016,14 @@ class KronumosBenchmarkRunner:
             self.tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
             
             print(f"⚡ Loading model weights (4-bit={load_in_4bit})...")
-            if load_in_4bit:
+            if "bnb-4bit" in model_id.lower() or "4bit" in model_id.lower():
+                self.model = AutoModelForCausalLM.from_pretrained(
+                    model_id,
+                    device_map="auto",
+                    torch_dtype=torch.bfloat16,
+                    trust_remote_code=True,
+                )
+            elif load_in_4bit:
                 bnb_config = BitsAndBytesConfig(
                     load_in_4bit=True,
                     bnb_4bit_quant_type="nf4",
