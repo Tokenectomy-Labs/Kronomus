@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-⚡ Kronumos 72B Batch Evaluator for Google Colab
-=================================================
+⚡ Kronumos 72B Batch Evaluator for Google Colab (with Bulletproof Auto-Resume)
+================================================================================
 Dapat dijalankan langsung di Colab dengan:
   %run -i scripts/colab_batch_72b.py
 atau via terminal:
-  python scripts/colab_batch_72b.py --num_samples 5
+  python scripts/colab_batch_72b.py --num_samples 500
 """
 
 import os
@@ -32,9 +32,9 @@ except ImportError:
 
 def run_batch():
     parser = argparse.ArgumentParser(description="Kronumos 72B Colab Batch Runner")
-    parser.add_argument("--num_samples", type=int, default=5, help="Jumlah soal yang akan diuji (default: 5)")
+    parser.add_argument("--num_samples", type=int, default=500, help="Jumlah soal yang akan diuji (default: 500)")
     parser.add_argument("--max_turns", type=int, default=3, help="Maksimal turns per issue (default: 3)")
-    parser.add_argument("--output_dir", type=str, default="output_colab_72b_5", help="Direktori output")
+    parser.add_argument("--output_dir", type=str, default="output_colab_72b_500", help="Direktori output")
     
     # Hanya parse args jika dijalankan via CLI, abaikan argumen jupyter jika via %run
     if any(arg.startswith("--") for arg in sys.argv):
@@ -67,16 +67,44 @@ def run_batch():
         dataset = load_dataset("princeton-nlp/SWE-bench_Verified", split="test")
         globals()["ds"] = dataset
 
+    # 3. Checkpoint Detection & Auto-Resume (Anti-Data-Loss)
+    completed_ids = set()
+    results = []
+    if os.path.exists(pred_file):
+        with open(pred_file, "r", encoding="utf-8") as pf:
+            for line in pf:
+                if line.strip():
+                    try:
+                        entry = json.loads(line)
+                        if entry.get("instance_id"):
+                            completed_ids.add(entry["instance_id"])
+                    except json.JSONDecodeError:
+                        pass
+        if completed_ids:
+            print(f"🔄 Checkpoint terdeteksi! {len(completed_ids)} soal sudah selesai (otomatis di-skip).", flush=True)
+
+    if os.path.exists(metrics_file):
+        try:
+            with open(metrics_file, "r", encoding="utf-8") as mf:
+                existing_metrics = json.load(mf)
+                if isinstance(existing_metrics, dict) and "summary" in existing_metrics:
+                    results = existing_metrics["summary"]
+        except Exception:
+            pass
+
     num_eval = min(args.num_samples, len(dataset))
     instances = [dataset[i] for i in range(num_eval)]
-    results = []
 
-    print(f"\n🎯 Memulai evaluasi batch {num_eval} soal SWE-bench Verified (Max turns: {args.max_turns})...\n")
+    print(f"\n🎯 Target evaluasi: {num_eval} soal SWE-bench Verified (Max turns: {args.max_turns})...\n")
 
     for i, inst in enumerate(instances):
         iid = inst["instance_id"]
+        if iid in completed_ids:
+            continue
+
         repo = inst.get("repo", "unknown")
-        print(f"[{i+1}/{num_eval}] 🔧 Memproses: {iid} ({repo})...", flush=True)
+        progress_str = f"[{len(completed_ids) + 1}/{num_eval}]"
+        print(f"{progress_str} 🔧 Memproses: {iid} ({repo})...", flush=True)
 
         t0 = time.time()
         res = active_runner.solve_instance(inst, max_turns=args.max_turns)
@@ -95,7 +123,9 @@ def run_batch():
         # Simpan prediksi real-time (flush ke disk)
         with open(pred_file, "a", encoding="utf-8") as pf:
             pf.write(json.dumps(pred_entry) + "\n")
+            pf.flush()
 
+        completed_ids.add(iid)
         results.append({
             "instance_id": iid,
             "repo": repo,
@@ -105,16 +135,16 @@ def run_batch():
             "latency_sec": elapsed
         })
 
+        # Simpan ringkasan metrik real-time
+        with open(metrics_file, "w", encoding="utf-8") as mf:
+            json.dump({"summary": results}, mf, indent=2)
+
         status_badge = "✅ PATCH VALID" if has_patch else "❌ TANPA PATCH"
         print(f"    ↳ {status_badge} | Tokens: {res.get('total_tokens', 0)} | Waktu: {elapsed}s\n", flush=True)
 
-    # Simpan ringkasan metrik
-    with open(metrics_file, "w", encoding="utf-8") as mf:
-        json.dump({"summary": results}, mf, indent=2)
-
-    valid_count = sum(1 for r in results if r["has_patch"])
+    valid_count = sum(1 for r in results if r.get("has_patch"))
     print("=" * 60)
-    print(f"🎉 BATCH RUN SELESAI! {valid_count}/{num_eval} soal berhasil disintesis!")
+    print(f"🎉 EVALUASI SELESAI! {valid_count}/{len(results)} soal menghasilkan patch valid!")
     print(f"📁 File Prediksi: {pred_file}")
     print(f"📊 Metrik Lengkap: {metrics_file}")
     print("=" * 60)
