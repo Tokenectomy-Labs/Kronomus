@@ -85,8 +85,8 @@ Traditional coding agents rely on unanchored prompt loops that hallucinate inden
                                             ▼
                      ┌──────────────────────────────────────────────┐
                      │         COGNITIVE NEURAL CORTEX              │
-                     │   • 671B Mixture-of-Experts Architecture     │
-                     │   • Counterfactual bug hypothesis synthesis  │
+                     │   • Frontier Counterfactual Reasoning Core   │
+                     │   • Multi-step root cause hypothesis search  │
                      │   • Algorithmic SEARCH/REPLACE patch plan    │
                      └──────────────────────┬───────────────────────┘
                                             │ (Candidate hunk)
