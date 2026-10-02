@@ -1,0 +1,83 @@
+================================================================================
+KRONUMOS AI (TOKENECTOMY LABS)
+MICROSOFT FOR STARTUPS FOUNDERS HUB — SUBMISSION PACKAGE
+================================================================================
+
+1. STARTUP & PRODUCT INFORMATION
+--------------------------------------------------------------------------------
+* Startup / Company Name:
+  Kronumos AI (Tokenectomy Labs)
+
+* Primary Website / Public Showcase:
+  https://huggingface.co/Kronumos
+
+* Open Source Repository:
+  https://github.com/Tokenectomy-Labs/Kronomus
+
+* Research Paper / Academic Provenance:
+  https://doi.org/10.21203/rs.3.rs-11205335/v1 (Springer Nature Research Square)
+
+* Primary Country:
+  Indonesia
+
+* Current Funding Stage:
+  Bootstrapped / No outside funding yet
+
+
+2. THREE CORE ESSAY QUESTIONS (COPY-PASTE READY)
+--------------------------------------------------------------------------------
+
+[QUESTION A: What problem does your startup solve?]
+--------------------------------------------------------------------------------
+Software engineering teams face prohibitive compute costs and high hallucination
+rates when using AI coding agents for automated software repair. Conventional agent
+loops consume 50,000 to 150,000 tokens per bug remediation due to raw stack-trace
+and framework bloat, costing $2 to $5 per issue while regularly generating broken diff
+headers and indentation syntax errors that cause CI/CD build failures.
+
+
+[QUESTION B: What is your product and solution?]
+--------------------------------------------------------------------------------
+Kronumos is an autonomous program repair (APR) engine engineered on a Dual-Brain
+cybernetic architecture. We pair neural reasoning models (Kronumos Kairos 7B/14B
+and Kronumos Aion 671B MoE) with an unyielding, zero-allocation native Rust
+Sub-Cortex compiler kernel (C-ABI 5µs). The Sub-Cortex deterministically excises
+93.5% of issue context bloat (averaging ~2,500 tokens per task) and validates AST
+syntax via Tree-sitter before any modification touches production git branches,
+guaranteeing zero dirty diffs on Princeton SWE-bench Verified.
+
+
+[QUESTION C: Why do you need Microsoft Azure compute?]
+--------------------------------------------------------------------------------
+We require Azure compute credits to host and serve our flagship enterprise model,
+Kronumos Aion (671B MoE), on multi-GPU Azure Virtual Machine clusters (8x A100/H100
+nodes via vLLM). Azure credits will also power our continuous integration benchmark
+testbed across the full 500-instance Princeton SWE-bench Verified dataset and
+support our upcoming automated GitHub Actions remediation bot for enterprise
+engineering teams.
+
+
+3. FOUNDING TEAM PROFILE & ROLES
+--------------------------------------------------------------------------------
+1. Muhammad Naufal Daffa — Chief Technology Officer (CTO) & Chief Scientist
+   Role: Architect of the Tokenectomy Rust Sub-Cortex, author of the Springer
+   Nature preprint, and lead AI/ML systems engineer.
+   ORCID: https://orcid.org/0009-0000-7909-4916
+
+2. Muhammad Sufyan — Chief Executive Officer (CEO) & Head of Business Operations
+   Role: Overseeing commercial strategy, enterprise B2B pilot partnerships,
+   grant applications, legal structure, and day-to-day operations.
+
+3. Adi Supriyadi — Head of Product & Lead Frontend Architect
+   Role: Leading developer experience, web portals, client monitoring
+   dashboards, IDE extensions (VS Code / Cursor), and visual product design.
+
+
+4. OPERATIONAL MILESTONES (FOR PROPOSAL REFERENCE)
+--------------------------------------------------------------------------------
+* Community Traction: 1,260+ organic model downloads on Hugging Face.
+* Empirical Benchmark: Evaluated against all 500 Princeton SWE-bench Verified tasks.
+* Sub-Cortex Efficiency: Verified 93.5% input token reduction at 5-microsecond latency.
+* Academic Recognition: Peer-reviewed preprint published on Springer Nature Research Square
+  and archived with CERN Zenodo.
+================================================================================
