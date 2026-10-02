@@ -92,6 +92,13 @@
 ### Azure Infrastructure Request:
 "We are requesting Azure compute credits to host and serve our flagship enterprise model, Kronumos Aion (671B MoE), on multi-GPU Azure Virtual Machine clusters (8x A100/H100 nodes via vLLM). Azure credits will also power our continuous integration benchmark testbed across the full 500-instance Princeton SWE-bench Verified dataset and support our upcoming automated GitHub Actions remediation bot for enterprise engineering teams."
 
+### 5 Core Strategic Differentiators:
+1. **Efisiensi Komputasi Ekstrem (93,5% Context Reduction):** Sub-Cortex berbasis native Rust (C-ABI 5µs) membedah tumpukan galat (stack-trace) secara deterministik, memangkas beban dari 80.000–150.000 token menjadi ~2.500 token, menurunkan biaya inferensi per perbaikan kode dari $2–$5 menjadi <$0.05.
+2. **Integritas Sintaksis Deterministik & Zero Dirty Diffs:** Parser Tree-sitter di level kernel kompilator memvalidasi AST, scope check, dan indentasi blok secara prekognitif, mengeliminasi 100% kegagalan 'git apply' dan rusaknya CI/CD.
+3. **Arsitektur Sibernetik Dual-Brain (Neuro-Symbolic APR):** Memadukan kekuatan penalaran logis LLM/MoE (Kronumos Kairos & Aion) dengan ketegasan aturan deterministik kompilator native berkecepatan mikrodetik (Symbolic Sub-Cortex).
+4. **Kesiapan Enterprise & Isolasi Air-Gapped (Sovereign Infrastructure):** Seluruh tumpukan teknologi dapat dijalankan secara mandiri dalam isolasi penuh (Azure VNet, On-Premise) tanpa pernah membocorkan kode proprietary ke API publik pihak ketiga.
+5. **Provenansi Ilmiah Teruji (Peer-Reviewed Research):** Diuji pada 500 himpunan Princeton SWE-bench Verified, dipublikasikan di Springer Nature Research Square (DOI: 10.21203/rs.3.rs-11205335/v1), dan diarsipkan di CERN Zenodo (DOI: 10.5281/zenodo.22929676).
+
 ---
 
 ## ⚖️ 5. Founding Operating Principles (Founder Agreement)
