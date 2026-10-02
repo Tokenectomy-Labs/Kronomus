@@ -9,10 +9,10 @@
 <p align="center">
   <a href="https://doi.org/10.21203/rs.3.rs-11205335/v1"><img src="https://img.shields.io/badge/Research_Square-10.21203%2Frs.3.rs--11205335%2Fv1-blue.svg" alt="DOI: 10.21203/rs.3.rs-11205335/v1" /></a>
   <a href="https://doi.org/10.5281/zenodo.23013104"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.23013104.svg" alt="DOI: 10.5281/zenodo.23013104" /></a>
+  <a href="https://huggingface.co/Kronumos"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Kronumos_AI-yellow" alt="Hugging Face Org" /></a>
+  <a href="https://huggingface.co/Kronumos/Kronumos-Kairos-v2-GGUF"><img src="https://img.shields.io/badge/GGUF-Quantized-green" alt="GGUF Quantized" /></a>
   <a href="https://ollama.com/kronumos/Kronumos-2-kairos"><img src="https://img.shields.io/badge/Ollama-kronumos%2FKronumos--2--kairos-black?logo=ollama" alt="Ollama Model" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-AGPLv3_%2F_Commercial-blue.svg" alt="License: AGPLv3 / Commercial" /></a>
-  <a href="https://huggingface.co/NadevA23/Kronumos-2-Kairos"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Kronumos--2--Kairos-yellow" alt="Hugging Face Model" /></a>
-  <a href="https://huggingface.co/mradermacher/Kronumos-i1-GGUF"><img src="https://img.shields.io/badge/GGUF-imatrix_Q4__K__M-green" alt="GGUF Quantized" /></a>
 </p>
 
 
@@ -219,7 +219,7 @@ ollama run kronumos/Kronumos-2-kairos
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-model_id = "NadevA23/Kronumos-2-Kairos"
+model_id = "Kronumos/Kronumos-Kairos-v2"
 tokenizer = AutoTokenizer.from_pretrained(model_id)
 model = AutoModelForCausalLM.from_pretrained(
     model_id,
@@ -231,6 +231,9 @@ model = AutoModelForCausalLM.from_pretrained(
 
 ## 🏢 Organization, Inquiries & Community
 - **Author & Research Lead:** Muhammad Naufal Daffa ([ORCID: 0009-0000-7909-4916](https://orcid.org/0009-0000-7909-4916))
+- **Hugging Face Organization:** [huggingface.co/Kronumos](https://huggingface.co/Kronumos)
+- **Titan Flagship (671B MoE):** [Kronumos Aion](https://huggingface.co/Kronumos/Kronumos-Aion)
+- **Edge Workstation (7B / 14B):** [Kronumos Kairos v2](https://huggingface.co/Kronumos/Kronumos-Kairos-v2) | [GGUF](https://huggingface.co/Kronumos/Kronumos-Kairos-v2-GGUF)
 - **Official Inquiries:** kronumos@proton.me
 - **Research Publication & Substack:** https://kronumos.substack.com
 - **Ollama Hub Registry:** https://ollama.com/kronumos/Kronumos-2-kairos
