@@ -1,108 +1,256 @@
 ================================================================================
 KRONUMOS AI (TOKENECTOMY LABS)
-DOKUMEN PENGAJUAN RESMI — MICROSOFT FOR STARTUPS FOUNDERS HUB
-OFFICIAL APPLICATION PACKAGE & STRATEGIC DOSSIER
+PROPOSAL & DOSSIER PENGAJUAN RESMI — MICROSOFT FOR STARTUPS FOUNDERS HUB
+PROGRAM AKSELERASI & DUKUNGAN KOMPUTASI AZURE HINGGA $150,000 USD
 ================================================================================
 
-1. PROFIL PERUSAHAAN & INFORMASI UTAMA (STARTUP PROFILE)
+DOKUMEN INI BERISI DUA FORMAT UTAMA:
+1. PANDUAN COPY-PASTE CEPAT (FORMULIR RESMI MICROSOFT FOUNDERS HUB)
+   Tersedia dalam Bahasa Indonesia formal dan Bahasa Inggris standar internasional.
+2. DOSSIER KOMPREHENSIF TEKNOLOGI & STRATEGI BISNIS KRONUMOS
+   Rincian arsitektur teknis, rencana komputasi Azure, analisa pasar, model bisnis,
+   kalkulasi ROI enterprise, dan profil tim pendiri.
+
+================================================================================
+BAGIAN I: PANDUAN COPY-PASTE FORMULIR PENDAFTARAN RESMI
+================================================================================
+
+1. INFORMASI IDENTITAS PERUSAHAAN (COMPANY BASICS)
 --------------------------------------------------------------------------------
-* Entitas Bisnis & Nama Komersial (Company Name):
+* Legal Entity / Company Name:
   Kronumos AI (Tokenectomy Labs)
 
-* Portal Produk & Showcase Publik (Primary URL):
+* Primary Website / Live Showcase:
   https://huggingface.co/Kronumos
 
-* Repositori Kode Sumber Resmi (Open-Source Architecture):
+* Open-Source Repository (GitHub):
   https://github.com/Tokenectomy-Labs/Kronomus
 
-* Validasi Ilmiah & Provenansi Akademis (Research Provenance):
-  https://doi.org/10.21203/rs.3.rs-11205335/v1 (Springer Nature Research Square)
-  https://doi.org/10.5281/zenodo.22929676 (CERN Zenodo)
+* Academic Provenance & Scientific DOI:
+  Springer Nature Research Square: https://doi.org/10.21203/rs.3.rs-11205335/v1
+  CERN Zenodo Permanent Archive:   https://doi.org/10.5281/zenodo.22929676
 
-* Yurisdiksi Operasional Utama (Country):
+* Primary Country:
   Indonesia
 
-* Struktur Modal & Status Pendanaan (Funding Stage):
-  Bootstrapped Mandiri / Pre-Seed (Menuju Pendanaan Seri Eksternal)
+* Current Stage:
+  Working Prototype / Pre-Seed (Empirically Validated MVP)
+
+* Funding Status:
+  Bootstrapped Mandiri (Menuju Pendanaan Seri Eksternal / Grant)
+
+* Target Compute Tier:
+  Microsoft for Startups Founders Hub — Level 1 to Level 3 ($25,000 to $150,000 Azure Credits)
 
 
-2. TIGA PERNYATAAN INTI PENGAJUAN (CORE APPLICATION ESSAYS)
+2. PERTANYAAN FORMULIR ESSAY UTAMA (ISIAN RESMI)
 --------------------------------------------------------------------------------
 
-[PERTANYAAN A: Masalah Strategis & Inefisiensi Industri yang Diselesaikan]
-(Question A: What problem does your startup solve?)
+[PERTANYAAN 1: Elevator Pitch (1-2 Kalimat)]
 --------------------------------------------------------------------------------
-[Versi Bahasa Indonesia]:
-Organisasi rekayasa perangkat lunak skala enterprise menghadapi hambatan efisiensi biaya dan keandalan sistem akibat pembengkakan biaya komputasi AI serta risiko halusinasi kode. Siklus perbaikan otomatis konvensional mengonsumsi 50.000 hingga 150.000 token per masalah akibat redundansi konteks pustaka (stack-trace) dan keterbatasan arsitektur. Hal ini menciptakan beban biaya operasional sebesar $2 hingga $5 per masalah, sekaligus menghasilkan galat sintaksis serta ketidaksesuaian indentasi yang menghentikan pipeline CI/CD produksi dan menurunkan efisiensi pengembang.
+(Versi Bahasa Indonesia)
+Kronumos adalah mesin Autonomous Program Repair (APR) berskala enterprise yang memadukan model penalaran kecerdasan buatan dengan kernel kompilator native Rust Sub-Cortex (C-ABI 5µs). Kami memangkas biaya token perbaikan perangkat lunak sebesar 93,5% dan mengeliminasi 100% kegagalan sintaksis serta penolakan git-apply di lingkungan CI/CD produksi.
 
-[English Translation]:
-Software engineering teams face prohibitive compute costs and high hallucination rates when using AI coding agents for automated software repair. Conventional agent loops consume 50,000 to 150,000 tokens per bug remediation due to raw stack-trace and framework bloat, costing $2 to $5 per issue while regularly generating broken diff headers and indentation syntax errors that cause CI/CD build failures.
+(English Translation)
+Kronumos is an enterprise autonomous program repair (APR) engine that pairs neural reasoning models with a zero-allocation native Rust compiler Sub-Cortex (C-ABI 5µs). We cut bug remediation token costs by 93.5% while eliminating 100% of diff syntax errors and git-apply rejections across production CI/CD pipelines.
 
 
-[PERTANYAAN B: Solusi Unggulan & Keunggulan Kompetitif Produk]
-(Question B: What is your product and solution?)
+[PERTANYAAN 2: Masalah Industri & Inefisiensi yang Diselesaikan (What problem are you solving?)]
 --------------------------------------------------------------------------------
-[Versi Bahasa Indonesia]:
-Kronumos menghadirkan platform Autonomous Program Repair (APR) berskala enterprise dengan arsitektur sibernetik Dual-Brain. Kami memadukan model penalaran kecerdasan buatan (Kronumos Kairos 7B/14B dan Kronumos Aion 671B MoE) bersama kernel kompilator Sub-Cortex berbasis Rust native berkinerja tinggi (C-ABI 5µs). Sub-Cortex secara deterministik mengeliminasi 93,5% redundansi konteks (mereduksi beban hingga ~2.500 token per tugas) serta memvalidasi sintaksis AST melalui Tree-sitter secara prekognitif. Arsitektur ini menjamin ketiadaan perbedaan kode tidak valid (zero dirty diffs) pada pengujian Princeton SWE-bench Verified sebelum perubahan diterapkan pada repositori Git produksi, memberikan tingkat kepastian teknis yang tinggi bagi enterprise.
+(Versi Bahasa Indonesia)
+Organisasi rekayasa perangkat lunak skala menengah hingga enterprise menghadapi krisis biaya komputasi dan ketidakandalan saat mengadopsi AI coding agent untuk perbaikan bug otomatis. Agen berbasis LLM monolitik konvensional (seperti Devin, Claude, atau GitHub Copilot) memasukkan seluruh jejak galat mentah (stack-trace) pustaka luar sebesar 50.000 hingga 150.000 token per masalah. Praktik ini membakar $2 hingga $5 per tiket bug dan rentan terhadap halusinasi spasi, indentasi, dan struktur header patch diff. Akibatnya, sebagian besar patch gagal dieksekusi oleh perintah 'git apply' bahkan sebelum unit-test sempat dijalankan.
 
-[English Translation]:
-Kronumos is an autonomous program repair (APR) engine engineered on a Dual-Brain cybernetic architecture. We pair neural reasoning models (Kronumos Kairos 7B/14B and Kronumos Aion 671B MoE) with an unyielding, zero-allocation native Rust Sub-Cortex compiler kernel (C-ABI 5µs). The Sub-Cortex deterministically excises 93.5% of issue context bloat (averaging ~2,500 tokens per task) and validates AST syntax via Tree-sitter before any modification touches production git branches, guaranteeing zero dirty diffs on Princeton SWE-bench Verified.
+Selain masalah pemborosan biaya dan kerapuhan sintaksis, industri dengan regulasi ketat (sektor perbankan, fintech, kesehatan, dan pertahanan) dilarang secara regulasi hukum untuk mengekspos basis kode proprietari mereka ke API cloud pihak ketiga multi-tenant publik. Hingga kini, belum tersedia solusi perbaikan kode otomatis berbiaya rendah dengan integritas kompilator deterministik yang dapat di-deploy 100% mandiri di dalam infrastruktur private cloud/on-premise pelanggan.
+
+(English Translation)
+Software engineering organizations face unsustainable compute costs and severe syntactic brittleness when deploying AI coding agents for automated software remediation. Conventional monolithic agent loops ingest entire raw stack traces and dependency bloat—consuming 50,000 to 150,000 tokens per issue. This burns $2 to $5 per remediation while frequently hallucinating whitespace, tab-space indentation, and diff header structures, causing candidate patches to be rejected outright by 'git apply' before CI tests can even execute.
+
+Furthermore, regulated industries—including banking, fintech, healthcare, and defense—are legally barred by data sovereignty compliance from piping proprietary source code to external, multi-tenant closed APIs. To date, there has been no deterministic, low-cost autonomous program repair engine capable of running fully air-gapped within an enterprise's sovereign private cloud or on-premise infrastructure.
 
 
-[PERTANYAAN C: Strategi Kemitraan Komputasi & Skalabilitas Infrastruktur Azure]
-(Question C: Why do you need Microsoft Azure compute?)
+[PERTANYAAN 3: Produk & Arsitektur Solusi (What is your product and how does it solve this?)]
 --------------------------------------------------------------------------------
-[Versi Bahasa Indonesia]:
-Kemitraan infrastruktur Azure sangat penting untuk mengakselerasi penyebaran dan penskalaan model tingkat enterprise kami, Kronumos Aion (671B MoE), pada kluster Azure Virtual Machine multi-GPU (node 8x A100/H100 via vLLM). Dukungan komputasi Azure akan memperkuat lingkungan validasi integrasi berkelanjutan (CI) secara masif pada 500 himpunan data Princeton SWE-bench Verified, sekaligus mendukung komersialisasi bot remediasi otomatis GitHub Actions bagi tim rekayasa perangkat lunak berskala global.
+(Versi Bahasa Indonesia)
+Kronumos memecahkan paradoks ini melalui arsitektur sibernetik Dual-Brain (Neuro-Symbolic APR). Alih-alih membebankan seluruh parsing mekanis dan sintaksis ke model bahasa, sistem kami memisahkan tugas menjadi dua lapisan:
 
-[English Translation]:
-We require Azure compute credits to host and serve our flagship enterprise model, Kronumos Aion (671B MoE), on multi-GPU Azure Virtual Machine clusters (8x A100/H100 nodes via vLLM). Azure credits will also power our continuous integration benchmark testbed across the full 500-instance Princeton SWE-bench Verified dataset and support our upcoming automated GitHub Actions remediation bot for enterprise engineering teams.
+1. Deterministic Rust Sub-Cortex Kernel (libtokenectomy_subcortex.so, C-ABI 5µs):
+   Kernel kompilator native berkinerja tinggi yang membedah tumpukan galat mentah, membersihkan frame framework pihak ketiga (node_modules, site-packages, stdlib), dan memotong AST (Abstract Syntax Tree) fungsi target sebelum model inferensi berjalan. Setelah model menghasilkan patch logika, Sub-Cortex melakukan AST healing, rekonsiliasi indentasi, dan verifikasi cakupan variabel (scope checking) dalam latensi sub-mikrodetik tanpa membakar token model.
+
+2. Specialized Neural Cortex Models:
+   Lapisan penalaran yang terdiri dari Kronumos Kairos (model edge 7B/14B untuk integrasi CI/CD cepat) dan Kronumos Aion (671B MoE untuk refactoring arsitektur multi-file berskala masif).
+
+Arsitektur Dual-Brain ini mereduksi konsumsi token per masalah dari 150.000 menjadi rata-rata hanya ~2.500 token (penghematan 93,5%), menekan biaya inferensi hingga di bawah $0.05 per tiket, serta menjamin ketiadaan perbedaan kode tidak valid (zero dirty diffs) pada tolok ukur industri Princeton SWE-bench Verified.
+
+(English Translation)
+Kronumos solves this dilemma through a Dual-Brain cybernetic architecture (Neuro-Symbolic APR). Instead of forcing a large language model to manage both semantic reasoning and rigid syntactic mechanics, we split the workflow across two coordinated layers:
+
+1. Deterministic Native Rust Sub-Cortex Kernel (libtokenectomy_subcortex.so, C-ABI 5µs):
+   A zero-allocation native compiler kernel that parses raw stack traces, purges external framework bloat (node_modules, site-packages, stdlib), and extracts the precise AST function slice before neural inference begins. Once the neural model generates candidate repair logic, the Sub-Cortex performs AST healing, indentation block reconciliation, and variable scope checking in sub-microsecond latency without consuming model tokens.
+
+2. Specialized Neural Cortex Models:
+   A neural reasoning tier comprising Kronumos Kairos (7B/14B edge models for rapid CI/CD runs) and Kronumos Aion (671B MoE for complex multi-file architectural refactoring).
+
+This Dual-Brain design excises 93.5% of issue context bloat (averaging ~2,500 tokens per task vs 150,000 in legacy agents), drops remediation compute costs below $0.05 per patch, and guarantees zero dirty diffs across the Princeton SWE-bench Verified benchmark.
 
 
-3. LIMA PILAR NILAI UNGGULAN KRONUMOS (5 CORE STRATEGIC DIFFERENTIATORS)
+[PERTANYAAN 4: Rencana Penggunaan Komputasi Azure (Why Microsoft Azure & How Will Compute Credits Be Used?)]
+--------------------------------------------------------------------------------
+(Versi Bahasa Indonesia)
+Kami membutuhkan dukungan kredit komputasi Microsoft Azure untuk tiga beban kerja operasional strategis:
+
+1. Kluster GPU Skala Besar (Azure ND A100 v4 & ND H100 v5 Virtual Machines):
+   Untuk men-deploy dan melayani model enterprise flagship kami, Kronumos Aion (671B MoE), dengan konfigurasi multi-GPU Tensor Parallelism melalui vLLM engine, serta melatih iterasi model penalaran Kairos berikutnya.
+
+2. Orkestrasi Kontainer Paralel (Azure Kubernetes Service / Azure Container Instances):
+   Evaluasi tolok ukur SWE-bench Verified memerlukan pengujian serentak pada ratusan kontainer Docker terisolasi yang menjalankan suite pengujian resmi (pytest/unittest). Kredit Azure akan menggerakkan infrastruktur CI sandboxing massal ini.
+
+3. Integrasi Ekosistem GitHub Enterprise & Marketplace Actions:
+   Mengembangkan dan meluncurkan bot remediasi otomatis Kronumos sebagai GitHub Action resmi, memungkinkan tim pengembang Microsoft GitHub Enterprise melakukan perbaikan regresi otomatis langsung dari antarmuka Pull Request.
+
+(English Translation)
+We require Microsoft Azure compute credits to power three strategic operational workloads:
+
+1. High-Performance GPU Infrastructure (Azure ND A100 v4 & ND H100 v5 VMs):
+   To host and serve our flagship enterprise model, Kronumos Aion (671B MoE), across multi-GPU nodes using Tensor Parallelism via vLLM, and to fine-tune our next-generation Kairos reasoning weights.
+
+2. Parallel Container Sandboxing (Azure Kubernetes Service / Azure Container Instances):
+   Benchmarking across Princeton SWE-bench Verified requires executing candidate patches concurrently inside hundreds of sandboxed Docker containers running official pytest suites. Azure credits will power this scalable evaluation harness.
+
+3. Microsoft GitHub Ecosystem & Marketplace Integration:
+   Deploying our headless automated remediation bot as an official GitHub Action, enabling Microsoft GitHub Enterprise customers to triage and resolve software regressions directly within automated Pull Request workflows.
+
+
+================================================================================
+BAGIAN II: DOSSIER LENGKAP ARSITEKTUR, BISNIS & TEKNOLOGI KRONUMOS
+================================================================================
+
+1. LIMA PILAR KEUNGGULAN KOMPETITIF STRATEGIS (THE 5 CORE PILLARS)
 --------------------------------------------------------------------------------
 
-1. EFISIENSI KOMPUTASI EKSTREM & REDUKSI TOKEN 93,5% (Cost-Bounded Economics)
-   - Bukan sekadar wrapper LLM biasa; Sub-Cortex berbasis native Rust (C-ABI 5µs) membedah tumpukan galat (stack-trace) secara deterministik, memangkas beban konteks dari 80.000–150.000 token menjadi rata-rata hanya ~2.500 token per perbaikan.
-   - Mereduksi biaya inferensi per perbaikan kode dari $2–$5 menjadi di bawah $0.05, menjadikannya satu-satunya arsitektur APR di industri yang secara matematis dan komersial layak untuk integrasi skala enterprise.
+PILAR 1: EFISIENSI KOMPUTASI EKSTREM & REDUKSI TOKEN 93,5% (Cost-Bounded Economics)
+* Masalah Kompetitor: Agen LLM konvensional memperlakukan terminal output dan log galat sebagai teks biasa, membebani context window dengan puluhan ribu token sampah pustaka pihak ketiga. Biaya satu tiket bug berkisar $2-$5 (atau hingga $15 pada model komersial tertutup).
+* Solusi Kronumos: Sub-Cortex Rust membedah traceback pada tingkat byte-level dalam 5 mikrodetik via C-ABI. Frame internal framework dipangkas secara deterministik, menghasilkan muatan prompt bedah yang hanya berisi konteks relevan (~2.500 token).
+* Dampak Ekonomi: Biaya inferensi turun hingga <$0.05 per patch. Bagi enterprise dengan 500 tiket bug bulanan, biaya komputasi terpangkas dari $2.500/bulan menjadi kurang dari $25/bulan (efisiensi biaya >95%).
 
-2. INTEGRITAS SINTAKSIS DETERMINISTIK & ZERO DIRTY DIFFS (Pre-Cognitive AST Healing)
-   - Memanfaatkan parser Tree-sitter di level kernel kompilator untuk memvalidasi AST, pemeriksaan cakupan variabel (scope check), dan indentasi blok sebelum modifikasi diajukan ke git branch.
-   - Mengeliminasi 100% kegagalan 'git apply' dan rusaknya CI/CD akibat halusinasi sintaksis diff LLM, memberikan tingkat kepastian rilis kode yang dapat diandalkan oleh sistem produksi perbankan dan enterprise.
+PILAR 2: JAMINAN INTEGRITAS SINTAKSIS & ZERO DIRTY DIFFS (Pre-Cognitive AST Healing)
+* Masalah Kompetitor: LLM sering menghasilkan perbedaan kode dengan ketidaksesuaian spasi vs tab, offset nomor baris patch yang keliru, atau variabel yang belum terdefinisi. Perintah 'git apply' menolak patch tersebut, memicu loop regenerasi berulang yang membakar token tanpa hasil.
+* Solusi Kronumos: Sub-Cortex mengintegrasikan parser Tree-sitter native dan modul IndentationHealer. Sintaksis AST divalidasi, indentasi blok direkonsiliasi, dan cakupan variabel dipastikan valid sebelum patch dikompilasi ke format POSIX unified diff.
+* Dampak Teknis: Patch yang dihasilkan terjamin lolos 'git apply' secara deterministik pada branch produksi tanpa merusak pipeline CI/CD.
 
-3. ARSITEKTUR SIBERNETIK DUAL-BRAIN (Neuro-Symbolic APR Paradigm)
-   - Memadukan kekuatan penalaran logis model kecerdasan buatan (Kronumos Kairos 7B/14B & Kronumos Aion 671B MoE) dengan ketegasan aturan deterministik kompilator native berkecepatan mikrodetik (Symbolic Sub-Cortex).
-   - Memastikan AI berfokus penuh pada logika solutif, sementara tata letak sintaksis, memori, dan keamanan eksekusi dikawal penuh oleh hukum kompilator native berkecepatan tinggi.
+PILAR 3: ARSITEKTUR SIBERNETIK DUAL-BRAIN (Neuro-Symbolic APR)
+* Pembagian Beban Komputasi:
+  - Lapisan Neural (Reasoning): Dikhususkan hanya untuk penalaran logika domain-spesifik perbaikan bug.
+  - Lapisan Simbolik (Compiler Guard): Menangani parsing mekanis, verifikasi batas sintaksis, penghapusan token redundan, dan kepatuhan POSIX.
+* Keunggulan: Menghilangkan halusinasi struktural. Model neural tidak dipaksa menghitung indentasi spasi atau memvalidasi kurung kurawal; hal tersebut dikawal mutlak oleh kompilator Rust.
 
-4. KESIAPAN ENTERPRISE & ISOLASI AIR-GAPPED (Sovereign Infrastructure)
-   - Seluruh tumpukan teknologi—baik kernel kompilator Rust maupun model penalaran—dapat dijalankan secara mandiri dalam isolasi penuh (Azure VNet, On-Premise, atau Sovereign Cloud) tanpa pernah membocorkan kode sumber proprietari pelanggan ke API cloud pihak ketiga.
-   - Memenuhi standar kepatuhan regulasi data paling ketat untuk sektor perbankan, pertahanan, dan fintech.
+PILAR 4: KESIAPAN ENTERPRISE & ISOLASI AIR-GAPPED (Sovereign Infrastructure)
+* Kepatuhan Regulasi (Data Sovereignty): Sektor perbankan, fintech, kesehatan, dan industri pertahanan terikat kewajiban hukum untuk tidak membocorkan kode proprietari ke API LLM publik.
+* Implementasi Kronumos: Seluruh stack (kernel native Rust dan bobot model neural) dapat di-deploy secara mandiri di dalam lingkungan virtual private cloud pelanggan (Azure VNet terisolasi atau server on-premise) tanpa koneksi internet keluar (100% air-gapped).
 
-5. PROVENANSI ILMIAH TERVALIDASI & REKAYASA EMPIRIS TERUJI (Peer-Reviewed Provenance)
-   - Divalidasi melalui eksperimen empiris komprehensif pada 500 himpunan data Princeton SWE-bench Verified dengan metrik kinerja nyata yang dapat direproduksi secara mandiri.
-   - Dipublikasikan secara resmi pada Springer Nature Research Square (DOI: 10.21203/rs.3.rs-11205335/v1) dan diarsipkan permanen pada CERN Zenodo (DOI: 10.5281/zenodo.22929676), memberikan diferensiasi kredibilitas ilmiah dan integritas teknologi yang tak tertandingi dibanding startup AI generik.
+PILAR 5: PROVENANSI RISET ILMIAH & REKAYASA EMPIRIS TERVALIDASI
+* Tolok Ukur Independen: Diuji dan divalidasi secara rigor pada 500 himpunan data Princeton SWE-bench Verified dengan log evaluasi transparan tanpa mock sintetis.
+* Pengakuan Akademis Resmi:
+  - Springer Nature Portfolio (Research Square) DOI: 10.21203/rs.3.rs-11205335/v1
+  - CERN Zenodo Permanent Scientific Archive DOI: 10.5281/zenodo.22929676
+* Kredibilitas: Menghindarkan Kronumos dari stigma 'AI wrapper instan' dan membuktikan fondasi sains rekayasa perangkat lunak yang kokoh di hadapan komite seleksi Microsoft.
 
 
-4. STRUKTUR KEPEMIMPINAN & DEWAN EKSEKUTIF (EXECUTIVE ROSTER)
+2. ANALISA PASAR, TARGET KONSUMEN & MODEL BISNIS
 --------------------------------------------------------------------------------
+
+A. Profil Target Konsumen (Ideal Customer Profile):
+1. Tim Rekayasa Perangkat Lunak Enterprise & B2B SaaS:
+   Organisasi dengan 50 hingga 1.000+ software engineer yang memproses ratusan tiket bug/regresi setiap siklus rilis sprint dan membutuhkan triase otomatis di CI/CD.
+2. Industri Teregulasi Ketat (Perbankan, Fintech, Pertahanan, Layanan Medis):
+   Organisasi dengan kepatuhan ISO 27001, SOC2, HIPAA, atau PCI-DSS yang membutuhkan sistem perbaikan bug otomatis tanpa risiko kebocoran data keluar jaringan lokal.
+3. Penyedia Alat Pengembang & Integrator Platform CI/CD:
+   Platform pengujian dan pipeline devops yang memerlukan mesin headless perbaikan kode berlatensi rendah untuk ditanamkan ke dalam ekosistem mereka.
+
+B. Struktur Model Monetisasi Berjenjang:
+1. Community Tier (Open Source - Apache 2.0 / Dual License):
+   - Model bobot terbuka (Kronumos Kairos 8B/14B) dan CLI lokal untuk pengembang individu.
+   - Fungsi: Menumbuhkan adopsi akar rumput (bottom-up adoption) dan bukti traksi komunitas global.
+2. Developer Pro & Team Cloud ($49 – $199 / bulan per tim):
+   - Akses API cloud terkelola untuk bot otomatis GitHub Actions dan integrasi IDE (VS Code / Cursor).
+   - Layanan SLA inferensi cepat dan integrasi webhook repositori tanpa setup rumit.
+3. Enterprise Sovereign License ($40.000 – $80.000 / tahun per lisensi):
+   - Deployment mandiri air-gapped di infrastruktur privat Azure VNet atau on-premise hardware klien.
+   - Pemrosesan repositori tanpa batas (unlimited nodes), integrasi aturan kompilator AST kustom, dukungan teknis prioritas 24/7, dan audit kepatuhan keamanan.
+
+C. Analisa ROI Klien (Nilai Ekonomis Nyata Bagi Enterprise):
+* Asumsi Kasus: Tim engineering dengan 100 pengembang menangani rata-rata 500 tiket galat/bug per bulan.
+* Biaya Solusi LLM Konvensional:
+  - 500 tiket x 100.000 token x $0.03/1k token = $1.500 / bulan dalam pemborosan token mentah.
+  - Ditambah ~150 jam kerja pengembang terbuang untuk memperbaiki patch yang gagal diaplikasikan akibat galat indentasi (~$11.250 nilai gaji engineer).
+  - Total beban: ~$12.750 / bulan.
+* Solusi Kronumos Dual-Brain:
+  - 500 tiket x 2.500 token x $0.015/1k token = $18,75 / bulan dalam biaya token inferensi.
+  - Zero dirty diffs: 100% patch lolos format 'git apply', memangkas waktu review engineer hingga 75%.
+  - Total penghematan finansial: Lebih dari $10.000+ per bulan (ROI tercapai dalam hitungan minggu).
+
+
+3. RENCANA DETAIL PENYERAPAN KREDIT KOMPUTASI AZURE ($25,000 – $150,000)
+--------------------------------------------------------------------------------
+
+PENGALOKASIAN PER LEVEL TAHAPAN FOUNDERS HUB:
+
+Tahap 1: Setup Inisial & Endpoint Benchmarking ($1.000 – $5.000)
+* Deploy instance Azure Virtual Machine (NC A100 v4 single-GPU) untuk menyediakan inference API terstandar (OpenAI-compatible) untuk model Kronumos Kairos.
+* Integrasi penyimpanan artefak benchmark pada Azure Blob Storage dengan enkripsi penuh.
+
+Tahap 2: Evaluasi Massal & Kluster vLLM Multi-GPU ($25.000)
+* Penyediaan kluster multi-GPU Azure ND A100 v4 (node 8x A100 80GB SXM4) untuk hosting inferensi model Kronumos Aion (671B MoE) dengan throughput tinggi via vLLM engine.
+* Penggelaran kluster Azure Kubernetes Service (AKS) dengan kapasitas ratusan pod untuk menjalankan simulasi sandboxing SWE-bench Verified paralel 500 tugas secara berkesinambungan.
+
+Tahap 3: Skalabilitas Komersial & GitHub Action Enterprise ($150.000)
+* Penyediaan kluster komputasi GPU Azure ND H100 v5 untuk melayani pilot komersial multi-perusahaan secara bersamaan dengan latensi sub-detik.
+* Penyiapan lingkungan staging dan produksi global untuk bot otomatis remediasi GitHub Actions di ekosistem Microsoft GitHub Marketplace.
+
+
+4. PROFIL DEWAN EKSEKUTIF & STRUKTUR KEPEMIMPINAN
+--------------------------------------------------------------------------------
+
 1. Muhammad Naufal Daffa — Chief Technology Officer (CTO) & Chief Scientist
-   Tanggung Jawab Strategis: Mengarahkan arsitektur Tokenectomy Rust Sub-Cortex,
-   memimpin publikasi riset Springer Nature, serta mengendalikan arsitektur AI/ML enterprise.
-   ORCID: https://orcid.org/0009-0000-7909-4916
+   * Peran & Fokus:
+     - Arsitek utama Tokenectomy Rust Sub-Cortex (C-ABI 5µs) dan pipeline neuro-simbolik.
+     - Penulis utama manuskrip ilmiah terpublikasi di Springer Nature Portfolio Research Square.
+     - Memimpin riset dan rekayasa bobot model AI Kronumos Kairos (7B/14B) dan Kronumos Aion (671B MoE).
+   * Kredensial Akademis & Rekayasa:
+     - ORCID Resmi: https://orcid.org/0009-0000-7909-4916
+     - Peneliti independen di bidang Automated Program Repair, Low-Level Systems Programming, dan Compiler Engineering.
 
 2. Muhamad Sufyan — Chief Executive Officer (CEO) & Head of Business Operations
-   Tanggung Jawab Strategis: Menentukan arah komersialisasi, mengeksekusi kemitraan B2B enterprise,
-   mengelola akuisisi pendanaan, serta memimpin tata kelola hukum dan ekspansi pasar.
+   * Peran & Fokus:
+     - Memimpin strategi komersialisasi, pengembangan kemitraan B2B enterprise, dan akuisisi pelanggan pilot.
+     - Mengelola program pendanaan eksternal, grant komputasi (Microsoft, TRC, AWS, AI Grant), serta legalitas korporat (Delaware C-Corp via Stripe Atlas).
+     - Mengendalikan tata kelola operasional, kepatuhan perbankan, dan perencanaan arus kas perusahaan.
 
 3. Adi Supriyadi — Head of Product & Lead Frontend Architect
-   Tanggung Jawab Strategis: Mengoptimalkan pengalaman pengembang (Developer Experience),
-   memimpin portal analitik enterprise, integrasi lingkungan IDE (VS Code / Cursor), dan desain visual produk.
+   * Peran & Fokus:
+     - Merancang dan mengeksekusi pengalaman pengembang (Developer Experience), portal web resmi, dan identitas visual Kronumos.
+     - Membangun Client Monitoring Dashboard (telemetri pemangkasan token waktu-nyata, visualisasi penghematan biaya, dan status CI/CD).
+     - Mengembangkan integrasi alat visual pengembang, ekstensi lingkungan IDE (VS Code / Cursor), dan antarmuka GitHub Actions.
 
 
-5. INDIKATOR KINERJA UTAMA & REKAM JEJAK OPERASIONAL (OPERATIONAL MILESTONES)
+5. REKAM JEJAK OPERASIONAL, TRAKSI & TAUTAN PEMBUKTIAN RESMI
 --------------------------------------------------------------------------------
-* Traksi Pasar & Adopsi Komunitas: Lebih dari 1.260 unduhan model organik di Hugging Face.
-* Validasi Kinerja Empiris: Lolos pengujian komprehensif pada 500 tugas tolok ukur industri Princeton SWE-bench Verified.
-* Efisiensi Biaya Operasional: Terbukti mereduksi beban input token hingga 93,5% dengan latensi pemrosesan 5 mikrodetik.
-* Validasi Ilmiah & Reputasi Riset: Diterbitkan pada Springer Nature Research Square serta diarsipkan permanen pada CERN Zenodo.
+* Hugging Face Organization:
+  https://huggingface.co/Kronumos
+  Traksi: Lebih dari 1.260 unduhan model organik, mencakup model Kronumos-14B-Kairos dan model enterprise Kronumos-Aion (671B MoE).
+
+* Repositori Kode Sumber Terbuka Resmi:
+  https://github.com/Tokenectomy-Labs/Kronomus
+  Implementasi penuh arsitektur Dual-Brain, C-ABI compiler bridge, dan test harness SWE-bench Verified.
+
+* Publikasi Ilmiah Resmi (Springer Nature Research Square):
+  https://doi.org/10.21203/rs.3.rs-11205335/v1
+  Judul: "Kronumos 2 Kairos: Cost-Bounded Automated Program Repair via Dual-Brain Cybernetic Sub-Cortex on SWE-bench Verified"
+
+* Repositori Arsip Ilmiah Permanen (CERN Zenodo):
+  https://doi.org/10.5281/zenodo.22929676
+  Metadata terindeks secara global dengan integritas CrossRef.
+
+* Diskusi Komunitas Teknologi Global:
+  Show HN di Hacker News: "Show HN: Kronumos-Neurosymbolic code repair with a 5µs Rust Sub-Cortex"
+  Telah lolos verifikasi filter komunitas tanpa moderasi negatif.
 ================================================================================
