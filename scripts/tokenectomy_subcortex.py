@@ -156,6 +156,11 @@ class TokenectomyScopeGuard:
 
         return violations
 
+    @classmethod
+    def audit_code(cls, snippet: str, enclosing_func_name: str = "") -> List[str]:
+        """Convenience alias for inspect_snippet_scope."""
+        return cls.inspect_snippet_scope(snippet, enclosing_func_name)
+
 
 class TokenectomyPatchIntegrity:
     """
