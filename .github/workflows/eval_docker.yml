@@ -87,6 +87,7 @@ jobs:
           PRED_FILE="predictions_${GROUP}.jsonl"
           echo "Running SWE-bench official evaluation harness on $DATASET for group $GROUP..."
           
+          mkdir -p "reports_${GROUP}"
           if [ ! -s "$PRED_FILE" ]; then
             echo "No predictions found for group $GROUP ($PRED_FILE is empty). Skipping evaluation."
             echo "{}" > "reports_${GROUP}/empty_report.json"
